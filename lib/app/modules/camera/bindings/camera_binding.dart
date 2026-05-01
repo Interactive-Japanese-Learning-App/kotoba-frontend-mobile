@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../controllers/camera_controller.dart';
 
 class CameraBinding extends Bindings {

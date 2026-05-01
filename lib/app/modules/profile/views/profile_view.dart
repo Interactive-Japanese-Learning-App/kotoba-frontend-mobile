@@ -14,8 +14,6 @@ class ProfileView extends GetView<ProfileController> {
 
       body: CustomScrollView(
         slivers: [
-
-          /// 🔷 HEADER
           const AppHeader(isScrolled: false),
 
           SliverToBoxAdapter(
@@ -24,95 +22,66 @@ class ProfileView extends GetView<ProfileController> {
               child: Column(
                 children: [
 
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 30),
 
-                  /// 🔷 PROFILE
-                  Obx(
-                    () => Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 45,
-                          backgroundColor: AppColors.neutral,
-                          child: const Icon(
-                            Icons.person,
-                            size: 50,
-                            color: AppColors.primary,
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        Text(
-                          controller.username.value,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          controller.email.value,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
+                  /// 🔷 AVATAR
+                  CircleAvatar(
+                    radius: 55,
+                    backgroundColor: AppColors.neutral,
+                    child: const Icon(
+                      Icons.person,
+                      size: 60,
+                      color: Colors.grey,
                     ),
                   ),
 
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 16),
 
-                  /// 🔷 MENU CARD
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
+                  /// 🔷 USERNAME
+                  Obx(() => Text(
+                        controller.username.value.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
+                      )),
 
-                        /// EDIT PROFILE
-                        _menu(
-                          "Edit Profil",
-                          Icons.edit_outlined,
-                          controller.goEditProfile,
+                  const SizedBox(height: 6),
+
+                  /// 🔷 EMAIL
+                  Obx(() => Text(
+                        controller.email.value,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 13,
                         ),
-                      ],
-                    ),
-                  ),
+                      )),
+
+                  const SizedBox(height: 30),
+
+                  /// 🔷 MENU LIST
+                  _menuItem("Edit Profil", controller.goEditProfile),
+                  _divider(),
+                  _menuItem("Tentang Aplikasi", () {}),
+                  _divider(),
+                  _menuItem("Kritik & Saran", () {}),
 
                   const SizedBox(height: 40),
 
                   /// 🔴 BUTTON KELUAR
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton.icon(
+                    height: 55,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.danger,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
+                        backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-
                       onPressed: controller.logout,
-
-                      icon: const Icon(Icons.logout_rounded),
-
-                      label: const Text(
+                      child: const Text(
                         "Keluar",
                         style: TextStyle(
                           fontSize: 16,
@@ -132,36 +101,25 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-  /// 🔷 MENU
-  Widget _menu(
-    String title,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
+  /// 🔷 MENU ITEM
+  Widget _menuItem(String title, VoidCallback onTap) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 4,
-      ),
-
-      leading: Icon(
-        icon,
-        color: AppColors.primary,
-      ),
-
+      contentPadding: EdgeInsets.zero,
       title: Text(
         title,
-        style: const TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
+        style: const TextStyle(fontSize: 14),
       ),
-
-      trailing: const Icon(
-        Icons.chevron_right,
-      ),
-
+      trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
+    );
+  }
+
+  /// 🔷 DIVIDER
+  Widget _divider() {
+    return Divider(
+      color: Colors.grey[300],
+      thickness: 1,
+      height: 1,
     );
   }
 }

@@ -15,6 +15,12 @@ import '../modules/register/views/register_view.dart';
 import '../modules/main/bindings/main_binding.dart';
 import '../modules/main/views/main_view.dart';
 
+import '../modules/camera/bindings/camera_binding.dart';
+import '../modules/camera/views/camera_view.dart';
+
+import '../modules/nihongo/bindings/nihongo_binding.dart';
+import '../modules/nihongo/views/nihongo_view.dart';
+
 part 'app_routes.dart';
 
 class AppPages {
@@ -56,6 +62,18 @@ class AppPages {
       name: '/profile/edit',
       page: () => const EditProfileView(),
       binding: ProfileBinding(),
+    ),
+
+    GetPage(
+      name: _Paths.CAMERA,
+      page: () => const CameraView(),
+      binding: CameraBinding(),
+    ),
+
+    GetPage(
+      name: _Paths.NIHONGO,
+      page: () => const NihongoView(),
+      binding: NihongoBinding(),
     ),
   ];
 }

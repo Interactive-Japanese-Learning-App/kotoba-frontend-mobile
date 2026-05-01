@@ -1,23 +1,15 @@
 import 'package:get/get.dart';
 
 class CameraController extends GetxController {
-  //TODO: Implement CameraController
+  final isCameraReady = false.obs;
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
+    // nanti untuk init camera
+    Future.delayed(const Duration(seconds: 1), () {
+      isCameraReady.value = true;
+    });
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }
