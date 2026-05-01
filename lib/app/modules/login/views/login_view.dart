@@ -98,12 +98,13 @@ class LoginView extends GetView<LoginController> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                   onPressed: () {
-                    Get.toNamed(Routes.HOME);
+                    Get.offAllNamed(Routes.MAIN);
                   },
                   child: const Text(
                     "Masuk",
