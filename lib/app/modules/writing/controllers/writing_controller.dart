@@ -1,23 +1,35 @@
 import 'package:get/get.dart';
 
 class WritingController extends GetxController {
-  //TODO: Implement WritingController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  /// 🔴 TAB INDEX
+  var selectedIndex = 0.obs;
+
+  /// 🔤 DATA
+  final hiragana = [
+    {'label': 'a', 'kana': 'あ'},
+    {'label': 'i', 'kana': 'い'},
+    {'label': 'u', 'kana': 'う'},
+    {'label': 'e', 'kana': 'え'},
+    {'label': 'o', 'kana': 'お'},
+    {'label': 'ka', 'kana': 'か'},
+    {'label': 'ki', 'kana': 'き'},
+    {'label': 'ku', 'kana': 'く'},
+  ];
+
+  final katakana = [
+    {'label': 'a', 'kana': 'ア'},
+    {'label': 'i', 'kana': 'イ'},
+    {'label': 'u', 'kana': 'ウ'},
+    {'label': 'e', 'kana': 'エ'},
+  ];
+
+  /// 🔁 GANTI TAB
+  void changeTab(int index) {
+    selectedIndex.value = index;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
+  /// 🔥 DATA AKTIF
+  List<Map<String, String>> get currentData =>
+      selectedIndex.value == 0 ? hiragana : katakana;
 }

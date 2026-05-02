@@ -11,6 +11,11 @@ abstract class Routes {
   static const NIHONGO = _Paths.NIHONGO;
   static const WRITING = _Paths.WRITING;
   static const CANVAS = _Paths.CANVAS;
+  static const SPEECH = _Paths.SPEECH;
+  static const SPEECH_DETAIL = _Paths.SPEECH_DETAIL;
+  static const QUIZ = _Paths.QUIZ;
+  static const QUIZ_LEVEL = _Paths.QUIZ_LEVEL;
+  static const QUIZ_QUESTION = _Paths.QUIZ_QUESTION;
 }
 
 abstract class _Paths {
@@ -23,4 +28,9 @@ abstract class _Paths {
   static const NIHONGO = '/nihongo';
   static const WRITING = '/writing';
   static const CANVAS = '/canvas';
+  static const SPEECH = '/speech';
+  static const SPEECH_DETAIL = '/speech-detail';
+  static const QUIZ = '/quiz';
+  static const QUIZ_LEVEL = '/quiz-level';
+  static const QUIZ_QUESTION = '/quiz-question';
 }

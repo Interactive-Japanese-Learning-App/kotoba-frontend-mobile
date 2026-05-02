@@ -22,7 +22,6 @@ class LearnView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   const SizedBox(height: 20),
 
                   /// 🔷 TITLE
@@ -39,10 +38,7 @@ class LearnView extends StatelessWidget {
 
                   Text(
                     "Belajar dasar penulisan bahasa Jepang dengan pengucapan suara dan kuis.",
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      height: 1.4,
-                    ),
+                    style: TextStyle(color: Colors.grey[600], height: 1.4),
                   ),
 
                   const SizedBox(height: 20),
@@ -55,50 +51,69 @@ class LearnView extends StatelessWidget {
                       color: AppColors.danger,
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-
-                        const Text(
-                          "Nihongo Basics",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        /// 🔥 ICON BUKU BACKGROUND
+                        Positioned(
+                          right: 10,
+                          bottom: 0,
+                          child: Transform.rotate(
+                            angle: -0.35,
+                            child: Icon(
+                              Icons.menu_book_rounded,
+                              size: 130,
+                              color: Colors.white.withOpacity(0.1),
+                            ),
                           ),
                         ),
 
-                        const SizedBox(height: 5),
-
-                        const Text(
-                          "Pembelajaran Dasar",
-                          style: TextStyle(color: Colors.white),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        /// 🔥 BUTTON KE NIHONGO VIEW
-                        InkWell(
-                          onTap: () {
-                            Get.toNamed(Routes.NIHONGO);
-                          },
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
+                        /// 🔥 CONTENT
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Nihongo Basics",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                "Mulai Belajar →",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
+
+                            const SizedBox(height: 5),
+
+                            const Text(
+                              "Pembelajaran Dasar",
+                              style: TextStyle(color: Colors.white),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            InkWell(
+                              onTap: () {
+                                Get.toNamed(Routes.NIHONGO);
+                              },
+                              borderRadius: BorderRadius.circular(30),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    "Mulai Belajar →",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -109,7 +124,6 @@ class LearnView extends StatelessWidget {
                   /// 🔷 2 CARD (WRITING & SPEECH)
                   Row(
                     children: [
-
                       /// 🔵 WRITING CANVAS
                       Expanded(
                         child: InkWell(
@@ -157,41 +171,43 @@ class LearnView extends StatelessWidget {
 
                       /// 🟡 SPEECH RECOGNITION
                       Expanded(
-                        child: Container(
-                          height: 150,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.warning,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Speech Recognition",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed(Routes.SPEECH);
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            height: 150,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColors.warning,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Speech Recognition",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              const Text(
-                                "Belajar pengucapan bahasa Jepang",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
+                                const SizedBox(height: 8),
+                                const Text(
+                                  "Belajar pengucapan bahasa Jepang",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-
-                              const Spacer(),
-
-                              const Text(
-                                "Mulai Belajar →",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
+                                const Spacer(),
+                                const Text(
+                                  "Mulai Belajar →",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -201,49 +217,94 @@ class LearnView extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   /// ⚫ QUIZ CARD
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3E4A4E),
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        const Text(
-                          "Quiz",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.QUIZ);
+                    },
+                    borderRadius: BorderRadius.circular(25),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3E4A4E),
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
                           ),
-                        ),
-
-                        const SizedBox(height: 6),
-
-                        const Text(
-                          "Uji pemahamanmu dengan kuis untuk memahami materi",
-                          style: TextStyle(
-                            color: Colors.white70,
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          /// 🔥 BACKGROUND ICON (pattern)
+                          Positioned(
+                            right: -10,
+                            top: -10,
+                            child: Transform.rotate(
+                              angle: 0.3,
+                              child: Icon(
+                                Icons.extension_rounded,
+                                size: 120,
+                                color: Colors.white.withOpacity(0.05),
+                              ),
+                            ),
                           ),
-                        ),
 
-                        const SizedBox(height: 20),
+                          /// 🔥 CONTENT
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Quiz",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
 
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
+                              const SizedBox(height: 6),
+
+                              const Text(
+                                "Uji pemahamanmu dengan kuis untuk memahami materi",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  height: 1.4,
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              /// 🔥 BUTTON CAPSULE
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Mulai Kuis",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.arrow_forward, size: 16),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          child: const Center(
-                            child: Text("Mulai Kuis →"),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
