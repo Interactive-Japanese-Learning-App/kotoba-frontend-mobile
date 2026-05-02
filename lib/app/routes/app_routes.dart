@@ -14,8 +14,11 @@ abstract class Routes {
   static const SPEECH = _Paths.SPEECH;
   static const SPEECH_DETAIL = _Paths.SPEECH_DETAIL;
   static const QUIZ = _Paths.QUIZ;
-  static const QUIZ_LEVEL = _Paths.QUIZ_LEVEL;
-  static const QUIZ_QUESTION = _Paths.QUIZ_QUESTION;
+  static const QUIZ_MEMBACA1 = _Paths.QUIZ_MEMBACA_1;
+  static const QUIZ_MEMBACA2 = _Paths.QUIZ_MEMBACA2;
+  static const QUIZ_PUZZLE = _Paths.QUIZ_PUZZLE;
+  static const QUIZ_MENULIS = _Paths.QUIZ_MENULIS;
+  static const QUIZ_PELAFALAN = _Paths.QUIZ_PELAFALAN;
 }
 
 abstract class _Paths {
@@ -31,6 +34,9 @@ abstract class _Paths {
   static const SPEECH = '/speech';
   static const SPEECH_DETAIL = '/speech-detail';
   static const QUIZ = '/quiz';
-  static const QUIZ_LEVEL = '/quiz-level';
-  static const QUIZ_QUESTION = '/quiz-question';
+  static const QUIZ_MEMBACA_1 = '/quiz-membaca-1';
+  static const QUIZ_MEMBACA2 = '/quiz-membaca2';
+  static const QUIZ_PUZZLE = '/quiz-puzzle';
+  static const QUIZ_MENULIS = '/quiz-menulis';
+  static const QUIZ_PELAFALAN = '/quiz-pelafalan';
 }

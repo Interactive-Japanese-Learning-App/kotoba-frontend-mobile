@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../controllers/quiz_controller.dart';
 
 class QuizBinding extends Bindings {

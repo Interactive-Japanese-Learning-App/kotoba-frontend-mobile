@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kotoba_app/app/modules/main/controllers/bottom_nav_controller.dart';
-import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/app_header.dart';
 import '../controllers/home_controller.dart';

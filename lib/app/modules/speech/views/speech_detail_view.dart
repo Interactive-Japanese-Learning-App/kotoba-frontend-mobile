@@ -88,10 +88,10 @@ class SpeechDetailView extends GetView<SpeechController> {
                         () => Text(
                           controller.isListening.value
                               ? "MENDENGARKAN..."
-                              : "MEREKAM.....",
-                          style: TextStyle(
+                              : "TAP UNTUK BERBICARA",
+                          style: const TextStyle(
                             letterSpacing: 2,
-                            color: AppColors.primary,
+                            color: Colors.grey,
                             fontSize: 11,
                           ),
                         ),

@@ -1,5 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/quiz/bindings/membaca1_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/bindings/membaca2_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/bindings/menulis_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/bindings/pelafalan_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/views/membaca1_view.dart';
+import 'package:kotoba_app/app/modules/quiz/views/membaca2_view.dart';
+import 'package:kotoba_app/app/modules/quiz/views/menulis_view.dart';
+import 'package:kotoba_app/app/modules/quiz/views/pelafalan_view.dart';
 
 import '../modules/camera/bindings/camera_binding.dart';
 import '../modules/camera/views/camera_view.dart';
@@ -99,14 +106,31 @@ class AppPages {
       page: () => const QuizView(),
       binding: QuizBinding(),
     ),
-    GetPage(
-      name: Routes.QUIZ_LEVEL,
-      page: () => Scaffold(body: Center(child: Text("Quiz Level"))),
-    ),
 
     GetPage(
-      name: Routes.QUIZ_QUESTION,
-      page: () => Scaffold(body: Center(child: Text("Quiz Question"))),
+      name: _Paths.QUIZ_MEMBACA_1,
+      page: () => const Membaca1View(),
+      binding: Membaca1Binding(),
+    ),
+    GetPage(
+      name: _Paths.QUIZ_MEMBACA2,
+      page: () => const Membaca2View(),
+      binding: Membaca2Binding(),
+    ),
+    // GetPage(
+    //   name: _Paths.QUIZ_PUZZLE,
+    //   page: () => const Membaca1View(),
+    //   binding: Membaca1Binding(),
+    // ),
+    GetPage(
+      name: _Paths.QUIZ_MENULIS,
+      page: () => const MenulisView(),
+      binding: MenulisBinding(),
+    ),
+    GetPage(
+      name: Routes.QUIZ_PELAFALAN,
+      page: () => const PelafalanView(),
+      binding: PelafalanBinding(),
     ),
   ];
 }

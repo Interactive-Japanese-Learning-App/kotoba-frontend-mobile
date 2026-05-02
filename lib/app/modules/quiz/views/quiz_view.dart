@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/quiz/controllers/quiz_controller.dart';
+import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
-import '../controllers/quiz_controller.dart';
 
 class QuizView extends GetView<QuizController> {
   const QuizView({super.key});
@@ -177,7 +178,19 @@ class QuizView extends GetView<QuizController> {
 
                       child: GestureDetector(
                         onTap: unlocked
-                            ? () => controller.goToQuestion()
+                            ? () {
+                                if (i == 0) {
+                                  Get.toNamed(Routes.QUIZ_MEMBACA1);
+                                } else if (i == 1) {
+                                  Get.toNamed(Routes.QUIZ_MEMBACA2);
+                                } else if (i == 2) {
+                                  Get.toNamed(Routes.QUIZ_PUZZLE);
+                                } else if (i == 3) {
+                                  Get.toNamed(Routes.QUIZ_MENULIS);
+                                } else if (i == 4) {
+                                  Get.toNamed(Routes.QUIZ_PELAFALAN);
+                                }
+                              }
                             : null,
 
                         child: Column(
