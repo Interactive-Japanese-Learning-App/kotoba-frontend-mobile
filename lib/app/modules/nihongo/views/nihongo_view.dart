@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/theme/app_colors.dart';
+import '../controllers/nihongo_controller.dart';
 
-class NihongoView extends StatelessWidget {
+class NihongoView extends GetView<NihongoController> {
   const NihongoView({super.key});
 
   @override
@@ -11,11 +12,11 @@ class NihongoView extends StatelessWidget {
       length: 3,
       child: Scaffold(
         backgroundColor: AppColors.white,
-
         body: SafeArea(
           child: Column(
             children: [
-              /// 🔷 HEADER
+
+              /// HEADER
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -41,10 +42,11 @@ class NihongoView extends StatelessWidget {
                 ),
               ),
 
-              /// 🔴 TAB BAR
+              /// TAB BAR
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TabBar(
+                  onTap: controller.changeTab,
                   indicator: BoxDecoration(
                     color: AppColors.danger,
                     borderRadius: BorderRadius.circular(20),
@@ -63,7 +65,7 @@ class NihongoView extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              /// 🔍 SEARCH
+              /// SEARCH (REACTIVE)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(
@@ -72,8 +74,9 @@ class NihongoView extends StatelessWidget {
                     color: AppColors.neutral,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
+                  child: TextField(
+                    onChanged: controller.updateSearch,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.search, color: Colors.grey),
                       hintText: "Cari huruf...",
                       border: InputBorder.none,
@@ -84,13 +87,13 @@ class NihongoView extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              /// 📚 CONTENT
+              /// CONTENT (REACTIVE)
               Expanded(
                 child: TabBarView(
                   children: [
-                    _gridHiragana(),
-                    Center(child: Text("Katakana")),
-                    Center(child: Text("Angka")),
+                    Obx(() => _gridHiragana(controller)),
+                    const Center(child: Text("Katakana")),
+                    const Center(child: Text("Angka")),
                   ],
                 ),
               ),
@@ -101,18 +104,9 @@ class NihongoView extends StatelessWidget {
     );
   }
 
-  /// 🔷 GRID HIRAGANA
-  Widget _gridHiragana() {
-    final data = [
-      {"char": "あ", "romaji": "a"},
-      {"char": "い", "romaji": "i"},
-      {"char": "う", "romaji": "u"},
-      {"char": "え", "romaji": "e"},
-      {"char": "お", "romaji": "o"},
-      {"char": "か", "romaji": "ka"},
-      {"char": "き", "romaji": "ki"},
-      {"char": "く", "romaji": "ku"},
-    ];
+  /// GRID HIRAGANA (PAKAI CONTROLLER)
+  Widget _gridHiragana(NihongoController controller) {
+    final data = controller.filteredHiragana;
 
     return GridView.builder(
       padding: const EdgeInsets.all(20),
@@ -140,7 +134,8 @@ class NihongoView extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              /// 🔤 ROMAJI (pojok)
+
+              /// ROMAJI
               Positioned(
                 top: 10,
                 left: 10,
@@ -157,7 +152,7 @@ class NihongoView extends StatelessWidget {
                 ),
               ),
 
-              /// 🔤 HURUF
+              /// HURUF
               Center(
                 child: Text(
                   item["char"]!,
@@ -169,7 +164,7 @@ class NihongoView extends StatelessWidget {
                 ),
               ),
 
-              /// 🔤 LABEL
+              /// LABEL
               Positioned(
                 bottom: 10,
                 left: 0,

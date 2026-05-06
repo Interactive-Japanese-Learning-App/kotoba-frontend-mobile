@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../controllers/bottom_nav_controller.dart';
 import '../../home/views/home_view.dart';
 import '../../camera/views/camera_view.dart';
@@ -13,17 +12,19 @@ class MainView extends GetView<BottomNavController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
-          body: IndexedStack(
-            index: controller.currentIndex.value,
-            children: const [
-              HomeView(),
-              CameraView(),
-              LearnView(),
-              ProfileView(),
-            ],
-          ),
-          bottomNavigationBar: BottomNavbar(),
-        ));
+    return Obx(
+      () => Scaffold(
+        body: IndexedStack(
+          index: controller.currentIndex.value,
+          children: const [
+            HomeView(),    // 0
+            CameraView(),  // 1 ✅
+            LearnView(),   // 2
+            ProfileView(), // 3
+          ],
+        ),
+        bottomNavigationBar: const BottomNavbar(),
+      ),
+    );
   }
 }

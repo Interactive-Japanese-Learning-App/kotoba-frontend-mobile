@@ -65,12 +65,12 @@ class AppPages {
       binding: MainBinding(),
     ),
     GetPage(
-      name: '/profile',
+      name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
     ),
     GetPage(
-      name: '/profile/edit',
+      name: _Paths.EDIT_PROFILE,
       page: () => const EditProfileView(),
       binding: ProfileBinding(),
     ),

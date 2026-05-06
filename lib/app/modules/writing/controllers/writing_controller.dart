@@ -2,10 +2,10 @@ import 'package:get/get.dart';
 
 class WritingController extends GetxController {
 
-  /// 🔴 TAB INDEX
+  /// TAB INDEX
   var selectedIndex = 0.obs;
 
-  /// 🔤 DATA
+  /// DATA
   final hiragana = [
     {'label': 'a', 'kana': 'あ'},
     {'label': 'i', 'kana': 'い'},
@@ -24,12 +24,16 @@ class WritingController extends GetxController {
     {'label': 'e', 'kana': 'エ'},
   ];
 
-  /// 🔁 GANTI TAB
+  /// GANTI TAB
   void changeTab(int index) {
     selectedIndex.value = index;
   }
 
-  /// 🔥 DATA AKTIF
+  /// DATA AKTIF
   List<Map<String, String>> get currentData =>
       selectedIndex.value == 0 ? hiragana : katakana;
+
+  /// TYPE AKTIF (PINDAH DARI VIEW)
+  String get currentType =>
+      selectedIndex.value == 0 ? "HIRAGANA" : "KATAKANA";
 }

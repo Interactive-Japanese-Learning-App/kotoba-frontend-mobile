@@ -21,7 +21,7 @@ class EditProfileView extends GetView<ProfileController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              /// 🔷 BACK + TITLE
+              /// BACK + TITLE
               Row(
                 children: [
                   IconButton(
@@ -43,7 +43,7 @@ class EditProfileView extends GetView<ProfileController> {
 
               const SizedBox(height: 30),
 
-              /// 🔷 FOTO PROFIL
+              /// FOTO PROFIL
               Center(
                 child: Column(
                   children: [
@@ -74,7 +74,7 @@ class EditProfileView extends GetView<ProfileController> {
 
               const SizedBox(height: 30),
 
-              /// 🔷 EMAIL
+              /// EMAIL
               _input(
                 controller.emailController,
                 "Email",
@@ -82,7 +82,7 @@ class EditProfileView extends GetView<ProfileController> {
 
               const SizedBox(height: 15),
 
-              /// 🔷 PASSWORD LAMA
+              /// PASSWORD LAMA
               Obx(
                 () => _inputPassword(
                   controller.oldPasswordController,
@@ -94,7 +94,7 @@ class EditProfileView extends GetView<ProfileController> {
 
               const SizedBox(height: 15),
 
-              /// 🔷 PASSWORD BARU
+              /// PASSWORD BARU
               Obx(
                 () => _inputPassword(
                   controller.newPasswordController,
@@ -106,7 +106,7 @@ class EditProfileView extends GetView<ProfileController> {
 
               const SizedBox(height: 15),
 
-              /// 🔷 KONFIRMASI PASSWORD
+              /// KONFIRMASI PASSWORD
               Obx(
                 () => _inputPassword(
                   controller.confirmPasswordController,
@@ -118,7 +118,7 @@ class EditProfileView extends GetView<ProfileController> {
 
               const SizedBox(height: 30),
 
-              /// 🔷 BUTTON SIMPAN
+              /// BUTTON SIMPAN (FIX GETX CLEAN)
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -130,7 +130,7 @@ class EditProfileView extends GetView<ProfileController> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  onPressed: controller.updateProfile,
+                  onPressed: controller.submitProfile, // ✅ FIX
                   child: const Text(
                     "Simpan",
                     style: TextStyle(fontSize: 16),
@@ -144,7 +144,7 @@ class EditProfileView extends GetView<ProfileController> {
     );
   }
 
-  /// 🔷 INPUT STYLE LOGIN
+  /// INPUT
   Widget _input(
     TextEditingController controller,
     String hint,
@@ -180,7 +180,7 @@ class EditProfileView extends GetView<ProfileController> {
     );
   }
 
-  /// 🔷 INPUT PASSWORD STYLE LOGIN
+  /// INPUT PASSWORD
   Widget _inputPassword(
     TextEditingController controller,
     String hint,

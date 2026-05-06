@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/modules/main/controllers/bottom_nav_controller.dart';
 import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/app_header.dart';
 import '../controllers/home_controller.dart';
+import '../../main/controllers/bottom_nav_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -23,13 +23,13 @@ class HomeView extends GetView<HomeController> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20, // 🔥 SAMA SEMUA
+                  horizontal: 20,
                   vertical: 16,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// 🔷 GREETING
+                    /// GREETING
                     Text(
                       "Konnichiwa, ${controller.username.value}",
                       style: const TextStyle(color: Colors.grey, fontSize: 12),
@@ -48,7 +48,7 @@ class HomeView extends GetView<HomeController> {
 
                     const SizedBox(height: 16),
 
-                    /// 🔷 XP PROGRESS CARD (NEW UI)
+                    /// XP PROGRESS CARD (NEW UI)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(18),
@@ -137,7 +137,7 @@ class HomeView extends GetView<HomeController> {
 
                     const SizedBox(height: 16),
 
-                    /// 🔴 NIHONGO CARD
+                    /// NIHONGO CARD
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -147,7 +147,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                       child: Stack(
                         children: [
-                          /// 🔥 ICON MIRING
+                          /// ICON MIRING
                           Positioned(
                             right: 10,
                             bottom: 0,
@@ -219,7 +219,7 @@ class HomeView extends GetView<HomeController> {
 
                     const SizedBox(height: 16),
 
-                    /// 🔵 VISUAL SENSEI
+                    /// VISUAL SENSEI
                     Container(
                       width: double.infinity,
                       height: 180,
@@ -235,7 +235,7 @@ class HomeView extends GetView<HomeController> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
 
-                          /// 🔥 OVERLAY BIRU
+                          /// OVERLAY BIRU
                           color: AppColors.primary.withOpacity(0.6),
                         ),
                         child: Column(
@@ -273,7 +273,7 @@ class HomeView extends GetView<HomeController> {
                                   ],
                                 ),
 
-                                const SizedBox(height: 8), // 🔥 FIX SPACING
+                                const SizedBox(height: 8), // FIX SPACING
 
                                 const Text(
                                   "Arahkan kamera pada objek \ndisekitarmu",
@@ -285,12 +285,11 @@ class HomeView extends GetView<HomeController> {
                               ],
                             ),
 
-                            /// 🔥 BUTTON (dikasih jarak natural)
+                            /// BUTTON VISUAL SENSEI (FIX)
                             InkWell(
                               onTap: () {
-                                Get.toNamed(Routes.NIHONGO);
+                                Get.find<BottomNavController>().changeIndex(1); 
                               },
-
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -314,7 +313,7 @@ class HomeView extends GetView<HomeController> {
 
                     const SizedBox(height: 24),
 
-                    /// 🔥 SECTION VIDEO
+                    /// SECTION VIDEO
                     Text(
                       "Belajar Bahasa Jepang",
                       style: TextStyle(
@@ -333,7 +332,7 @@ class HomeView extends GetView<HomeController> {
 
                     const SizedBox(height: 14),
 
-                    /// 🔥 LIST VIDEO
+                    /// LIST VIDEO
                     Obx(
                       () => Column(
                         children: List.generate(controller.videos.length, (
@@ -357,7 +356,7 @@ class HomeView extends GetView<HomeController> {
                             ),
                             child: Row(
                               children: [
-                                /// 🔥 THUMBNAIL
+                                /// THUMBNAIL
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: Image.asset(
@@ -370,7 +369,7 @@ class HomeView extends GetView<HomeController> {
 
                                 const SizedBox(width: 12),
 
-                                /// 🔥 TEXT
+                                /// TEXT
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:

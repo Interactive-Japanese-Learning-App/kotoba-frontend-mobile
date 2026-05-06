@@ -11,6 +11,7 @@ class SpeechView extends GetView<SpeechController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
@@ -38,7 +39,6 @@ class SpeechView extends GetView<SpeechController> {
 
           return Column(
             children: [
-
               /// 🔴 TAB
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +68,12 @@ class SpeechView extends GetView<SpeechController> {
                       onTap: () {
                         Get.toNamed(
                           Routes.SPEECH_DETAIL,
-                          arguments: item,
+                          arguments: {
+                            ...item,
+                            "type": controller.selectedIndex.value == 0
+                                ? "HIRAGANA"
+                                : "KATAKANA",
+                          },
                         );
                       },
                       borderRadius: BorderRadius.circular(20),
@@ -80,7 +85,6 @@ class SpeechView extends GetView<SpeechController> {
                         ),
                         child: Stack(
                           children: [
-
                             /// LABEL
                             Positioned(
                               top: 0,
@@ -137,6 +141,7 @@ class SpeechView extends GetView<SpeechController> {
     );
   }
 
+  /// 🔴 TAB
   Widget _buildTab(String title, int index) {
     return Obx(() {
       final isActive = controller.selectedIndex.value == index;

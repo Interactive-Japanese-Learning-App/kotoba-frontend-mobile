@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/welcome_controller.dart';
-import '../../../routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 
 class WelcomeView extends GetView<WelcomeController> {
@@ -11,13 +10,15 @@ class WelcomeView extends GetView<WelcomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+
           child: Column(
             children: [
 
-              /// 🔼 ATAS
+              /// ATAS
               Expanded(
                 flex: 3,
                 child: Column(
@@ -28,7 +29,7 @@ class WelcomeView extends GetView<WelcomeController> {
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primary, // ✅ biru kamu
+                        color: AppColors.primary,
                       ),
                     ),
 
@@ -42,12 +43,13 @@ class WelcomeView extends GetView<WelcomeController> {
                 ),
               ),
 
-              /// 🔽 BAWAH
+              /// BAWAH
               Expanded(
                 flex: 2,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
                     Text(
                       "Selamat Datang!",
                       style: TextStyle(
@@ -63,27 +65,29 @@ class WelcomeView extends GetView<WelcomeController> {
                       "Aplikasi Pembelajaran Bahasa Jepang Interaktif",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: AppColors.primary.withOpacity(0.6), // abu kebiruan soft
+                        color: AppColors.primary.withOpacity(0.6),
                       ),
                     ),
 
                     const SizedBox(height: 30),
 
+                    /// BUTTON MULAI
                     SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary, // ✅ biru utama
+                          backgroundColor: AppColors.primary,
                           foregroundColor: AppColors.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        onPressed: () {
-                          Get.toNamed(Routes.LOGIN);
-                        },
+
+                        /// PINDAH KE CONTROLLER
+                        onPressed: controller.goToLogin,
+
                         child: const Text(
                           "Mulai",
                           style: TextStyle(

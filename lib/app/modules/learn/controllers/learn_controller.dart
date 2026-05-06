@@ -1,23 +1,22 @@
 import 'package:get/get.dart';
+import '../../../routes/app_pages.dart';
 
 class LearnController extends GetxController {
-  //TODO: Implement LearnController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  /// NAVIGASI
+  void goToNihongo() {
+    Get.toNamed(Routes.NIHONGO);
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void goToWriting() {
+    Get.toNamed(Routes.WRITING);
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  void goToSpeech() {
+    Get.toNamed(Routes.SPEECH);
   }
 
-  void increment() => count.value++;
+  void goToQuiz() {
+    Get.toNamed(Routes.QUIZ);
+  }
 }

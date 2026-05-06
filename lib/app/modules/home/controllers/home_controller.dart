@@ -6,12 +6,13 @@ class HomeController extends GetxController {
   final scrollController = ScrollController();
 
   final RxBool isScrolled = false.obs;
-  final RxString username = "Rani".obs;
+  final RxString username = "ranifa".obs;
   final RxInt streak = 12.obs;
   final RxInt progress = 75.obs;
 
+  /// FIX: pakai changeIndex
   void changeTab(int index) {
-    Get.find<BottomNavController>().changeTab(index);
+    Get.find<BottomNavController>().changeIndex(index);
   }
 
   @override

@@ -11,10 +11,10 @@ class WritingView extends GetView<WritingController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
-        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
@@ -27,20 +27,19 @@ class WritingView extends GetView<WritingController> {
             fontSize: 20,
           ),
         ),
-        centerTitle: false,
       ),
 
       body: Padding(
         padding: const EdgeInsets.all(20),
 
-        /// 🔥 OBX
+        /// ROOT OBX
         child: Obx(() {
           final data = controller.currentData;
 
           return Column(
             children: [
 
-              /// 🔴 TAB
+              /// TAB
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -52,7 +51,7 @@ class WritingView extends GetView<WritingController> {
 
               const SizedBox(height: 20),
 
-              /// 🔷 GRID
+              /// GRID
               Expanded(
                 child: GridView.builder(
                   itemCount: data.length,
@@ -68,9 +67,7 @@ class WritingView extends GetView<WritingController> {
                     return KanaCard(
                       label: item['label']!,
                       kana: item['kana']!,
-                      type: controller.selectedIndex.value == 0
-                          ? "HIRAGANA"
-                          : "KATAKANA",
+                      type: controller.currentType, // ✅ CLEAN
                     );
                   },
                 ),
@@ -82,20 +79,25 @@ class WritingView extends GetView<WritingController> {
     );
   }
 
-  /// 🔴 TAB UI
+  /// TAB UI
   Widget _buildTab(String title, int index) {
     return Obx(() {
       final isActive = controller.selectedIndex.value == index;
 
       return GestureDetector(
         onTap: () => controller.changeTab(index),
+
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 10,
+          ),
           decoration: BoxDecoration(
             color: isActive ? AppColors.danger : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
+
           child: Text(
             title,
             style: TextStyle(

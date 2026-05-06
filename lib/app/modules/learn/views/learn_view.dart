@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/app_header.dart';
-import '../../../routes/app_pages.dart';
+import '../controllers/learn_controller.dart';
 
-class LearnView extends StatelessWidget {
+class LearnView extends GetView<LearnController> {
   const LearnView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-
       body: CustomScrollView(
         slivers: [
           const AppHeader(isScrolled: false),
@@ -24,7 +23,7 @@ class LearnView extends StatelessWidget {
                 children: [
                   const SizedBox(height: 20),
 
-                  /// 🔷 TITLE
+                  /// TITLE
                   Text(
                     "Belajar",
                     style: TextStyle(
@@ -43,319 +42,24 @@ class LearnView extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  /// 🔴 NIHONGO BASICS CARD
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.danger,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Stack(
-                      children: [
-                        /// 🔥 ICON BUKU BACKGROUND
-                        Positioned(
-                          right: 10,
-                          bottom: 0,
-                          child: Transform.rotate(
-                            angle: -0.35,
-                            child: Icon(
-                              Icons.menu_book_rounded,
-                              size: 130,
-                              color: Colors.white.withOpacity(0.1),
-                            ),
-                          ),
-                        ),
-
-                        /// 🔥 CONTENT
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Nihongo Basics",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-
-                            const SizedBox(height: 5),
-
-                            const Text(
-                              "Pembelajaran Dasar",
-                              style: TextStyle(color: Colors.white),
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            InkWell(
-                              onTap: () {
-                                Get.toNamed(Routes.NIHONGO);
-                              },
-                              borderRadius: BorderRadius.circular(30),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Mulai Belajar",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Icon(Icons.arrow_forward, size: 16),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  /// NIHONGO BASICS
+                  _nihongoCard(),
 
                   const SizedBox(height: 16),
 
-                  /// 🔷 2 CARD (WRITING & SPEECH)
+                  /// WRITING + SPEECH
                   Row(
                     children: [
-                      /// 🔵 WRITING CANVAS
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed(Routes.WRITING);
-                          },
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            height: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: const DecorationImage(
-                                image: AssetImage(
-                                  "assets/images/bg-canvas.jpg",
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-
-                              /// 🔥 OVERLAY (INI YANG KAMU MAU)
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: AppColors.primary.withOpacity(0.6),
-                              ),
-
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Writing Canvas",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16, // 🔥 samain feel sama home
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 6),
-
-                                  Text(
-                                    "Belajar cara menulis huruf Jepang",
-                                    style: TextStyle(
-                                      color: Colors.white, // ✅ full putih
-                                      fontSize: 12,
-                                      height: 1.3,
-                                    ),
-                                  ),
-
-                                  const Spacer(),
-
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Mulai Belajar",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight
-                                              .w500, // 🔥 biar sama feel tombol home
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      const Icon(
-                                        Icons.arrow_forward,
-                                        size: 16,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
+                      Expanded(child: _writingCard()),
                       const SizedBox(width: 12),
-
-                      /// 🟡 SPEECH RECOGNITION
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed(Routes.SPEECH);
-                          },
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            height: 150,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.warning,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Speech Recognition",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  "Belajar pengucapan bahasa Jepang",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const Spacer(),
-                                const Row(
-                                  children: [
-                                    Text(
-                                      "Mulai Belajar",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      size: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      Expanded(child: _speechCard()),
                     ],
                   ),
 
                   const SizedBox(height: 16),
 
-                  /// ⚫ QUIZ CARD
-                  InkWell(
-                    onTap: () {
-                      Get.toNamed(Routes.QUIZ);
-                    },
-                    borderRadius: BorderRadius.circular(25),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3E4A4E),
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Stack(
-                        children: [
-                          /// 🔥 BACKGROUND ICON (pattern)
-                          Positioned(
-                            right: -10,
-                            top: -10,
-                            child: Transform.rotate(
-                              angle: 0.3,
-                              child: Icon(
-                                Icons.extension_rounded,
-                                size: 120,
-                                color: Colors.white.withOpacity(0.05),
-                              ),
-                            ),
-                          ),
-
-                          /// 🔥 CONTENT
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Quiz",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-
-                              const SizedBox(height: 6),
-
-                              const Text(
-                                "Uji pemahamanmu dengan kuis untuk memahami materi",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  height: 1.4,
-                                ),
-                              ),
-
-                              const SizedBox(height: 20),
-
-                              /// 🔥 BUTTON CAPSULE
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Mulai Kuis",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Icon(Icons.arrow_forward, size: 16),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  /// QUIZ
+                  _quizCard(),
 
                   const SizedBox(height: 30),
                 ],
@@ -364,6 +68,220 @@ class LearnView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// NIHONGO CARD
+  Widget _nihongoCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.danger,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: 10,
+            bottom: 0,
+            child: Transform.rotate(
+              angle: -0.35,
+              child: Icon(
+                Icons.menu_book_rounded,
+                size: 130,
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+          ),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Nihongo Basics",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              const Text(
+                "Pembelajaran Dasar",
+                style: TextStyle(color: Colors.white),
+              ),
+
+              const SizedBox(height: 20),
+
+              InkWell(
+                onTap: controller.goToNihongo,
+                borderRadius: BorderRadius.circular(30),
+                child: _buttonWhite("Mulai Belajar"),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// WRITING
+  Widget _writingCard() {
+    return InkWell(
+      onTap: controller.goToWriting,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          image: const DecorationImage(
+            image: AssetImage("assets/images/bg-canvas.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: AppColors.primary.withOpacity(0.6),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Writing Canvas",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              const Text(
+                "Belajar cara menulis huruf Jepang",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+
+              const Spacer(),
+
+              _arrowText(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// SPEECH
+  Widget _speechCard() {
+    return InkWell(
+      onTap: controller.goToSpeech,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        height: 150,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.warning,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Speech Recognition",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            const Text(
+              "Belajar pengucapan bahasa Jepang",
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+
+            const Spacer(),
+
+            _arrowText(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// QUIZ
+  Widget _quizCard() {
+    return InkWell(
+      onTap: controller.goToQuiz,
+      borderRadius: BorderRadius.circular(25),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFF3E4A4E),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Quiz",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            const Text(
+              "Uji pemahamanmu dengan kuis",
+              style: TextStyle(color: Colors.white70),
+            ),
+
+            const SizedBox(height: 20),
+
+            _buttonWhite("Mulai Kuis"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// BUTTON PUTIH
+  Widget _buttonWhite(String text) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(text),
+          const SizedBox(width: 8),
+          const Icon(Icons.arrow_forward, size: 16),
+        ],
+      ),
+    );
+  }
+
+  /// TEXT ARROW
+  Widget _arrowText() {
+    return const Row(
+      children: [
+        Text("Mulai Belajar", style: TextStyle(color: Colors.white)),
+        SizedBox(width: 8),
+        Icon(Icons.arrow_forward, size: 16, color: Colors.white),
+      ],
     );
   }
 }

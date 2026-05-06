@@ -21,62 +21,50 @@ class ProfileView extends GetView<ProfileController> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-
                   const SizedBox(height: 30),
 
-                  /// 🔷 AVATAR
+                  /// AVATAR
                   CircleAvatar(
                     radius: 55,
                     backgroundColor: AppColors.neutral,
-                    child: const Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Colors.grey,
-                    ),
+                    child: const Icon(Icons.person, size: 60),
                   ),
 
                   const SizedBox(height: 16),
 
-                  /// 🔷 USERNAME
+                  /// USERNAME
                   Obx(() => Text(
                         controller.username.value.toUpperCase(),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
                         ),
                       )),
 
                   const SizedBox(height: 6),
 
-                  /// 🔷 EMAIL
+                  /// EMAIL
                   Obx(() => Text(
                         controller.email.value,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                        ),
+                        style: TextStyle(color: Colors.grey[600]),
                       )),
 
                   const SizedBox(height: 30),
 
-                  /// 🔷 MENU LIST
                   _menuItem("Edit Profil", controller.goEditProfile),
                   _divider(),
                   _menuItem("Tentang Aplikasi", () {}),
                   _divider(),
-                  _menuItem("Kritik & Saran", () {}),
-
+            
                   const SizedBox(height: 40),
 
-                  /// 🔴 BUTTON KELUAR
+                  /// LOGOUT
                   SizedBox(
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -85,6 +73,7 @@ class ProfileView extends GetView<ProfileController> {
                       child: const Text(
                         "Keluar",
                         style: TextStyle(
+                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -102,25 +91,15 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-  /// 🔷 MENU ITEM
   Widget _menuItem(String title, VoidCallback onTap) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 14),
-      ),
+      title: Text(title),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
   }
 
-  /// 🔷 DIVIDER
   Widget _divider() {
-    return Divider(
-      color: Colors.grey[300],
-      thickness: 1,
-      height: 1,
-    );
+    return Divider(color: Colors.grey[300]);
   }
 }

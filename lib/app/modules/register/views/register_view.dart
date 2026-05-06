@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/register_controller.dart';
-import '../../../routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 
 class RegisterView extends GetView<RegisterController> {
@@ -9,13 +8,6 @@ class RegisterView extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
-    final emailC = TextEditingController();
-    final passC = TextEditingController();
-    final confirmC = TextEditingController();
-
-    final isHiddenPass = true.obs;
-    final isHiddenConfirm = true.obs;
-
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -26,7 +18,7 @@ class RegisterView extends GetView<RegisterController> {
 
               const SizedBox(height: 40),
 
-              /// 🔷 LOGO
+              /// LOGO
               Image.asset(
                 "assets/images/kotoba-logo.png",
                 height: 120,
@@ -34,7 +26,7 @@ class RegisterView extends GetView<RegisterController> {
 
               const SizedBox(height: 20),
 
-              /// 🔷 TITLE
+              /// TITLE
               Text(
                 "DAFTAR",
                 style: TextStyle(
@@ -46,110 +38,82 @@ class RegisterView extends GetView<RegisterController> {
 
               const SizedBox(height: 30),
 
-              /// 🔷 EMAIL
+              /// EMAIL
               TextField(
-                controller: emailC,
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  filled: true,
-                  fillColor: AppColors.neutral,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                controller: controller.emailC,
+                decoration: _inputDecoration("Email"),
               ),
 
               const SizedBox(height: 15),
 
-              /// 🔷 PASSWORD
+              /// PASSWORD
               Obx(() => TextField(
-                    controller: passC,
-                    obscureText: isHiddenPass.value,
-                    decoration: InputDecoration(
-                      hintText: "Kata Sandi",
-                      filled: true,
-                      fillColor: AppColors.neutral,
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
+                    controller: controller.passC,
+                    obscureText: controller.isHiddenPass.value,
+                    decoration: _inputDecoration("Kata Sandi").copyWith(
                       suffixIcon: IconButton(
                         icon: Icon(
-                          isHiddenPass.value
+                          controller.isHiddenPass.value
                               ? Icons.visibility_off
                               : Icons.visibility,
                           color: AppColors.primary,
                         ),
-                        onPressed: () {
-                          isHiddenPass.value = !isHiddenPass.value;
-                        },
+                        onPressed: controller.togglePass,
                       ),
                     ),
                   )),
 
               const SizedBox(height: 15),
 
-              /// 🔷 KONFIRMASI PASSWORD
+              /// CONFIRM PASSWORD
               Obx(() => TextField(
-                    controller: confirmC,
-                    obscureText: isHiddenConfirm.value,
-                    decoration: InputDecoration(
-                      hintText: "Konfirmasi Kata Sandi",
-                      filled: true,
-                      fillColor: AppColors.neutral,
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
+                    controller: controller.confirmC,
+                    obscureText: controller.isHiddenConfirm.value,
+                    decoration:
+                        _inputDecoration("Konfirmasi Kata Sandi").copyWith(
                       suffixIcon: IconButton(
                         icon: Icon(
-                          isHiddenConfirm.value
+                          controller.isHiddenConfirm.value
                               ? Icons.visibility_off
                               : Icons.visibility,
                           color: AppColors.primary,
                         ),
-                        onPressed: () {
-                          isHiddenConfirm.value = !isHiddenConfirm.value;
-                        },
+                        onPressed: controller.toggleConfirm,
                       ),
                     ),
                   )),
 
               const SizedBox(height: 25),
 
-              /// 🔷 BUTTON DAFTAR
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+              /// BUTTON DAFTAR (REACTIVE)
+              Obx(() => SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : controller.register,
+                      child: controller.isLoading.value
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              "Daftar",
+                              style: TextStyle(fontSize: 16),
+                            ),
                     ),
-                  ),
-                  onPressed: () {
-                    // setelah daftar → ke login
-                    Get.offAllNamed(Routes.LOGIN);
-                  },
-                  child: const Text(
-                    "Daftar",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
+                  )),
 
               const SizedBox(height: 20),
 
-              /// 🔷 GOOGLE SIGN UP
+              /// GOOGLE
               Column(
                 children: [
                   Text(
@@ -157,32 +121,22 @@ class RegisterView extends GetView<RegisterController> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 10),
-
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: Google Sign In
-                    },
-                    child: SizedBox(
-                      height: 40,
-                      child: Image.asset(
-                        "assets/images/logo-google.png",
-                      ),
-                    ),
+                  SizedBox(
+                    height: 40,
+                    child: Image.asset("assets/images/logo-google.png"),
                   ),
                 ],
               ),
 
               const SizedBox(height: 25),
 
-              /// 🔷 KE LOGIN
+              /// KE LOGIN
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Sudah punya akun? "),
                   GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
+                    onTap: () => Get.back(),
                     child: Text(
                       "Masuk",
                       style: TextStyle(
@@ -196,6 +150,20 @@ class RegisterView extends GetView<RegisterController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// INPUT STYLE
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: AppColors.neutral,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide.none,
       ),
     );
   }

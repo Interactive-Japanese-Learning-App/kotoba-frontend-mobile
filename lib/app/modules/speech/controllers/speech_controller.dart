@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SpeechController extends GetxController {
-  /// 🔴 TAB (halaman list)
+  /// 🔴 TAB INDEX
   var selectedIndex = 0.obs;
 
   /// 🔤 DATA
@@ -24,10 +24,12 @@ class SpeechController extends GetxController {
     {'label': 'e', 'kana': 'エ'},
   ];
 
+  /// 🔁 GANTI TAB
   void changeTab(int index) {
     selectedIndex.value = index;
   }
 
+  /// 🔥 DATA AKTIF (FIX ERROR)
   List<Map<String, String>> get currentData =>
       selectedIndex.value == 0 ? hiragana : katakana;
 
@@ -37,20 +39,25 @@ class SpeechController extends GetxController {
 
   var kana = ''.obs;
   var label = ''.obs;
-  var type = ''.obs; 
+  var type = ''.obs;
   var isListening = false.obs;
 
- void setKanaData(Map args) {
-  kana.value = args['kana'] ?? 'あ';
-  label.value = args['label'] ?? 'a';
-  type.value = selectedIndex.value == 0 ? "HIRAGANA" : "KATAKANA"; // 🔥 TAMBAH INI
-}
+  @override
+  void onInit() {
+    super.onInit();
 
-  /// 🎤 MIC TAP
+    /// 🔥 AMBIL ARGUMENT DARI NAVIGASI
+    final args = Get.arguments ?? {};
+
+    kana.value = args['kana'] ?? '';
+    label.value = args['label'] ?? '';
+    type.value = args['type'] ?? '';
+  }
+
+  /// 🎤 MIC
   void toggleMic() {
     isListening.value = !isListening.value;
 
-    /// kalau berhenti → popup
     if (!isListening.value) {
       showSuccessDialog();
     }
@@ -61,13 +68,15 @@ class SpeechController extends GetxController {
     Get.dialog(
       Dialog(
         elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+          padding:
+              const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /// ICON
               Container(
                 width: 100,
                 height: 100,
@@ -75,15 +84,13 @@ class SpeechController extends GetxController {
                   color: Colors.green,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check, color: Colors.white, size: 60),
+                child: const Icon(Icons.check,
+                    color: Colors.white, size: 60),
               ),
-
               const SizedBox(height: 20),
-
-              const Text("Yeay! Luar Biasa", style: TextStyle(fontSize: 16)),
-
+              const Text("Yeay! Luar Biasa",
+                  style: TextStyle(fontSize: 16)),
               const SizedBox(height: 10),
-
               TextButton(
                 onPressed: () => Get.back(),
                 child: const Text("Tutup"),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
-import '../../../routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -9,10 +8,6 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    final emailC = TextEditingController();
-    final passC = TextEditingController();
-    final isHidden = true.obs;
-
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -23,7 +18,7 @@ class LoginView extends GetView<LoginController> {
 
               const SizedBox(height: 40),
 
-              /// 🔷 LOGO
+              /// LOGO
               Image.asset(
                 "assets/images/kotoba-logo.png",
                 height: 120,
@@ -31,7 +26,7 @@ class LoginView extends GetView<LoginController> {
 
               const SizedBox(height: 20),
 
-              /// 🔷 TITLE
+              /// TITLE
               Text(
                 "MASUK",
                 style: TextStyle(
@@ -43,9 +38,9 @@ class LoginView extends GetView<LoginController> {
 
               const SizedBox(height: 30),
 
-              /// 🔷 EMAIL
+              /// EMAIL
               TextField(
-                controller: emailC,
+                controller: controller.emailC,
                 decoration: InputDecoration(
                   hintText: "Email",
                   filled: true,
@@ -61,10 +56,10 @@ class LoginView extends GetView<LoginController> {
 
               const SizedBox(height: 15),
 
-              /// 🔷 PASSWORD
+              /// PASSWORD
               Obx(() => TextField(
-                    controller: passC,
-                    obscureText: isHidden.value,
+                    controller: controller.passC,
+                    obscureText: controller.isHidden.value,
                     decoration: InputDecoration(
                       hintText: "Kata Sandi",
                       filled: true,
@@ -77,45 +72,47 @@ class LoginView extends GetView<LoginController> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          isHidden.value
+                          controller.isHidden.value
                               ? Icons.visibility_off
                               : Icons.visibility,
                           color: AppColors.primary,
                         ),
-                        onPressed: () {
-                          isHidden.value = !isHidden.value;
-                        },
+                        onPressed: controller.togglePassword,
                       ),
                     ),
                   )),
 
               const SizedBox(height: 25),
 
-              /// 🔷 BUTTON MASUK
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+              /// BUTTON MASUK
+              Obx(() => SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : controller.login,
+                      child: controller.isLoading.value
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              "Masuk",
+                              style: TextStyle(fontSize: 16),
+                            ),
                     ),
-                  ),
-                  onPressed: () {
-                    Get.offAllNamed(Routes.MAIN);
-                  },
-                  child: const Text(
-                    "Masuk",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
+                  )),
 
               const SizedBox(height: 20),
 
-              /// 🔷 GOOGLE LOGIN
+              /// GOOGLE LOGIN
               Column(
                 children: [
                   Text(
@@ -124,9 +121,7 @@ class LoginView extends GetView<LoginController> {
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: () {
-                      // TODO: Google Sign In
-                    },
+                    onTap: controller.loginWithGoogle,
                     child: SizedBox(
                       height: 40,
                       child: Image.asset(
@@ -139,19 +134,17 @@ class LoginView extends GetView<LoginController> {
 
               const SizedBox(height: 25),
 
-              /// 🔷 DAFTAR
+              /// DAFTAR
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Belum punya akun? "),
                   GestureDetector(
-                    onTap: () {
-                      Get.toNamed(Routes.REGISTER);
-                    },
+                    onTap: controller.goToRegister,
                     child: Text(
                       "Daftar",
                       style: TextStyle(
-                        color: AppColors.danger, // merah kamu
+                        color: AppColors.danger,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
