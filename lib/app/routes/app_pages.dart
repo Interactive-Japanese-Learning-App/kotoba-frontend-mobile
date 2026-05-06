@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/learn/bindings/learn_binding.dart';
+import 'package:kotoba_app/app/modules/learn/views/learn_view.dart';
 import 'package:kotoba_app/app/modules/quiz/membaca1/membaca1_binding.dart';
 import 'package:kotoba_app/app/modules/quiz/membaca2/membaca2_binding.dart';
 import 'package:kotoba_app/app/modules/quiz/menulis/menulis_binding.dart';
@@ -78,6 +80,11 @@ class AppPages {
       name: _Paths.CAMERA,
       page: () => const CameraView(),
       binding: CameraBinding(),
+    ),
+    GetPage(
+      name: Routes.LEARN,
+      page: () => const LearnView(),
+      binding: LearnBinding(),
     ),
     GetPage(
       name: _Paths.NIHONGO,

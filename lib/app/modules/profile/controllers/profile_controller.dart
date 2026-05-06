@@ -25,8 +25,24 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    final args = Get.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      final emailArg = (args['email'] ?? '') as String;
+      final unameArg = (args['username'] ?? '') as String;
+
+      if (unameArg.isNotEmpty) username.value = unameArg;
+      if (emailArg.isNotEmpty) email.value = emailArg;
+
+      // fallback kalau username tidak dikirim
+      if (username.value.isEmpty && emailArg.contains('@')) {
+        username.value = emailArg.split('@').first;
+      }
+    }
+
     _syncEmailToForm();
   }
+
 
   /// SYNC DATA KE FORM
   void _syncEmailToForm() {
@@ -94,7 +110,7 @@ class ProfileController extends GetxController {
     isLoading.value = false;
     Get.back();
 
-    showSnackbar("Success", "Profile berhasil diupdate");
+    showSnackbar("Berhasil", "Profile berhasil diupdate");
   }
 
   /// VALIDASI PASSWORD

@@ -4,15 +4,16 @@ import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
 import 'package:kotoba_app/app/routes/app_pages.dart';
 
 class PelafalanController extends GetxController {
-  /// 🎯 SOAL
+  /// SOAL
   final question = {"label": "a", "kana": "あ", "type": "HIRAGANA"};
 
   var isListening = false.obs;
-
-  /// 🔥 TAMBAH INI (WAJIB)
   var isDialogOpen = false.obs;
 
   void toggleMic() {
+    /// cegah double tap
+    if (isListening.value) return;
+
     isListening.value = true;
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -24,7 +25,8 @@ class PelafalanController extends GetxController {
   }
 
   void _showResultDialog(double accuracy) {
-    if (isDialogOpen.value) return;
+    /// cegah dialog dobel
+    if (isDialogOpen.value || (Get.isDialogOpen ?? false)) return;
 
     isDialogOpen.value = true;
 
@@ -66,15 +68,15 @@ class PelafalanController extends GetxController {
 
                     final quizC = Get.find<QuizController>();
 
-                    /// 🔥 simpan akurasi pelafalan
                     quizC.setPelafalanAccuracy(accuracy);
-
-                    /// 🔥 anggap pelafalan = benar (biar nambah XP)
                     quizC.jawab(isBenar: true);
 
-                    Get.back(); // tutup dialog
+                    // Tutup dialog secara pasti, lalu langsung pindah ke hasil.
+                    if (Get.isDialogOpen ?? false) {
+                      Get.back();
+                    }
 
-                    Get.offAllNamed(Routes.QUIZ_RESULT); // 🔥 ke result
+                    Get.offNamed(Routes.QUIZ_RESULT);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,

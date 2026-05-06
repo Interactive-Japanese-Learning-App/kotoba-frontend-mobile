@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
+import '../../../widgets/app_snackbar.dart';
 
 class RegisterController extends GetxController {
-
   /// TEXT CONTROLLER
   final emailC = TextEditingController();
   final passC = TextEditingController();
@@ -33,23 +33,30 @@ class RegisterController extends GetxController {
 
     /// VALIDASI
     if (email.isEmpty || pass.isEmpty || confirm.isEmpty) {
-      Get.snackbar("Error", "Semua field wajib diisi");
+      AppSnackbar.show(title: "Error", message: "Semua field wajib diisi");
       return;
+
     }
 
     if (!email.contains("@")) {
-      Get.snackbar("Error", "Email tidak valid");
+      AppSnackbar.show(title: "Error", message: "Email tidak valid");
       return;
+
     }
 
     if (pass.length < 6) {
-      Get.snackbar("Error", "Password minimal 6 karakter");
+      AppSnackbar.show(
+        title: "Error",
+        message: "Password minimal 6 karakter",
+      );
       return;
     }
 
+
     if (pass != confirm) {
-      Get.snackbar("Error", "Password tidak sama");
+      AppSnackbar.show(title: "Error", message: "Password tidak sama");
       return;
+
     }
 
     /// SIMULASI LOADING
@@ -58,10 +65,17 @@ class RegisterController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       isLoading.value = false;
 
-      Get.snackbar("Berhasil", "Akun berhasil dibuat");
+      AppSnackbar.show(title: "Berhasil", message: "Akun berhasil dibuat");
 
-      /// PINDAH KE LOGIN
-      Get.offAllNamed(Routes.LOGIN);
+      /// PINDAH KE LOGIN (mock: bawa email/username)
+      final username = email.split('@').first;
+      Get.offNamed(
+        Routes.LOGIN,
+        arguments: {
+          'email': email,
+          'username': username,
+        },
+      );
     });
   }
 
@@ -73,3 +87,4 @@ class RegisterController extends GetxController {
     super.onClose();
   }
 }
+

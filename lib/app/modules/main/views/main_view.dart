@@ -16,11 +16,11 @@ class MainView extends GetView<BottomNavController> {
       () => Scaffold(
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: const [
-            HomeView(),    // 0
-            CameraView(),  // 1 ✅
-            LearnView(),   // 2
-            ProfileView(), // 3
+          children: [
+            HomeView(), // 0
+            const CameraView(), // 1 
+            const LearnView(), // 2
+            const ProfileView(), // 3
           ],
         ),
         bottomNavigationBar: const BottomNavbar(),

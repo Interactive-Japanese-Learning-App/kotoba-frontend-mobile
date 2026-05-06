@@ -18,8 +18,22 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    final args = Get.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      final email = (args['email'] ?? '') as String;
+      final uname = (args['username'] ?? '') as String;
+      if (uname.isNotEmpty) username.value = uname;
+
+      // fallback kalau username tidak dikirim
+      if (username.value.isEmpty && email.contains('@')) {
+        username.value = email.split('@').first;
+      }
+    }
+
     scrollController.addListener(_onScroll);
   }
+
 
   void _onScroll() {
     if (!scrollController.hasClients) return;

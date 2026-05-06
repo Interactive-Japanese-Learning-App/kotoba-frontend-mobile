@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/main/controllers/bottom_nav_controller.dart';
 import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
 import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
@@ -18,7 +19,13 @@ class QuizView extends GetView<QuizController> {
         backgroundColor: AppColors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            Get.offNamed(Routes.MAIN);
+            Future.delayed(Duration.zero, () {
+              final navC = Get.find<BottomNavController>();
+              navC.changeIndex(2);
+            });
+          },
         ),
 
         title: Text(

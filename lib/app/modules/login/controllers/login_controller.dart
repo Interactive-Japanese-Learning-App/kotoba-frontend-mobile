@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
+import '../../../widgets/app_snackbar.dart';
 
 class LoginController extends GetxController {
   /// INPUT
@@ -20,8 +21,11 @@ class LoginController extends GetxController {
 
   /// LOGIN ACTION
   void login() async {
-    if (emailC.text.isEmpty || passC.text.isEmpty) {
-      Get.snackbar("Error", "Email & Password wajib diisi");
+    final email = emailC.text.trim();
+    final pass = passC.text.trim();
+
+    if (email.isEmpty || pass.isEmpty) {
+      AppSnackbar.show(title: "Error", message: "Email & Password wajib diisi");
       return;
     }
 
@@ -32,8 +36,16 @@ class LoginController extends GetxController {
 
     isLoading.value = false;
 
-    /// masuk ke main
-    Get.offAllNamed(Routes.MAIN);
+    final username = email.split('@').first;
+
+    /// masuk ke main sambil bawa data (mock, tanpa simpan permanen)
+    Get.offAllNamed(
+      Routes.MAIN,
+      arguments: {
+        'email': email,
+        'username': username,
+      },
+    );
   }
 
   /// GOOGLE LOGIN (placeholder)
