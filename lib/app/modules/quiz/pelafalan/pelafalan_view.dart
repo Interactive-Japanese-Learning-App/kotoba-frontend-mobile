@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/theme/app_colors.dart';
-import '../controllers/pelafalan_controller.dart';
+import 'pelafalan_controller.dart';
 
 class PelafalanView extends GetView<PelafalanController> {
   const PelafalanView({super.key});
@@ -16,23 +16,20 @@ class PelafalanView extends GetView<PelafalanController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
+        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: 8),
-            Text(
-              "Pelafalan",
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        title: Text(
+          "Pelafalan",
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
+        centerTitle: false,
       ),
 
       body: SafeArea(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
+import 'package:kotoba_app/app/routes/app_pages.dart';
 
 class PelafalanController extends GetxController {
   /// 🎯 SOAL
@@ -28,19 +30,13 @@ class PelafalanController extends GetxController {
 
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.graphic_eq,
-                color: Colors.green,
-                size: 80,
-              ),
+              const Icon(Icons.graphic_eq, color: Colors.green, size: 80),
 
               const SizedBox(height: 16),
 
@@ -68,14 +64,23 @@ class PelafalanController extends GetxController {
                   onPressed: () {
                     isDialogOpen.value = false;
 
-                    Get.back(); // close dialog
-                    Get.back(); // back quiz
+                    final quizC = Get.find<QuizController>();
+
+                    /// 🔥 simpan akurasi pelafalan
+                    quizC.setPelafalanAccuracy(accuracy);
+
+                    /// 🔥 anggap pelafalan = benar (biar nambah XP)
+                    quizC.jawab(isBenar: true);
+
+                    Get.back(); // tutup dialog
+
+                    Get.offAllNamed(Routes.QUIZ_RESULT); // 🔥 ke result
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text("Kembali ke Quiz"),
+                  child: const Text("LIhat Hasil Quiz"),
                 ),
               ),
             ],

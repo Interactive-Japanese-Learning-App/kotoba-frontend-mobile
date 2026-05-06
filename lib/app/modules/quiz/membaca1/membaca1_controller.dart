@@ -1,17 +1,18 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
 
-class Membaca2Controller extends GetxController {
+class Membaca1Controller extends GetxController {
   var selectedAnswer = "".obs;
   var isAnswered = false.obs;
 
-  /// 🔥 pakai tipe aman (NO NULL ERROR)
-  final Map<String, dynamic> question = {
-    "question": "a",
-    "answer": "あ",
-    "options": ["あ", "い", "う"],
+  final question = {
+    "question": "あ",
+    "answer": "a",
+    "options": ["a", "i", "u"],
   };
 
+  /// PILIH JAWABAN
   void selectAnswer(String answer) {
     if (isAnswered.value) return;
 
@@ -27,10 +28,12 @@ class Membaca2Controller extends GetxController {
     });
   }
 
+  /// CEK BENAR
   bool isCorrect() {
     return selectedAnswer.value == question["answer"];
   }
 
+  /// POPUP BENAR (STYLE SPEECH)
   void showSuccessDialog() {
     Get.dialog(
       Dialog(
@@ -42,19 +45,37 @@ class Membaca2Controller extends GetxController {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.check_circle, size: 80, color: Colors.green),
+              const Icon(Icons.check_circle,
+                  size: 80, color: Colors.green),
+
               const SizedBox(height: 16),
-              const Text("Benar!",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
+              const Text(
+                "Benar!",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
               const SizedBox(height: 10),
-              const Text("Jawaban kamu tepat"),
+
+              const Text(
+                "Jawaban kamu tepat",
+                style: TextStyle(color: Colors.grey),
+              ),
+
               const SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.back();
-                    Get.back();
+                    final quizC = Get.find<QuizController>();
+                    quizC.jawab(isBenar: true);
+
+                    Get.back(); // tutup dialog
+                    Get.back(); // balik ke halaman sebelumnya (quiz)
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -71,6 +92,7 @@ class Membaca2Controller extends GetxController {
     );
   }
 
+  /// POPUP SALAH
   void showWrongDialog() {
     Get.dialog(
       Dialog(
@@ -82,13 +104,28 @@ class Membaca2Controller extends GetxController {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.cancel, size: 80, color: Colors.red),
+              const Icon(Icons.cancel,
+                  size: 80, color: Colors.red),
+
               const SizedBox(height: 16),
-              const Text("Salah!",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
+              const Text(
+                "Salah!",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
               const SizedBox(height: 10),
-              const Text("Coba lagi ya"),
+
+              const Text(
+                "Coba lagi ya",
+                style: TextStyle(color: Colors.grey),
+              ),
+
               const SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -99,7 +136,6 @@ class Membaca2Controller extends GetxController {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
                   ),
                   child: const Text("Coba Lagi"),
                 ),

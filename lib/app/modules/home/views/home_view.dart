@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kotoba_app/app/modules/main/controllers/bottom_nav_controller.dart';
+import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/app_header.dart';
 import '../controllers/home_controller.dart';
@@ -121,7 +122,7 @@ class HomeView extends GetView<HomeController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "${controller.progress.value}% selesai",
+                                "${controller.progress.value} XP",
                                 style: const TextStyle(fontSize: 12),
                               ),
                               const Text(
@@ -183,7 +184,7 @@ class HomeView extends GetView<HomeController> {
 
                               InkWell(
                                 onTap: () {
-                                  Get.find<BottomNavController>().changeTab(2);
+                                  Get.toNamed(Routes.NIHONGO);
                                 },
                                 borderRadius: BorderRadius.circular(30),
                                 child: Container(
@@ -195,13 +196,18 @@ class HomeView extends GetView<HomeController> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  child: const Center(
-                                    child: Text(
-                                      "Mulai Belajar →",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Mulai Belajar",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(width: 8),
+                                      Icon(Icons.arrow_forward, size: 16),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -282,7 +288,7 @@ class HomeView extends GetView<HomeController> {
                             /// 🔥 BUTTON (dikasih jarak natural)
                             InkWell(
                               onTap: () {
-                                Get.find<BottomNavController>().changeTab(1);
+                                Get.toNamed(Routes.NIHONGO);
                               },
 
                               borderRadius: BorderRadius.circular(20),
@@ -303,6 +309,95 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ],
                         ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    /// 🔥 SECTION VIDEO
+                    Text(
+                      "Belajar Bahasa Jepang",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    const Text(
+                      "Tonton video belajar Jepang terbaru untuk belajar lebih mudah dan cepat.",
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    /// 🔥 LIST VIDEO
+                    Obx(
+                      () => Column(
+                        children: List.generate(controller.videos.length, (
+                          index,
+                        ) {
+                          final video = controller.videos[index];
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 14),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.06),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                /// 🔥 THUMBNAIL
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.asset(
+                                    video["thumbnail"]!,
+                                    width: 110,
+                                    height: 70,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+
+                                const SizedBox(width: 12),
+
+                                /// 🔥 TEXT
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        video["title"]!,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        video["channel"]!,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
                       ),
                     ),
                   ],

@@ -109,6 +109,7 @@ class _CanvasViewState extends State<CanvasView> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
+        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
@@ -118,9 +119,10 @@ class _CanvasViewState extends State<CanvasView> {
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
       ),
 
       body: Column(

@@ -14,8 +14,8 @@ class EditProfileView extends GetView<ProfileController> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 20,
+            horizontal: 20,
+            vertical: 16,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,17 +26,14 @@ class EditProfileView extends GetView<ProfileController> {
                 children: [
                   IconButton(
                     onPressed: () => Get.back(),
-                    icon: const Icon(Icons.arrow_back_ios),
-                    color: AppColors.primary,
-                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.arrow_back, color: AppColors.primary),
+                    padding: const EdgeInsets.only(right: 12),
                   ),
-
-                  const SizedBox(width: 5),
 
                   Text(
                     "Edit Profil",
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
                     ),

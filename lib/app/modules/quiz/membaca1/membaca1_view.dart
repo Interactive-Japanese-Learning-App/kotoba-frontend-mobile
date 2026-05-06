@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/theme/app_colors.dart';
-import '../controllers/membaca1_controller.dart';
+import 'membaca1_controller.dart';
 
 class Membaca1View extends GetView<Membaca1Controller> {
   const Membaca1View({super.key});
@@ -14,21 +14,19 @@ class Membaca1View extends GetView<Membaca1Controller> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-
+        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
-
         title: Text(
           "Membaca 1",
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: 20,
           ),
         ),
-
         centerTitle: false,
       ),
 

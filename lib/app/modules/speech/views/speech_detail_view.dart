@@ -18,6 +18,7 @@ class SpeechDetailView extends GetView<SpeechController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
+        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
@@ -27,9 +28,10 @@ class SpeechDetailView extends GetView<SpeechController> {
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
       ),
 
       /// ❌ TIDAK pakai Obx di root

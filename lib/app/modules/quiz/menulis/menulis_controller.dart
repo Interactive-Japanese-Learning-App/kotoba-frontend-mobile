@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
 
 class MenulisController extends GetxController {
   final question = {"label": "a", "kana": "あ", "type": "hiragana"};
@@ -68,6 +69,9 @@ class MenulisController extends GetxController {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    final quizC = Get.find<QuizController>();
+                    quizC.jawab(isBenar: true);
+
                     Get.back(); // tutup dialog
                     Get.back(); // balik ke halaman quiz
                   },

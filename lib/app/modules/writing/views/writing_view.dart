@@ -14,6 +14,7 @@ class WritingView extends GetView<WritingController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
+        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
@@ -23,9 +24,10 @@ class WritingView extends GetView<WritingController> {
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
       ),
 
       body: Padding(

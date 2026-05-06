@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/drawing_painter.dart';
-import '../controllers/menulis_controller.dart';
+import 'menulis_controller.dart';
 
 class MenulisView extends GetView<MenulisController> {
   const MenulisView({super.key});
@@ -17,20 +17,20 @@ class MenulisView extends GetView<MenulisController> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
+        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
-        title: const Align(
-          alignment: Alignment.centerLeft, // ✔ kiri
-          child: Text(
-            "Menulis",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
+        title: const Text(
+          "Menulis",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+            fontSize: 20,
           ),
         ),
+        centerTitle: false,
       ),
 
       body: Column(

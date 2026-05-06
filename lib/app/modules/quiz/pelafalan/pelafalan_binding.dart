@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../controllers/pelafalan_controller.dart';
+import 'pelafalan_controller.dart';
 
 class PelafalanBinding extends Bindings {
   @override

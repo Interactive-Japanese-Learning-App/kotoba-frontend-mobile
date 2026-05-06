@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../controllers/membaca1_controller.dart';
+import 'membaca1_controller.dart';
 
 class Membaca1Binding extends Bindings {
   @override

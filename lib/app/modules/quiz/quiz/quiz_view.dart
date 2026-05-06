@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/modules/quiz/controllers/quiz_controller.dart';
+import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
 import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 
@@ -16,7 +16,6 @@ class QuizView extends GetView<QuizController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
-
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
@@ -34,7 +33,7 @@ class QuizView extends GetView<QuizController> {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
 
         child: Column(
           children: [

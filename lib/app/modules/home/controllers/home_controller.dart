@@ -31,4 +31,22 @@ class HomeController extends GetxController {
     scrollController.dispose();
     super.onClose();
   }
+
+  var videos = [
+    {
+      "title": "Belajar Hiragana Dasar",
+      "channel": "Kotoba Sensei",
+      "thumbnail": "assets/images/bg-city.jpg",
+    },
+    {
+      "title": "Katakana Mudah",
+      "channel": "Nihongo Channel",
+      "thumbnail": "assets/images/bg-city.jpg",
+    },
+    {
+      "title": "Percakapan Jepang",
+      "channel": "Anime Talk",
+      "thumbnail": "assets/images/bg-city.jpg",
+    },
+  ].obs;
 }

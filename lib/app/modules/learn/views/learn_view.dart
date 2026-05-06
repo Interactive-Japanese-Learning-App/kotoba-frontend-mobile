@@ -103,13 +103,18 @@ class LearnView extends StatelessWidget {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(30),
                                 ),
-                                child: const Center(
-                                  child: Text(
-                                    "Mulai Belajar →",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Mulai Belajar",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.arrow_forward, size: 16),
+                                  ],
                                 ),
                               ),
                             ),
@@ -133,35 +138,69 @@ class LearnView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             height: 150,
-                            padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppColors.primary,
                               borderRadius: BorderRadius.circular(20),
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/bg-canvas.jpg",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Writing Canvas",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+
+                              /// 🔥 OVERLAY (INI YANG KAMU MAU)
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: AppColors.primary.withOpacity(0.6),
+                              ),
+
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Writing Canvas",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16, // 🔥 samain feel sama home
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  "Belajar cara menulis huruf Jepang",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
+
+                                  const SizedBox(height: 6),
+
+                                  Text(
+                                    "Belajar cara menulis huruf Jepang",
+                                    style: TextStyle(
+                                      color: Colors.white, // ✅ full putih
+                                      fontSize: 12,
+                                      height: 1.3,
+                                    ),
                                   ),
-                                ),
-                                const Spacer(),
-                                const Text(
-                                  "Mulai Belajar →",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
+
+                                  const Spacer(),
+
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Mulai Belajar",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight
+                                              .w500, // 🔥 biar sama feel tombol home
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Icon(
+                                        Icons.arrow_forward,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -202,9 +241,19 @@ class LearnView extends StatelessWidget {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Text(
-                                  "Mulai Belajar →",
-                                  style: TextStyle(color: Colors.white),
+                                const Row(
+                                  children: [
+                                    Text(
+                                      "Mulai Belajar",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

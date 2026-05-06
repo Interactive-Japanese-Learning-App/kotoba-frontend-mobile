@@ -1,13 +1,16 @@
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/modules/quiz/bindings/membaca1_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/bindings/membaca2_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/bindings/menulis_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/bindings/pelafalan_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/views/membaca1_view.dart';
-import 'package:kotoba_app/app/modules/quiz/views/membaca2_view.dart';
-import 'package:kotoba_app/app/modules/quiz/views/menulis_view.dart';
-import 'package:kotoba_app/app/modules/quiz/views/pelafalan_view.dart';
-
+import 'package:kotoba_app/app/modules/quiz/membaca1/membaca1_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/membaca2/membaca2_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/menulis/menulis_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/pelafalan/pelafalan_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/puzzle/puzzle_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/membaca1/membaca1_view.dart';
+import 'package:kotoba_app/app/modules/quiz/membaca2/membaca2_view.dart';
+import 'package:kotoba_app/app/modules/quiz/menulis/menulis_view.dart';
+import 'package:kotoba_app/app/modules/quiz/pelafalan/pelafalan_view.dart';
+import 'package:kotoba_app/app/modules/quiz/puzzle/puzzle_view.dart';
+import 'package:kotoba_app/app/modules/quiz/result/result_binding.dart';
+import 'package:kotoba_app/app/modules/quiz/result/result_view.dart';
 import '../modules/camera/bindings/camera_binding.dart';
 import '../modules/camera/views/camera_view.dart';
 import '../modules/canvas/bindings/canvas_binding.dart';
@@ -21,8 +24,8 @@ import '../modules/nihongo/views/nihongo_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/edit_profile.dart';
 import '../modules/profile/views/profile_view.dart';
-import '../modules/quiz/bindings/quiz_binding.dart';
-import '../modules/quiz/views/quiz_view.dart';
+import '../modules/quiz/quiz/quiz_binding.dart';
+import '../modules/quiz/quiz/quiz_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/speech/bindings/speech_binding.dart';
@@ -117,11 +120,11 @@ class AppPages {
       page: () => const Membaca2View(),
       binding: Membaca2Binding(),
     ),
-    // GetPage(
-    //   name: _Paths.QUIZ_PUZZLE,
-    //   page: () => const Membaca1View(),
-    //   binding: Membaca1Binding(),
-    // ),
+    GetPage(
+      name: Routes.QUIZ_PUZZLE,
+      page: () => const PuzzleView(),
+      binding: QuizPuzzleBinding(),
+    ),
     GetPage(
       name: _Paths.QUIZ_MENULIS,
       page: () => const MenulisView(),
@@ -131,6 +134,11 @@ class AppPages {
       name: Routes.QUIZ_PELAFALAN,
       page: () => const PelafalanView(),
       binding: PelafalanBinding(),
+    ),
+    GetPage(
+      name: Routes.QUIZ_RESULT,
+      page: () => ResultView(),
+      binding: ResultBinding(),
     ),
   ];
 }

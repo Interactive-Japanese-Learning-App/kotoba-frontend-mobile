@@ -15,7 +15,6 @@ class NihongoView extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-
               /// 🔷 HEADER
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -26,10 +25,10 @@ class NihongoView extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back_ios),
-                      color: AppColors.primary,
+                      icon: Icon(Icons.arrow_back, color: AppColors.primary),
+                      padding: EdgeInsets.zero,
                     ),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: 12),
                     Text(
                       "Nihongo Basics",
                       style: TextStyle(
@@ -43,20 +42,23 @@ class NihongoView extends StatelessWidget {
               ),
 
               /// 🔴 TAB BAR
-              TabBar(
-                indicator: BoxDecoration(
-                  color: AppColors.danger,
-                  borderRadius: BorderRadius.circular(20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TabBar(
+                  indicator: BoxDecoration(
+                    color: AppColors.danger,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  tabs: const [
+                    Tab(text: "Hiragana"),
+                    Tab(text: "Katakana"),
+                    Tab(text: "Angka"),
+                  ],
                 ),
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.grey,
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                tabs: const [
-                  Tab(text: "Hiragana"),
-                  Tab(text: "Katakana"),
-                  Tab(text: "Angka"),
-                ],
               ),
 
               const SizedBox(height: 12),
@@ -138,7 +140,6 @@ class NihongoView extends StatelessWidget {
           ),
           child: Stack(
             children: [
-
               /// 🔤 ROMAJI (pojok)
               Positioned(
                 top: 10,
