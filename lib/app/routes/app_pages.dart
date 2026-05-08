@@ -26,6 +26,7 @@ import '../modules/nihongo/views/nihongo_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/edit_profile.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/profile/views/about_app.dart';
 import '../modules/quiz/quiz/quiz_binding.dart';
 import '../modules/quiz/quiz/quiz_view.dart';
 import '../modules/register/bindings/register_binding.dart';
@@ -74,6 +75,11 @@ class AppPages {
     GetPage(
       name: _Paths.EDIT_PROFILE,
       page: () => const EditProfileView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.ABOUT_APP,
+      page: () => const AboutAppView(),
       binding: ProfileBinding(),
     ),
     GetPage(

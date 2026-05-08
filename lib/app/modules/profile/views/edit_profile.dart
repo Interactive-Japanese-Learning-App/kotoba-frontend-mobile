@@ -11,45 +11,53 @@ class EditProfileView extends GetView<ProfileController> {
     return Scaffold(
       backgroundColor: AppColors.white,
 
+      /// HEADER
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppColors.white,
+
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: AppColors.primary,
+          ),
+          onPressed: () => Get.back(),
+        ),
+
+        title: Text(
+          "Edit Profil",
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+
+        centerTitle: false,
+      ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 16,
           ),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              /// BACK + TITLE
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: Icon(Icons.arrow_back, color: AppColors.primary),
-                    padding: const EdgeInsets.only(right: 12),
-                  ),
-
-                  Text(
-                    "Edit Profil",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
 
               /// FOTO PROFIL
               Center(
                 child: Column(
                   children: [
+
                     CircleAvatar(
                       radius: 45,
                       backgroundColor: AppColors.neutral,
+
                       child: const Icon(
                         Icons.person,
                         size: 50,
@@ -60,6 +68,7 @@ class EditProfileView extends GetView<ProfileController> {
 
                     TextButton(
                       onPressed: () {},
+
                       child: Text(
                         "Ubah Foto",
                         style: TextStyle(
@@ -87,8 +96,8 @@ class EditProfileView extends GetView<ProfileController> {
                 () => _inputPassword(
                   controller.oldPasswordController,
                   "Kata Sandi Lama",
-                  controller.oldPassObsecure.value,
-                  () => controller.oldPassObsecure.toggle(),
+                  controller.oldPassObscure.value,
+                  () => controller.oldPassObscure.toggle(),
                 ),
               ),
 
@@ -99,8 +108,8 @@ class EditProfileView extends GetView<ProfileController> {
                 () => _inputPassword(
                   controller.newPasswordController,
                   "Kata Sandi Baru",
-                  controller.newPassObsecure.value,
-                  () => controller.newPassObsecure.toggle(),
+                  controller.newPassObscure.value,
+                  () => controller.newPassObscure.toggle(),
                 ),
               ),
 
@@ -111,29 +120,50 @@ class EditProfileView extends GetView<ProfileController> {
                 () => _inputPassword(
                   controller.confirmPasswordController,
                   "Konfirmasi Kata Sandi",
-                  controller.confirmPassObsecure.value,
-                  () => controller.confirmPassObsecure.toggle(),
+                  controller.confirmPassObscure.value,
+                  () => controller.confirmPassObscure.toggle(),
                 ),
               ),
 
               const SizedBox(height: 30),
 
-              /// BUTTON SIMPAN (FIX GETX CLEAN)
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+              /// BUTTON SIMPAN
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 52,
+
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
-                  ),
-                  onPressed: controller.submitProfile, // ✅ FIX
-                  child: const Text(
-                    "Simpan",
-                    style: TextStyle(fontSize: 16),
+
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : controller.submitProfile,
+
+                    child: controller.isLoading.value
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            "Simpan",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -144,43 +174,52 @@ class EditProfileView extends GetView<ProfileController> {
     );
   }
 
-  /// INPUT
+  // INPUT
   Widget _input(
     TextEditingController controller,
     String hint,
   ) {
     return TextField(
       controller: controller,
+
       decoration: InputDecoration(
         hintText: hint,
+
         hintStyle: TextStyle(
           color: Colors.grey[600],
         ),
+
         filled: true,
         fillColor: AppColors.neutral,
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
+          vertical: 16,
         ),
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
+
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
+
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
+
           borderSide: const BorderSide(
             color: AppColors.primary,
-            width: 1,
+            width: 1.2,
           ),
         ),
       ),
     );
   }
 
-  /// INPUT PASSWORD
+  // INPUT PASSWORD
   Widget _inputPassword(
     TextEditingController controller,
     String hint,
@@ -190,38 +229,50 @@ class EditProfileView extends GetView<ProfileController> {
     return TextField(
       controller: controller,
       obscureText: obscure,
+
       decoration: InputDecoration(
         hintText: hint,
+
         hintStyle: TextStyle(
           color: Colors.grey[600],
         ),
+
         filled: true,
         fillColor: AppColors.neutral,
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
+          vertical: 16,
         ),
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
+
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
+
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
+
           borderSide: const BorderSide(
             color: AppColors.primary,
-            width: 1,
+            width: 1.2,
           ),
         ),
+
         suffixIcon: IconButton(
           icon: Icon(
             obscure
                 ? Icons.visibility_off
                 : Icons.visibility,
+
             color: AppColors.primary,
           ),
+
           onPressed: toggle,
         ),
       ),

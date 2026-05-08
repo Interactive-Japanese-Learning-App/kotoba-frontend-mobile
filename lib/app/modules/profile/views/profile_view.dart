@@ -53,9 +53,9 @@ class ProfileView extends GetView<ProfileController> {
 
                   _menuItem("Edit Profil", controller.goEditProfile),
                   _divider(),
-                  _menuItem("Tentang Aplikasi", () {}),
+                  _menuItem("Tentang Aplikasi", controller.goAboutApp),
                   _divider(),
-            
+                  
                   const SizedBox(height: 40),
 
                   /// LOGOUT

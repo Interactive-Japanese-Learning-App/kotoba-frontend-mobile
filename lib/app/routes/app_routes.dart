@@ -9,6 +9,7 @@ abstract class Routes {
   static const MAIN = _Paths.MAIN;
   static const PROFILE = _Paths.PROFILE;
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
+  static const ABOUT_APP = _Paths.ABOUT_APP;
   static const CAMERA = _Paths.CAMERA;
   static const LEARN = _Paths.LEARN;
   static const NIHONGO = _Paths.NIHONGO;
@@ -33,6 +34,7 @@ abstract class _Paths {
   static const MAIN = '/main';
   static const PROFILE = '/profile';
   static const EDIT_PROFILE = '/profile/edit';
+  static const ABOUT_APP = '/profile/about-app';
   static const CAMERA = '/camera';
   static const NIHONGO = '/nihongo';
   static const WRITING = '/writing';

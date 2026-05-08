@@ -2,13 +2,13 @@ import 'package:get/get.dart';
 
 class NihongoController extends GetxController {
   /// TAB INDEX
-  final currentTab = 0.obs;
+  final selectedIndex = 0.obs;
 
   /// SEARCH
   final searchQuery = ''.obs;
 
-  /// DATA HIRAGANA
-  final hiragana = [
+  // DATA
+  final hiragana = <Map<String, String>>[
     {"char": "あ", "romaji": "a"},
     {"char": "い", "romaji": "i"},
     {"char": "う", "romaji": "u"},
@@ -19,24 +19,53 @@ class NihongoController extends GetxController {
     {"char": "く", "romaji": "ku"},
   ];
 
-  /// FILTERED DATA
-  List<Map<String, String>> get filteredHiragana {
-    if (searchQuery.value.isEmpty) return hiragana;
+  final katakana = <Map<String, String>>[
+    {"char": "ア", "romaji": "a"},
+    {"char": "イ", "romaji": "i"},
+    {"char": "ウ", "romaji": "u"},
+    {"char": "エ", "romaji": "e"},
+    {"char": "オ", "romaji": "o"},
+    {"char": "カ", "romaji": "ka"},
+    {"char": "キ", "romaji": "ki"},
+    {"char": "ク", "romaji": "ku"},
+  ];
 
-    return hiragana
+  final angka = <Map<String, String>>[
+    {"char": "一", "romaji": "ichi"},
+    {"char": "二", "romaji": "ni"},
+    {"char": "三", "romaji": "san"},
+    {"char": "四", "romaji": "yon"},
+    {"char": "五", "romaji": "go"},
+  ];
+
+  // FILTER
+  List<Map<String, String>> _filter(List<Map<String, String>> data) {
+    if (searchQuery.value.isEmpty) return data;
+
+    return data
         .where((item) =>
-            item["char"]!.contains(searchQuery.value) ||
-            item["romaji"]!.contains(searchQuery.value))
+            item["char"]!
+                .toLowerCase()
+                .contains(searchQuery.value.toLowerCase()) ||
+            item["romaji"]!
+                .toLowerCase()
+                .contains(searchQuery.value.toLowerCase()))
         .toList();
   }
 
-  /// UPDATE SEARCH
+  List<Map<String, String>> get filteredHiragana => _filter(hiragana);
+  List<Map<String, String>> get filteredKatakana => _filter(katakana);
+  List<Map<String, String>> get filteredAngka => _filter(angka);
+
+  // ACTION
   void updateSearch(String value) {
     searchQuery.value = value;
   }
 
-  /// CHANGE TAB
   void changeTab(int index) {
-    currentTab.value = index;
+    selectedIndex.value = index;
+
+    /// optional: reset search
+    searchQuery.value = '';
   }
 }

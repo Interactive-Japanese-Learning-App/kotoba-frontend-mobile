@@ -4,9 +4,10 @@ import 'package:kotoba_app/app/data/theme/app_colors.dart';
 import '../../../routes/app_pages.dart';
 
 class ProfileController extends GetxController {
+
   /// USER DATA
-  var username = "ranifa".obs;
-  var email = "ranifa@gmail.com".obs;
+  final RxString username = "ranifa".obs;
+  final RxString email = "ranifa@gmail.com".obs;
 
   /// FORM CONTROLLER
   final emailController = TextEditingController();
@@ -14,42 +15,51 @@ class ProfileController extends GetxController {
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  /// OBSCURE STATE
-  var oldPassObsecure = true.obs;
-  var newPassObsecure = true.obs;
-  var confirmPassObsecure = true.obs;
+  /// PASSWORD VISIBILITY
+  final oldPassObscure = true.obs;
+  final newPassObscure = true.obs;
+  final confirmPassObscure = true.obs;
 
   /// LOADING
-  var isLoading = false.obs;
+  final isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
 
-    final args = Get.arguments as Map<String, dynamic>?;
-    if (args != null) {
-      final emailArg = (args['email'] ?? '') as String;
-      final unameArg = (args['username'] ?? '') as String;
-
-      if (unameArg.isNotEmpty) username.value = unameArg;
-      if (emailArg.isNotEmpty) email.value = emailArg;
-
-      // fallback kalau username tidak dikirim
-      if (username.value.isEmpty && emailArg.contains('@')) {
-        username.value = emailArg.split('@').first;
-      }
-    }
-
+    _loadArguments();
     _syncEmailToForm();
   }
 
+  // LOAD ARGUMENTS
+  void _loadArguments() {
+    final args = Get.arguments;
 
-  /// SYNC DATA KE FORM
+    if (args is Map<String, dynamic>) {
+      final emailArg = args['email']?.toString() ?? '';
+      final usernameArg = args['username']?.toString() ?? '';
+
+      if (usernameArg.isNotEmpty) {
+        username.value = usernameArg;
+      }
+
+      if (emailArg.isNotEmpty) {
+        email.value = emailArg;
+      }
+
+      /// fallback username dari email
+      if (usernameArg.isEmpty && emailArg.contains('@')) {
+        username.value = emailArg.split('@').first;
+      }
+    }
+  }
+
+  // SYNC EMAIL
   void _syncEmailToForm() {
     emailController.text = email.value;
   }
 
-  /// DIPANGGIL SAAT MASUK EDIT PROFILE
+  // INIT EDIT PROFILE
   void initEditProfile() {
     _syncEmailToForm();
 
@@ -58,7 +68,7 @@ class ProfileController extends GetxController {
     confirmPasswordController.clear();
   }
 
-  /// SNACKBAR
+  // SNACKBAR
   void showSnackbar(String title, String message) {
     Get.snackbar(
       title,
@@ -72,81 +82,129 @@ class ProfileController extends GetxController {
     );
   }
 
-  /// NAVIGASI (FIX: JANGAN PAKAI ROUTES YANG BELUM ADA)
+ 
+  // NAVIGATION
   void goEditProfile() {
-    Get.toNamed('/profile/edit'); 
+    initEditProfile();
+
+    Get.toNamed(
+      Routes.EDIT_PROFILE,
+    );
   }
 
-  // =====================================================
-  // SUBMIT (COMBINE PROFILE + PASSWORD)
-  // =====================================================
-  void submitProfile() async {
-    /// VALIDASI EMAIL
-    if (emailController.text.isEmpty) {
-      showSnackbar("Error", "Email tidak boleh kosong");
+  void goAboutApp() {
+    Get.toNamed(
+      Routes.ABOUT_APP,
+    );
+  }
+
+  // SUBMIT PROFILE
+  Future<void> submitProfile() async {
+
+    if (emailController.text.trim().isEmpty) {
+      showSnackbar(
+        "Error",
+        "Email tidak boleh kosong",
+      );
       return;
     }
 
-    if (!GetUtils.isEmail(emailController.text)) {
-      showSnackbar("Error", "Format email tidak valid");
+    if (!GetUtils.isEmail(emailController.text.trim())) {
+      showSnackbar(
+        "Error",
+        "Format email tidak valid",
+      );
       return;
     }
 
-    /// VALIDASI PASSWORD (OPTIONAL)
-    if (newPasswordController.text.isNotEmpty ||
-        confirmPasswordController.text.isNotEmpty ||
-        oldPasswordController.text.isNotEmpty) {
+    final hasPasswordInput =
+        oldPasswordController.text.isNotEmpty ||
+        newPasswordController.text.isNotEmpty ||
+        confirmPasswordController.text.isNotEmpty;
+
+    if (hasPasswordInput) {
       final valid = _validatePassword();
+
       if (!valid) return;
     }
 
     isLoading.value = true;
 
-    await Future.delayed(const Duration(seconds: 1)); // simulasi API
+    await Future.delayed(
+      const Duration(seconds: 1),
+    );
 
-    /// UPDATE DATA
-    email.value = emailController.text;
+    /// UPDATE PROFILE
+    email.value = emailController.text.trim();
 
     isLoading.value = false;
+
     Get.back();
 
-    showSnackbar("Berhasil", "Profile berhasil diupdate");
+    showSnackbar(
+      "Berhasil",
+      "Profil berhasil diperbarui",
+    );
   }
 
-  /// VALIDASI PASSWORD
+  // VALIDATE PASSWORD
   bool _validatePassword() {
+
     if (oldPasswordController.text.isEmpty ||
         newPasswordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      showSnackbar("Error", "Semua field password harus diisi");
+
+      showSnackbar(
+        "Error",
+        "Semua field password harus diisi",
+      );
+
       return false;
     }
 
     if (newPasswordController.text.length < 6) {
-      showSnackbar("Error", "Password minimal 6 karakter");
+
+      showSnackbar(
+        "Error",
+        "Password minimal 6 karakter",
+      );
+
       return false;
     }
 
-    if (newPasswordController.text != confirmPasswordController.text) {
-      showSnackbar("Error", "Password tidak cocok");
+    if (newPasswordController.text !=
+        confirmPasswordController.text) {
+
+      showSnackbar(
+        "Error",
+        "Konfirmasi password tidak cocok",
+      );
+
       return false;
     }
 
     return true;
   }
 
-  /// LOGOUT
+  // LOGOUT
   void logout() {
+
     Get.defaultDialog(
       title: "Keluar",
       backgroundColor: Colors.white,
+      radius: 20,
+
       titleStyle: const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
+
       middleText: "Yakin ingin keluar dari akun?",
-      middleTextStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-      radius: 20,
+
+      middleTextStyle: const TextStyle(
+        color: Colors.grey,
+        fontSize: 14,
+      ),
 
       confirm: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -156,34 +214,49 @@ class ProfileController extends GetxController {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
+
         onPressed: () {
+
           Get.back();
 
-          showSnackbar("Keluar", "Berhasil logout");
+          showSnackbar(
+            "Keluar",
+            "Berhasil logout",
+          );
 
-          Future.delayed(const Duration(milliseconds: 700), () {
-            Get.offAllNamed(Routes.LOGIN);
-          });
+          Future.delayed(
+            const Duration(milliseconds: 700),
+            () {
+              Get.offAllNamed(Routes.LOGIN);
+            },
+          );
         },
+
         child: const Text("Ya"),
       ),
 
       cancel: TextButton(
         onPressed: () => Get.back(),
+
         child: Text(
           "Tidak",
-          style: TextStyle(color: AppColors.danger),
+          style: TextStyle(
+            color: AppColors.danger,
+          ),
         ),
       ),
     );
   }
 
+  // DISPOSE
   @override
   void onClose() {
+
     emailController.dispose();
     oldPasswordController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
+
     super.onClose();
   }
 }

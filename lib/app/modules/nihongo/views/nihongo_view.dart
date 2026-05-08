@@ -8,106 +8,113 @@ class NihongoView extends GetView<NihongoController> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: AppColors.white,
+
+      /// APPBAR
+      appBar: AppBar(
+        elevation: 0,
         backgroundColor: AppColors.white,
-        body: SafeArea(
-          child: Column(
-            children: [
-
-              /// HEADER
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: Icon(Icons.arrow_back, color: AppColors.primary),
-                      padding: EdgeInsets.zero,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      "Nihongo Basics",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              /// TAB BAR
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TabBar(
-                  onTap: controller.changeTab,
-                  indicator: BoxDecoration(
-                    color: AppColors.danger,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  tabs: const [
-                    Tab(text: "Hiragana"),
-                    Tab(text: "Katakana"),
-                    Tab(text: "Angka"),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              /// SEARCH (REACTIVE)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: TextField(
-                    onChanged: controller.updateSearch,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.search, color: Colors.grey),
-                      hintText: "Cari huruf...",
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              /// CONTENT (REACTIVE)
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    Obx(() => _gridHiragana(controller)),
-                    const Center(child: Text("Katakana")),
-                    const Center(child: Text("Angka")),
-                  ],
-                ),
-              ),
-            ],
+        leadingWidth: 50,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppColors.primary),
+          onPressed: () => Get.back(),
+        ),
+        title: Text(
+          "Nihongo Basics",
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
+        centerTitle: false,
+      ),
+
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+
+          /// TAB 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildTab("Hiragana", 0),
+              const SizedBox(width: 20),
+              _buildTab("Katakana", 1),
+              const SizedBox(width: 20),
+              _buildTab("Angka", 2),
+            ],
+          ),
+
+          const SizedBox(height: 15),
+
+          ///  SEARCH
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                color: AppColors.neutral,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: TextField(
+                onChanged: controller.updateSearch,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.search, color: Colors.grey),
+                  hintText: "Cari huruf...",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          /// CONTENT
+          Expanded(
+            child: Obx(() {
+              if (controller.selectedIndex.value == 0) {
+                return _grid(controller.filteredHiragana, "HIRAGANA");
+              } else if (controller.selectedIndex.value == 1) {
+                return _grid(controller.filteredKatakana, "KATAKANA");
+              } else {
+                return _grid(controller.filteredAngka, "ANGKA");
+              }
+            }),
+          ),
+        ],
       ),
     );
   }
 
-  /// GRID HIRAGANA (PAKAI CONTROLLER)
-  Widget _gridHiragana(NihongoController controller) {
-    final data = controller.filteredHiragana;
+  // TAB ITEM 
+  Widget _buildTab(String title, int index) {
+    return Obx(() {
+      final isActive = controller.selectedIndex.value == index;
 
+      return GestureDetector(
+        onTap: () => controller.changeTab(index),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.danger : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isActive ? Colors.white : Colors.black54,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  // GRID
+  Widget _grid(List<Map<String, String>> data, String type) {
     return GridView.builder(
       padding: const EdgeInsets.all(20),
       itemCount: data.length,
@@ -134,7 +141,6 @@ class NihongoView extends GetView<NihongoController> {
           ),
           child: Stack(
             children: [
-
               /// ROMAJI
               Positioned(
                 top: 10,
@@ -146,7 +152,7 @@ class NihongoView extends GetView<NihongoController> {
                     border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: Text(
-                    item["romaji"]!,
+                    item["romaji"] ?? "",
                     style: const TextStyle(fontSize: 12),
                   ),
                 ),
@@ -155,7 +161,7 @@ class NihongoView extends GetView<NihongoController> {
               /// HURUF
               Center(
                 child: Text(
-                  item["char"]!,
+                  item["char"] ?? "",
                   style: TextStyle(
                     fontSize: 60,
                     color: AppColors.primary,
@@ -164,15 +170,15 @@ class NihongoView extends GetView<NihongoController> {
                 ),
               ),
 
-              /// LABEL
+              /// TYPE
               Positioned(
                 bottom: 10,
                 left: 0,
                 right: 0,
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "HIRAGANA",
-                    style: TextStyle(
+                    type,
+                    style: const TextStyle(
                       fontSize: 10,
                       color: Colors.grey,
                       letterSpacing: 1,
