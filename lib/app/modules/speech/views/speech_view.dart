@@ -39,7 +39,7 @@ class SpeechView extends GetView<SpeechController> {
 
           return Column(
             children: [
-              /// 🔴 TAB
+              /// TAB
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -51,7 +51,7 @@ class SpeechView extends GetView<SpeechController> {
 
               const SizedBox(height: 20),
 
-              /// 🔷 GRID
+              /// GRID
               Expanded(
                 child: GridView.builder(
                   itemCount: data.length,
@@ -62,7 +62,7 @@ class SpeechView extends GetView<SpeechController> {
                     mainAxisSpacing: 16,
                   ),
                   itemBuilder: (context, index) {
-                    final item = data[index];
+                    final Map<String, String> item = data[index];
 
                     return InkWell(
                       onTap: () {
@@ -141,7 +141,7 @@ class SpeechView extends GetView<SpeechController> {
     );
   }
 
-  /// 🔴 TAB
+  /// TAB
   Widget _buildTab(String title, int index) {
     return Obx(() {
       final isActive = controller.selectedIndex.value == index;

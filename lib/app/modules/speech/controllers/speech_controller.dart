@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SpeechController extends GetxController {
-  /// 🔴 TAB INDEX
-  var selectedIndex = 0.obs;
+  /// TAB
+  final selectedIndex = 0.obs;
 
-  /// 🔤 DATA
-  final hiragana = [
+  /// LISTENING
+  final isListening = false.obs;
+
+  /// DATA HIRAGANA
+  final List<Map<String, String>> hiragana = [
     {'label': 'a', 'kana': 'あ'},
     {'label': 'i', 'kana': 'い'},
     {'label': 'u', 'kana': 'う'},
@@ -17,44 +20,27 @@ class SpeechController extends GetxController {
     {'label': 'ku', 'kana': 'く'},
   ];
 
-  final katakana = [
+  /// DATA KATAKANA
+  final List<Map<String, String>> katakana = [
     {'label': 'a', 'kana': 'ア'},
     {'label': 'i', 'kana': 'イ'},
     {'label': 'u', 'kana': 'ウ'},
     {'label': 'e', 'kana': 'エ'},
   ];
 
-  /// 🔁 GANTI TAB
+  /// DATA ACTIVE
+  List<Map<String, String>> get currentData {
+    return selectedIndex.value == 0
+        ? hiragana
+        : katakana;
+  }
+
+  /// CHANGE TAB
   void changeTab(int index) {
     selectedIndex.value = index;
   }
 
-  /// 🔥 DATA AKTIF (FIX ERROR)
-  List<Map<String, String>> get currentData =>
-      selectedIndex.value == 0 ? hiragana : katakana;
-
-  // ==========================
-  // 🔽 DETAIL PAGE
-  // ==========================
-
-  var kana = ''.obs;
-  var label = ''.obs;
-  var type = ''.obs;
-  var isListening = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    /// 🔥 AMBIL ARGUMENT DARI NAVIGASI
-    final args = Get.arguments ?? {};
-
-    kana.value = args['kana'] ?? '';
-    label.value = args['label'] ?? '';
-    type.value = args['type'] ?? '';
-  }
-
-  /// 🎤 MIC
+  /// MIC
   void toggleMic() {
     isListening.value = !isListening.value;
 
@@ -63,7 +49,7 @@ class SpeechController extends GetxController {
     }
   }
 
-  /// 🎉 POPUP
+  /// SUCCESS DIALOG
   void showSuccessDialog() {
     Get.dialog(
       Dialog(
@@ -72,8 +58,10 @@ class SpeechController extends GetxController {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-          padding:
-              const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+          padding: const EdgeInsets.symmetric(
+            vertical: 30,
+            horizontal: 20,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -84,13 +72,22 @@ class SpeechController extends GetxController {
                   color: Colors.green,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check,
-                    color: Colors.white, size: 60),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 60,
+                ),
               ),
+
               const SizedBox(height: 20),
-              const Text("Yeay! Luar Biasa",
-                  style: TextStyle(fontSize: 16)),
+
+              const Text(
+                "Yeay! Luar Biasa",
+                style: TextStyle(fontSize: 16),
+              ),
+
               const SizedBox(height: 10),
+
               TextButton(
                 onPressed: () => Get.back(),
                 child: const Text("Tutup"),
