@@ -15,7 +15,7 @@ class SpeechDetailView extends GetView<SpeechController> {
     final type = args["type"] ?? "";
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6F8),
+      backgroundColor: AppColors.white,
 
       appBar: AppBar(
         elevation: 0,

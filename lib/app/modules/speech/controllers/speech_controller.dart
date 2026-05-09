@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/routes/app_pages.dart';
 
 class SpeechController extends GetxController {
   /// TAB
@@ -30,9 +31,7 @@ class SpeechController extends GetxController {
 
   /// DATA ACTIVE
   List<Map<String, String>> get currentData {
-    return selectedIndex.value == 0
-        ? hiragana
-        : katakana;
+    return selectedIndex.value == 0 ? hiragana : katakana;
   }
 
   /// CHANGE TAB
@@ -53,44 +52,47 @@ class SpeechController extends GetxController {
   void showSuccessDialog() {
     Get.dialog(
       Dialog(
-        elevation: 10,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 30,
-            horizontal: 20,
-          ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 60,
-                ),
-              ),
+              const Icon(Icons.check_circle, color: Colors.green, size: 80),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               const Text(
                 "Yeay! Luar Biasa",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 10),
 
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text("Tutup"),
+              const Text(
+                "Latihan berhasil diselesaikan",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
+              ),
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    Get.back();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text("Tutup"),
+                ),
               ),
             ],
           ),

@@ -9,7 +9,7 @@ class MenulisView extends GetView<MenulisController> {
 
   @override
   Widget build(BuildContext context) {
-    final q = controller.question; // ✔ aman sekarang
+    final q = controller.question; 
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -96,7 +96,7 @@ class MenulisView extends GetView<MenulisController> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _btn("Hapus", Icons.delete, controller.clearCanvas),
-              _btn("Batalkan", Icons.undo, controller.undo),
+              _btn("Undo", Icons.undo, controller.undo),
             ],
           ),
 

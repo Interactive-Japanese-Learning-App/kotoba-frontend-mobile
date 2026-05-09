@@ -58,10 +58,7 @@ class Membaca2View extends GetView<Membaca2Controller> {
 
                   Text(
                     "Tebak huruf berikut",
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
 
                   const SizedBox(height: 40),
@@ -81,8 +78,7 @@ class Membaca2View extends GetView<Membaca2Controller> {
                   /// OPTIONS (AKSARA)
                   ...List.generate(options.length, (index) {
                     final option = options[index];
-                    final selected =
-                        controller.selectedAnswer.value == option;
+                    final selected = controller.selectedAnswer.value == option;
 
                     Color bgColor = const Color(0xFFD6D9DD);
 
@@ -98,8 +94,7 @@ class Membaca2View extends GetView<Membaca2Controller> {
                       padding: const EdgeInsets.only(bottom: 16),
 
                       child: GestureDetector(
-                        onTap: () =>
-                            controller.selectAnswer(option.toString()),
+                        onTap: () => controller.selectAnswer(option.toString()),
 
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
@@ -113,9 +108,11 @@ class Membaca2View extends GetView<Membaca2Controller> {
 
                           child: Center(
                             child: Text(
-                              option.toString(),
-                              style: const TextStyle(
-                                color: Colors.white,
+                              option,
+                              style: TextStyle(
+                                color: controller.isAnswered.value
+                                    ? Colors.white
+                                    : AppColors.primary,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,
                               ),

@@ -35,16 +35,43 @@ class NihongoView extends GetView<NihongoController> {
         children: [
           const SizedBox(height: 10),
 
-          /// TAB 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildTab("Hiragana", 0),
-              const SizedBox(width: 20),
-              _buildTab("Katakana", 1),
-              const SizedBox(width: 20),
-              _buildTab("Angka", 2),
-            ],
+          /// TAB
+          /// TAB
+          SizedBox(
+            height: 45,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  _buildTab("Hiragana", 0),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Katakana", 1),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Angka", 2),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Bulan Tanggal", 3),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Keluarga", 4),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Hewan", 5),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Makanan Minuman", 6),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Pekerjaan", 7),
+                  const SizedBox(width: 12),
+
+                  _buildTab("Benda", 8),
+                ],
+              ),
+            ),
           ),
 
           const SizedBox(height: 15),
@@ -74,12 +101,33 @@ class NihongoView extends GetView<NihongoController> {
           /// CONTENT
           Expanded(
             child: Obx(() {
-              if (controller.selectedIndex.value == 0) {
-                return _grid(controller.filteredHiragana, "HIRAGANA");
-              } else if (controller.selectedIndex.value == 1) {
-                return _grid(controller.filteredKatakana, "KATAKANA");
-              } else {
-                return _grid(controller.filteredAngka, "ANGKA");
+              switch (controller.selectedIndex.value) {
+                case 0:
+                  return _grid(controller.filteredHiragana, "HIRAGANA");
+
+                case 1:
+                  return _grid(controller.filteredKatakana, "KATAKANA");
+
+                case 2:
+                  return _grid(controller.filteredAngka, "ANGKA");
+
+                case 3:
+                  return _grid(controller.filteredBulanTanggal, "BULAN");
+
+                case 4:
+                  return _grid(controller.filteredKeluarga, "KELUARGA");
+
+                case 5:
+                  return _grid(controller.filteredHewan, "HEWAN");
+
+                case 6:
+                  return _grid(controller.filteredMakanan, "MAKANAN");
+
+                case 7:
+                  return _grid(controller.filteredPekerjaan, "PEKERJAAN");
+
+                default:
+                  return _grid(controller.filteredBenda, "BENDA");
               }
             }),
           ),
@@ -88,7 +136,7 @@ class NihongoView extends GetView<NihongoController> {
     );
   }
 
-  // TAB ITEM 
+  // TAB ITEM
   Widget _buildTab(String title, int index) {
     return Obx(() {
       final isActive = controller.selectedIndex.value == index;
@@ -97,7 +145,7 @@ class NihongoView extends GetView<NihongoController> {
         onTap: () => controller.changeTab(index),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             color: isActive ? AppColors.danger : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
@@ -105,6 +153,7 @@ class NihongoView extends GetView<NihongoController> {
           child: Text(
             title,
             style: TextStyle(
+              fontSize: 12,
               color: isActive ? Colors.white : Colors.black54,
             ),
           ),
@@ -146,14 +195,22 @@ class NihongoView extends GetView<NihongoController> {
                 top: 10,
                 left: 10,
                 child: Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade300),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black12, width: 1),
                   ),
                   child: Text(
                     item["romaji"] ?? "",
-                    style: const TextStyle(fontSize: 12),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ),
@@ -163,26 +220,22 @@ class NihongoView extends GetView<NihongoController> {
                 child: Text(
                   item["char"] ?? "",
                   style: TextStyle(
-                    fontSize: 60,
+                    fontSize: 30,
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
 
-              /// TYPE
+              /// ARTI
               Positioned(
-                bottom: 10,
+                bottom: 18,
                 left: 0,
                 right: 0,
                 child: Center(
                   child: Text(
-                    type,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
-                      letterSpacing: 1,
-                    ),
+                    item["meaning"] ?? "",
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ),
               ),

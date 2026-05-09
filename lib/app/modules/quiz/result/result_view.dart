@@ -278,7 +278,8 @@ class ResultView extends GetView<ResultController> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      minimumSize: const Size.fromHeight(56),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     onPressed: controller.ulangQuiz,
                     child: const Text("Lanjut Quiz"),

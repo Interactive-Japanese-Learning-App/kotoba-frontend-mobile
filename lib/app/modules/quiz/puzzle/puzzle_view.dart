@@ -10,17 +10,16 @@ class PuzzleView extends GetView<PuzzleController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+     backgroundColor: AppColors.white,
 
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-
+        
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new,
+            Icons.arrow_back,
             color: AppColors.primary,
-            size: 20,
           ),
           onPressed: () => Get.back(),
         ),
@@ -40,14 +39,10 @@ class PuzzleView extends GetView<PuzzleController> {
       body: Obx(() {
         return SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
 
             child: Column(
               children: [
-
                 const SizedBox(height: 20),
 
                 /// TITLE
@@ -66,10 +61,7 @@ class PuzzleView extends GetView<PuzzleController> {
                 Text(
                   "Susun huruf berikut",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                 ),
 
                 const SizedBox(height: 55),
@@ -90,48 +82,46 @@ class PuzzleView extends GetView<PuzzleController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
 
-                  children: List.generate(
-                    3,
-                    (index) {
+                  children: List.generate(3, (index) {
+                    String text = "";
 
-                      String text = "";
+                    if (index < controller.selectedAnswers.length) {
+                      text = controller.selectedAnswers[index];
+                    }
 
-                      if (index <
-                          controller.selectedAnswers.length) {
+                    final shouldHighlightCorrect =
+                        controller.selectedAnswers.length == 3 &&
+                            controller.isCorrect();
+                    final isFilled = text.isNotEmpty;
 
-                        text =
-                            controller.selectedAnswers[index];
-                      }
+                    return Container(
+                      width: 65,
+                      height: 65,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
 
-                      return Container(
-                        width: 65,
-                        height: 65,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                        ),
-
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey.shade400,
-                              width: 3,
-                            ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: isFilled
+                                ? AppColors.primary
+                                : Colors.grey.shade400,
+                            width: 3,
                           ),
                         ),
+                      ),
 
-                        child: Center(
-                          child: Text(
-                            text,
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 34,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      child: Center(
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
                 ),
 
                 const SizedBox(height: 60),
@@ -142,42 +132,42 @@ class PuzzleView extends GetView<PuzzleController> {
                   runSpacing: 16,
                   alignment: WrapAlignment.center,
 
-                  children: List.generate(
-                    controller.options.length,
-                    (index) {
+                  children: List.generate(controller.options.length, (index) {
+                    final item = controller.options[index];
+                    final shouldHighlightCorrect = controller.selectedAnswers.length == 3 &&
+                        controller.isCorrect();
+                    final isCorrectSelection = shouldHighlightCorrect &&
+                        controller.selectedAnswers.contains(item);
 
-                      final item =
-                          controller.options[index];
+                    return GestureDetector(
+                      onTap: () => controller.selectAnswer(item),
 
-                      return GestureDetector(
-                        onTap: () =>
-                            controller.selectAnswer(item),
+                      child: Container(
+                        width: 90,
+                        height: 58,
 
-                        child: Container(
-                          width: 90,
-                          height: 58,
+                        decoration: BoxDecoration(
+                          color: isCorrectSelection
+                              ? Colors.green
+                              : const Color(0xFFD6D9DD),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
 
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD6D9DD),
-                            borderRadius:
-                                BorderRadius.circular(30),
-                          ),
-
-                          child: Center(
-                            child: Text(
-                              item,
-
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.w600,
-                              ),
+                        child: Center(
+                          child: Text(
+                            item,
+                            style: TextStyle(
+                              color: isCorrectSelection
+                                  ? Colors.white
+                                  : AppColors.primary,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
                 ),
 
                 const SizedBox(height: 30),

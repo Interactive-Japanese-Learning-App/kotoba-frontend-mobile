@@ -110,8 +110,10 @@ class Membaca1View extends GetView<Membaca1Controller> {
                           child: Center(
                             child: Text(
                               option,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: controller.isAnswered.value
+                                    ? Colors.white
+                                    : AppColors.primary,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,
                               ),

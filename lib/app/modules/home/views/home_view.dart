@@ -326,7 +326,7 @@ class HomeView extends GetView<HomeController> {
                     const SizedBox(height: 6),
 
                     const Text(
-                      "Tonton video belajar Bahasa Jepang terbaru untuk belajar lebih mudah dan cepat.",
+                      "Tonton video belajar Bahasa Jepang terpopuler untuk belajar lebih mudah dan cepat.",
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
 

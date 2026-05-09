@@ -11,7 +11,7 @@ class QuizView extends GetView<QuizController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+     backgroundColor: AppColors.white,
 
       /// 🔥 APPBAR
       appBar: AppBar(

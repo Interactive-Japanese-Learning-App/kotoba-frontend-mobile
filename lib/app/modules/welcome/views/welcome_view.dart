@@ -64,8 +64,8 @@ class WelcomeView extends GetView<WelcomeController> {
                     Text(
                       "Aplikasi Pembelajaran Bahasa Jepang Interaktif",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.primary.withOpacity(0.6),
+                      style: const TextStyle(
+                        color: Colors.grey,
                       ),
                     ),
 

@@ -13,6 +13,7 @@ class PuzzleController extends GetxController {
   ];
 
   final selectedAnswers = <String>[].obs;
+  var isAnswered = false.obs;
 
   final correctAnswers = [
     "さ",
@@ -29,8 +30,8 @@ class PuzzleController extends GetxController {
 
     selectedAnswers.add(answer);
 
-    /// CEK
     if (selectedAnswers.length == 3) {
+      isAnswered.value = true;
 
       Future.delayed(
         const Duration(milliseconds: 300),
@@ -196,6 +197,7 @@ class PuzzleController extends GetxController {
                     Get.back();
 
                     selectedAnswers.clear();
+                    isAnswered.value = false;
                   },
 
                   style: ElevatedButton.styleFrom(

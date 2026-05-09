@@ -44,7 +44,7 @@ class BottomNavbar extends GetView<BottomNavController> {
           Icon(
             icon,
             size: 24,
-            color: isActive ? AppColors.danger : AppColors.neutral,
+            color: isActive ? AppColors.danger : Colors.grey.shade400,
           ),
           const SizedBox(height: 4),
           Text(
@@ -52,7 +52,7 @@ class BottomNavbar extends GetView<BottomNavController> {
             style: TextStyle(
               fontSize: 11,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-              color: isActive ? AppColors.danger : AppColors.neutral,
+              color: isActive ? AppColors.danger : Colors.grey.shade400,
             ),
           ),
         ],
