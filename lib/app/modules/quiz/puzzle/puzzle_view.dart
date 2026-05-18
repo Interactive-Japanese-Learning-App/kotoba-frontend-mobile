@@ -88,10 +88,6 @@ class PuzzleView extends GetView<PuzzleController> {
                     if (index < controller.selectedAnswers.length) {
                       text = controller.selectedAnswers[index];
                     }
-
-                    final shouldHighlightCorrect =
-                        controller.selectedAnswers.length == 3 &&
-                            controller.isCorrect();
                     final isFilled = text.isNotEmpty;
 
                     return Container(

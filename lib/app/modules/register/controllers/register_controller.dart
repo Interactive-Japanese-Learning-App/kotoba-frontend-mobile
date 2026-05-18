@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../widgets/app_snackbar.dart';
+import 'package:get_storage/get_storage.dart';
 
 class RegisterController extends GetxController {
+  final box = GetStorage();
+
   /// TEXT CONTROLLER
   final emailC = TextEditingController();
   final passC = TextEditingController();
@@ -35,28 +38,34 @@ class RegisterController extends GetxController {
     if (email.isEmpty || pass.isEmpty || confirm.isEmpty) {
       AppSnackbar.show(title: "Error", message: "Semua field wajib diisi");
       return;
-
     }
 
-    if (!email.contains("@")) {
+    if (!GetUtils.isEmail(email)) {
       AppSnackbar.show(title: "Error", message: "Email tidak valid");
       return;
-
     }
 
-    if (pass.length < 6) {
+    if (pass.length < 8) {
+      AppSnackbar.show(title: "Error", message: "Password minimal 8 karakter");
+      return;
+    }
+
+    final hasUppercase = RegExp(r'[A-Z]').hasMatch(pass);
+    final hasLowercase = RegExp(r'[a-z]').hasMatch(pass);
+    final hasNumber = RegExp(r'[0-9]').hasMatch(pass);
+
+    if (!hasUppercase || !hasLowercase || !hasNumber) {
       AppSnackbar.show(
         title: "Error",
-        message: "Password minimal 6 karakter",
+        message:
+            "Kata sandi minimal 8 karakter dan harus memiliki huruf besar, huruf kecil, serta angka",
       );
       return;
     }
 
-
     if (pass != confirm) {
-      AppSnackbar.show(title: "Error", message: "Password tidak sama");
+      AppSnackbar.show(title: "Error", message: "Kata sandi tidak sama");
       return;
-
     }
 
     /// SIMULASI LOADING
@@ -65,16 +74,17 @@ class RegisterController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       isLoading.value = false;
 
+      /// SIMPAN DATA AKUN
+      box.write('email', email);
+      box.write('password', pass);
+
       AppSnackbar.show(title: "Berhasil", message: "Akun berhasil dibuat");
 
-      /// PINDAH KE LOGIN (mock: bawa email/username)
       final username = email.split('@').first;
+
       Get.offNamed(
         Routes.LOGIN,
-        arguments: {
-          'email': email,
-          'username': username,
-        },
+        arguments: {'email': email, 'username': username},
       );
     });
   }
@@ -87,4 +97,3 @@ class RegisterController extends GetxController {
     super.onClose();
   }
 }
-

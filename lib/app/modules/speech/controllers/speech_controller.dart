@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/routes/app_pages.dart';
 
 class SpeechController extends GetxController {
   /// TAB

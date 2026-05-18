@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../widgets/app_snackbar.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginController extends GetxController {
+  final box = GetStorage();
+
   /// INPUT
   final emailC = TextEditingController();
   final passC = TextEditingController();
@@ -33,7 +36,22 @@ class LoginController extends GetxController {
 
     /// simulasi API
     await Future.delayed(const Duration(seconds: 1));
+    final savedEmail = box.read('email');
+    final savedPassword = box.read('password');
 
+    if (email != savedEmail) {
+      isLoading.value = false;
+
+      AppSnackbar.show(title: "Login Gagal", message: "Email tidak terdaftar");
+      return;
+    }
+
+    if (pass != savedPassword) {
+      isLoading.value = false;
+
+      AppSnackbar.show(title: "Login Gagal", message: "Password salah");
+      return;
+    }
     isLoading.value = false;
 
     final username = email.split('@').first;
@@ -41,10 +59,7 @@ class LoginController extends GetxController {
     /// masuk ke main sambil bawa data (mock, tanpa simpan permanen)
     Get.offAllNamed(
       Routes.MAIN,
-      arguments: {
-        'email': email,
-        'username': username,
-      },
+      arguments: {'email': email, 'username': username},
     );
   }
 
