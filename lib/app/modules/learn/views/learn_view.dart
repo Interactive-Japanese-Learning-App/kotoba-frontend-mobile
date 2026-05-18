@@ -21,7 +21,7 @@ class LearnView extends GetView<LearnController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 8),
 
                   /// TITLE
                   Text(

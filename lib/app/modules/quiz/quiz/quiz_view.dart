@@ -40,11 +40,11 @@ class QuizView extends GetView<QuizController> {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
 
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
 
             /// 🔥 HIRAGANA
             _quizSection(

@@ -21,10 +21,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   _HeaderDelegate(this.isScrolled);
 
   @override
-  double get minExtent => 70;
+  double get minExtent => 90;
 
   @override
-  double get maxExtent => 70;
+  double get maxExtent => 90;
 
   @override
   Widget build(context, shrinkOffset, overlapsContent) {
@@ -32,7 +32,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
       color: AppColors.white,
       elevation: isScrolled ? 8 : 3,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: MediaQuery.of(context).padding.top,
+        ),
         alignment: Alignment.centerLeft,
         child: Row(
           children: [
@@ -53,7 +57,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
-  return oldDelegate.isScrolled != isScrolled;
-}
+  bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
+    return oldDelegate.isScrolled != isScrolled;
+  }
 }

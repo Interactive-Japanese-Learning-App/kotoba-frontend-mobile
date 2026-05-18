@@ -10,13 +10,17 @@ class BottomNavbar extends GetView<BottomNavController> {
   Widget build(BuildContext context) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.only(
+          top: 10,
+          bottom: MediaQuery.of(context).padding.bottom + 10,
+        ),
         decoration: BoxDecoration(
           color: AppColors.white,
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF3E4A4E),
-              blurRadius: 5,
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
             ),
           ],
         ),
@@ -43,14 +47,14 @@ class BottomNavbar extends GetView<BottomNavController> {
         children: [
           Icon(
             icon,
-            size: 24,
+            size: 22,
             color: isActive ? AppColors.danger : Colors.grey.shade400,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               color: isActive ? AppColors.danger : Colors.grey.shade400,
             ),
