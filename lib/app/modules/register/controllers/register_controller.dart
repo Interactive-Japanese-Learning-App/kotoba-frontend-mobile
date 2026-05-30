@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../routes/app_pages.dart';
 import '../../../widgets/app_snackbar.dart';
-import 'package:get_storage/get_storage.dart';
+import '../../../data/services/api_service.dart';
 
 class RegisterController extends GetxController {
-  final box = GetStorage();
 
   /// TEXT CONTROLLER
   final emailC = TextEditingController();
@@ -29,64 +29,125 @@ class RegisterController extends GetxController {
   }
 
   /// REGISTER ACTION
-  void register() {
+  Future<void> register() async {
+
     final email = emailC.text.trim();
     final pass = passC.text.trim();
     final confirm = confirmC.text.trim();
 
     /// VALIDASI
-    if (email.isEmpty || pass.isEmpty || confirm.isEmpty) {
-      AppSnackbar.show(title: "Error", message: "Semua field wajib diisi");
+    if (email.isEmpty ||
+        pass.isEmpty ||
+        confirm.isEmpty) {
+
+      AppSnackbar.show(
+        title: "Error",
+        message: "Semua field wajib diisi",
+      );
+
       return;
     }
 
     if (!GetUtils.isEmail(email)) {
-      AppSnackbar.show(title: "Error", message: "Email tidak valid");
+
+      AppSnackbar.show(
+        title: "Error",
+        message: "Email tidak valid",
+      );
+
       return;
     }
 
     if (pass.length < 8) {
-      AppSnackbar.show(title: "Error", message: "Password minimal 8 karakter");
-      return;
-    }
 
-    final hasUppercase = RegExp(r'[A-Z]').hasMatch(pass);
-    final hasLowercase = RegExp(r'[a-z]').hasMatch(pass);
-    final hasNumber = RegExp(r'[0-9]').hasMatch(pass);
-
-    if (!hasUppercase || !hasLowercase || !hasNumber) {
       AppSnackbar.show(
         title: "Error",
         message:
-            "Kata sandi minimal 8 karakter dan harus memiliki huruf besar, huruf kecil, serta angka",
+            "Password minimal 8 karakter",
       );
+
+      return;
+    }
+
+    final hasUppercase =
+        RegExp(r'[A-Z]').hasMatch(pass);
+
+    final hasLowercase =
+        RegExp(r'[a-z]').hasMatch(pass);
+
+    final hasNumber =
+        RegExp(r'[0-9]').hasMatch(pass);
+
+    if (!hasUppercase ||
+        !hasLowercase ||
+        !hasNumber) {
+
+      AppSnackbar.show(
+        title: "Error",
+        message:
+            "Password harus memiliki huruf besar, huruf kecil, dan angka",
+      );
+
       return;
     }
 
     if (pass != confirm) {
-      AppSnackbar.show(title: "Error", message: "Kata sandi tidak sama");
+
+      AppSnackbar.show(
+        title: "Error",
+        message:
+            "Kata sandi tidak sama",
+      );
+
       return;
     }
 
-    /// SIMULASI LOADING
-    isLoading.value = true;
+    try {
 
-    Future.delayed(const Duration(seconds: 1), () {
+      isLoading.value = true;
+
+      final result =
+          await ApiService.register(
+        email: email,
+        password: pass,
+      );
+
+      if (result['success'] == true) {
+
+        AppSnackbar.show(
+          title: "Berhasil",
+          message:
+              result['message'] ??
+              "Register berhasil",
+        );
+
+        Get.offNamed(
+          Routes.LOGIN,
+        );
+
+      } else {
+
+        AppSnackbar.show(
+          title: "Error",
+          message:
+              result['message'] ??
+              "Register gagal",
+        );
+
+      }
+
+    } catch (e) {
+
+      AppSnackbar.show(
+        title: "Error",
+        message: e.toString(),
+      );
+
+    } finally {
+
       isLoading.value = false;
 
-      /// SIMPAN DATA AKUN
-      box.write('email', email);
-      box.write('password', pass);
-
-      AppSnackbar.show(title: "Berhasil", message: "Akun berhasil dibuat");
-
-      final username = email.split('@').first;
-
-      Get.offNamed(
-        Routes.LOGIN,
-        arguments: {'email': email, 'username': username},
-      );
-    });
+    }
   }
 
   @override
