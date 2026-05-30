@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/drawing_painter.dart';
 import 'menulis_controller.dart';
@@ -9,7 +10,7 @@ class MenulisView extends GetView<MenulisController> {
 
   @override
   Widget build(BuildContext context) {
-    final q = controller.question; 
+    final q = controller.question;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -17,7 +18,6 @@ class MenulisView extends GetView<MenulisController> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leadingWidth: 50,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
@@ -27,10 +27,8 @@ class MenulisView extends GetView<MenulisController> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
-            fontSize: 20,
           ),
         ),
-        centerTitle: false,
       ),
 
       body: Column(
@@ -40,14 +38,16 @@ class MenulisView extends GetView<MenulisController> {
           /// TYPE
           Text(
             q["type"]!,
-            style: const TextStyle(color: Colors.grey),
+            style: const TextStyle(
+              color: Colors.grey,
+            ),
           ),
 
           const SizedBox(height: 5),
 
-          /// LABEL + KANA
+          /// LABEL
           Text(
-            "${q["label"]} (${q["kana"]})",
+            "Tuliskan huruf ${q["label"]}",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -63,25 +63,57 @@ class MenulisView extends GetView<MenulisController> {
               builder: (c) {
                 return Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
+
                   decoration: BoxDecoration(
                     color: AppColors.neutral,
                     borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: GestureDetector(
-                    onPanUpdate: (d) => c.addPoint(d.localPosition),
-                    onPanEnd: (_) => c.endStroke(),
 
-                    child: CustomPaint(
-                      painter: DrawingPainter(c.points),
-                      child: Center(
-                        child: Text(
-                          q["kana"]!,
-                          style: TextStyle(
-                            fontSize: 150,
-                            color: Colors.grey.withOpacity(0.25),
-                          ),
-                        ),
-                      ),
+                    border: Border.all(
+                      color: c.strokeStatus.value == "benar"
+                          ? Colors.green
+                          : c.strokeStatus.value == "salah"
+                              ? Colors.red
+                              : Colors.transparent,
+                      width: 3,
+                    ),
+                  ),
+
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+
+                    onPanStart: (details) {
+                      c.startStroke(details.localPosition);
+                    },
+
+                    onPanUpdate: (details) {
+                      c.addPoint(details.localPosition);
+                    },
+
+                    onPanEnd: (_) {
+                      c.endStroke();
+                    },
+
+                    child: GetBuilder<MenulisController>(
+                      builder: (_) {
+                        return Stack(
+                          children: [
+                            /// GRID BACKGROUND
+                            CustomPaint(
+                              size: Size.infinite,
+                              painter: GridPainter(),
+                            ),
+
+                            /// USER DRAWING
+                            CustomPaint(
+                              size: Size.infinite,
+                              painter: DrawingPainter([
+                                ...c.points,
+                                ...c.tempStroke,
+                              ]),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 );
@@ -91,12 +123,21 @@ class MenulisView extends GetView<MenulisController> {
 
           const SizedBox(height: 20),
 
-          /// BUTTON
+          /// BUTTONS
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _btn("Hapus", Icons.delete, controller.clearCanvas),
-              _btn("Undo", Icons.undo, controller.undo),
+              _button(
+                "Hapus",
+                Icons.delete,
+                controller.clearCanvas,
+              ),
+
+              _button(
+                "Undo",
+                Icons.undo,
+                controller.undo,
+              ),
             ],
           ),
 
@@ -104,19 +145,31 @@ class MenulisView extends GetView<MenulisController> {
 
           /// KONFIRMASI
           GestureDetector(
-            onTap: controller.showSuccessDialog,
+            onTap: () {
+              Get.snackbar(
+                "OCR",
+                "Nanti proses OCR di sini",
+                backgroundColor: Colors.blue.shade100,
+              );
+            },
+
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               width: double.infinity,
               height: 50,
+
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(30),
               ),
+
               child: const Center(
                 child: Text(
                   "Konfirmasi",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -128,25 +181,66 @@ class MenulisView extends GetView<MenulisController> {
     );
   }
 
-  Widget _btn(String text, IconData icon, VoidCallback onTap) {
+  Widget _button(
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
+
       child: Container(
         width: 100,
         height: 60,
+
         decoration: BoxDecoration(
           color: AppColors.neutral,
           borderRadius: BorderRadius.circular(15),
         ),
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon),
+
             const SizedBox(height: 4),
-            Text(text, style: const TextStyle(fontSize: 12)),
+
+            Text(
+              title,
+              style: const TextStyle(fontSize: 12),
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+/// GRID BACKGROUND
+class GridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.grey.withOpacity(0.15)
+      ..strokeWidth = 1;
+
+    /// garis tengah vertikal
+    canvas.drawLine(
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
+      paint,
+    );
+
+    /// garis tengah horizontal
+    canvas.drawLine(
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

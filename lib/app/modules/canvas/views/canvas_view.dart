@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/routes/app_pages.dart';
+import 'package:kotoba_app/app/widgets/kana_background_painter.dart';
+import 'package:kotoba_app/app/widgets/stroke_order_painter.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/drawing_painter.dart';
+
 import '../controllers/canvas_controller.dart';
 
 class CanvasView extends GetView<CanvasController> {
@@ -32,58 +36,84 @@ class CanvasView extends GetView<CanvasController> {
           const SizedBox(height: 10),
 
           /// 🔷 TYPE
-          Obx(() => Text(
-                controller.type.value,
-                style: const TextStyle(color: Colors.grey),
-              )),
+          Obx(
+            () => Text(
+              controller.type.value,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
 
           const SizedBox(height: 5),
 
           /// 🔷 LABEL
-          Obx(() => Text(
-                "${controller.label.value} (${controller.kana.value})",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              )),
+          Obx(
+            () => Text(
+              "${controller.label.value} (${controller.kana.value})",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
 
           const SizedBox(height: 20),
 
           /// 🔥 CANVAS (SUPER RESPONSIVE - NO DELAY)
+          /// 🔥 CANVAS
           Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: AppColors.neutral,
-                borderRadius: BorderRadius.circular(20),
-              ),
+            child: Obx(
+              () => Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
 
-              child: GestureDetector(
-                onPanStart: (details) {
-                  controller.addPoint(details.localPosition);
-                },
-                onPanUpdate: (details) {
-                  controller.addPoint(details.localPosition);
-                },
-                onPanEnd: (_) => controller.endStroke(),
+                decoration: BoxDecoration(
+                  color: AppColors.neutral,
+                  borderRadius: BorderRadius.circular(20),
 
-                /// 🔥 PENTING: pakai GetBuilder (lebih cepat dari Obx)
-                child: GetBuilder<CanvasController>(
-                  builder: (_) => CustomPaint(
-                    painter: DrawingPainter(controller.points),
-                    child: Stack(
+                  border: Border.all(
+                    color: controller.strokeStatus.value == "benar"
+                        ? Colors.green
+                        : controller.strokeStatus.value == "salah"
+                        ? Colors.red
+                        : Colors.transparent,
+                    width: 4,
+                  ),
+                ),
+
+                child: GestureDetector(
+                  onPanStart: (details) {
+                    controller.startStroke(details.localPosition);
+                  },
+
+                  onPanUpdate: (details) {
+                    controller.addPoint(details.localPosition);
+                  },
+
+                  onPanEnd: (_) {
+                    if (controller.lastPoint != null) {
+                      controller.endStrokeCheck();
+                    }
+                  },
+
+                  child: GetBuilder<CanvasController>(
+                    builder: (_) => Stack(
                       children: [
-                        /// BACKGROUND HURUF
-                        Center(
-                          child: Text(
-                            controller.kana.value,
-                            style: TextStyle(
-                              fontSize: 150,
-                              color: Colors.grey.withOpacity(0.25),
-                            ),
-                          ),
+                        /// 🔥 BACKGROUND HURUF
+                        CustomPaint(
+                          size: Size.infinite,
+                          painter: KanaBackgroundPainter(controller.kana.value),
+                        ),
+
+                        /// 🔥 STROKE GUIDE
+                        CustomPaint(
+                          size: Size.infinite,
+                          painter: StrokeOrderPainter(controller.strokeData),
+                        ),
+
+                        /// 🔥 USER DRAWING
+                        CustomPaint(
+                          size: Size.infinite,
+                          painter: DrawingPainter(controller.points),
                         ),
                       ],
                     ),
@@ -111,7 +141,51 @@ class CanvasView extends GetView<CanvasController> {
 
           /// 🔷 KONFIRMASI
           GestureDetector(
-            onTap: controller.showSuccessDialog,
+            onTap: () {
+              if (controller.isCompleted()) {
+                Get.dialog(
+                  Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 80,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            "Bagus!",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Huruf berhasil ditulis",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+
+                Future.delayed(const Duration(seconds: 2), () {
+                  Get.back();
+                  Get.back();
+                });
+              } else {
+                Get.snackbar("Belum selesai", "Selesaikan semua stroke dulu");
+              }
+            },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               width: double.infinity,
@@ -121,14 +195,10 @@ class CanvasView extends GetView<CanvasController> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: const Center(
-                child: Text(
-                  "Konfirmasi",
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: Text("Selesai", style: TextStyle(color: Colors.white)),
               ),
             ),
           ),
-
           const SizedBox(height: 20),
         ],
       ),
