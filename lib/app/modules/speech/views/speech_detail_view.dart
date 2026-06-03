@@ -13,6 +13,7 @@ class SpeechDetailView extends GetView<SpeechController> {
     final kana = args["kana"] ?? "";
     final label = args["label"] ?? "";
     final type = args["type"] ?? "";
+    final indo = args["indo"] ?? "";
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -41,9 +42,7 @@ class SpeechDetailView extends GetView<SpeechController> {
           builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -75,15 +74,12 @@ class SpeechDetailView extends GetView<SpeechController> {
                       const SizedBox(height: 20),
 
                       /// CARD
-                      _buildCard(
-                        kana: kana,
-                        label: label,
-                      ),
+                      _buildCard(kana: kana, label: label, indo: indo),
 
                       const SizedBox(height: 30),
 
                       /// MIC
-                      Obx(() => _buildMic()),
+                      Obx(() => _buildMic(label)),
 
                       const SizedBox(height: 15),
 
@@ -101,6 +97,22 @@ class SpeechDetailView extends GetView<SpeechController> {
                         ),
                       ),
 
+                      const SizedBox(height: 10),
+
+                      /// RECOGNIZED TEXT
+                      Obx(() {
+                        if (controller.score.value <= 0) {
+                          return const SizedBox();
+                        }
+
+                        return Text(
+                          controller.getRomajiResult(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -120,6 +132,7 @@ class SpeechDetailView extends GetView<SpeechController> {
   Widget _buildCard({
     required String kana,
     required String label,
+    required String indo,
   }) {
     return Container(
       width: 280,
@@ -156,59 +169,69 @@ class SpeechDetailView extends GetView<SpeechController> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 /// KANA
-                Text(
-                  kana,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 120,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                SizedBox(
+                  height: 90,
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        kana,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 90,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
-                /// ROMAJI
                 Text(
-                  label,
+                  indo,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 13,
+                    fontSize: 16,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
 
                 const SizedBox(height: 20),
 
                 /// BUTTON
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF4E7C2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.volume_up,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-
-                      const SizedBox(width: 6),
-
-                      Text(
-                        "DENGARKAN SENSEI",
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () => controller.speak(kana),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF4E7C2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.volume_up,
+                          size: 16,
                           color: AppColors.primary,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 6),
+                        Text(
+                          "DENGARKAN SENSEI",
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -223,9 +246,9 @@ class SpeechDetailView extends GetView<SpeechController> {
   // MIC
   // =====================================================
 
-  Widget _buildMic() {
+  Widget _buildMic(String label) {
     return GestureDetector(
-      onTap: controller.toggleMic,
+      onTap: () => controller.toggleMic(label),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -260,11 +283,7 @@ class SpeechDetailView extends GetView<SpeechController> {
                   : AppColors.primary,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.mic,
-              color: Colors.white,
-              size: 28,
-            ),
+            child: const Icon(Icons.mic, color: Colors.white, size: 28),
           ),
         ],
       ),

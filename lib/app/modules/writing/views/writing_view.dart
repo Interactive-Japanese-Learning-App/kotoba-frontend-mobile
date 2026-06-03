@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/kana_card.dart';
 import '../controllers/writing_controller.dart';

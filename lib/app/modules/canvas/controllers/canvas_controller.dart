@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:kotoba_app/app/widgets/kana_background_painter.dart';
 import '../../../data/models/stroke_model.dart';
 import '../../../data/services/stroke_service.dart';
-import 'dart:math';
 
 class CanvasController extends GetxController {
   final List<Offset?> points = [];

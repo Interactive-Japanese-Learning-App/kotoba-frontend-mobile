@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/routes/app_pages.dart';
 import 'package:kotoba_app/app/widgets/kana_background_painter.dart';
 import 'package:kotoba_app/app/widgets/stroke_order_painter.dart';
 import '../../../data/theme/app_colors.dart';

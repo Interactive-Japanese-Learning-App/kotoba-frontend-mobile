@@ -38,10 +38,26 @@ class StrokeOrderPainter extends CustomPainter {
 
       final endY =
           KanaBackgroundPainter.lastY + (stroke.end.y * scaleY) + adjustY;
-          
+
       canvas.drawCircle(Offset(startX, startY), 10, startPaint);
 
       canvas.drawCircle(Offset(endX, endY), 8, endPaint);
+
+      final endTextPainter = TextPainter(
+        text: TextSpan(
+          text: "${i + 1}",
+          style: const TextStyle(
+            color: Colors.blue,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+
+      endTextPainter.layout();
+
+      endTextPainter.paint(canvas, Offset(endX + 10, endY - 10));
 
       final textPainter = TextPainter(
         text: TextSpan(

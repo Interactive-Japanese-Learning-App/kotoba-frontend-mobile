@@ -40,13 +40,22 @@ class SpeechView extends GetView<SpeechController> {
           return Column(
             children: [
               /// TAB
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildTab("Hiragana", 0),
-                  const SizedBox(width: 20),
-                  _buildTab("Katakana", 1),
-                ],
+              SizedBox(
+                height: 45,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    _buildTab("Angka", 0),
+                    _buildTab("Bulan", 1),
+                    _buildTab("Tanggal", 2),
+                    _buildTab("Keluarga", 3),
+                    _buildTab("Hewan", 4),
+                    _buildTab("Makanan", 5),
+                    _buildTab("Minuman", 6),
+                    _buildTab("Pekerjaan", 7),
+                    _buildTab("Benda", 8),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -55,34 +64,48 @@ class SpeechView extends GetView<SpeechController> {
               Expanded(
                 child: GridView.builder(
                   itemCount: data.length,
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                   ),
+
                   itemBuilder: (context, index) {
                     final Map<String, String> item = data[index];
 
                     return InkWell(
                       onTap: () {
+                        controller.clearResult();
                         Get.toNamed(
                           Routes.SPEECH_DETAIL,
                           arguments: {
-                            ...item,
-                            "type": controller.selectedIndex.value == 0
-                                ? "HIRAGANA"
-                                : "KATAKANA",
+                            ...item, // <-- jangan dihapus
+                            "type": [
+                              "ANGKA",
+                              "BULAN",
+                              "TANGGAL",
+                              "KELUARGA",
+                              "HEWAN",
+                              "MAKANAN",
+                              "MINUMAN",
+                              "PEKERJAAN",
+                              "BENDA",
+                            ][controller.selectedIndex.value],
                           },
                         );
                       },
+
                       borderRadius: BorderRadius.circular(20),
+
                       child: Container(
                         padding: const EdgeInsets.all(16),
+
                         decoration: BoxDecoration(
                           color: AppColors.neutral,
                           borderRadius: BorderRadius.circular(20),
                         ),
+
                         child: Stack(
                           children: [
                             /// LABEL
@@ -90,37 +113,86 @@ class SpeechView extends GetView<SpeechController> {
                               top: 0,
                               left: 0,
                               child: Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: const BoxDecoration(
+                                constraints: const BoxConstraints(
+                                  minWidth: 35,
+                                  maxWidth: 65,
+                                  minHeight: 22,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 4,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
                                   color: Colors.white,
-                                  shape: BoxShape.circle,
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   item['label']!,
-                                  style: const TextStyle(fontSize: 12),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    height: 1,
+                                  ),
                                 ),
                               ),
                             ),
 
-                            /// HURUF
+                            /// ISI
                             Center(
-                              child: Text(
-                                item['kana']!,
-                                style: TextStyle(
-                                  fontSize: 48,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary,
-                                ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          item['kana']!,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 36,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 6),
+
+                                  Text(
+                                    item['indo'] ?? "",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
 
                             /// TYPE
+                            /// TYPE
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: Text(
-                                controller.selectedIndex.value == 0
-                                    ? "HIRAGANA"
-                                    : "KATAKANA",
+                                [
+                                  "ANGKA",
+                                  "BULAN",
+                                  "TANGGAL",
+                                  "KELUARGA",
+                                  "HEWAN",
+                                  "MAKANAN",
+                                  "MINUMAN",
+                                  "PEKERJAAN",
+                                  "BENDA",
+                                ][controller.selectedIndex.value],
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -148,17 +220,22 @@ class SpeechView extends GetView<SpeechController> {
 
       return GestureDetector(
         onTap: () => controller.changeTab(index),
+
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          width: 100,
+          alignment: Alignment.center,
+          margin: const EdgeInsets.only(right: 8),
           decoration: BoxDecoration(
             color: isActive ? AppColors.danger : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             title,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: isActive ? Colors.white : Colors.black54,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
