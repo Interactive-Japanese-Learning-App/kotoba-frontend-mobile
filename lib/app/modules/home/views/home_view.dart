@@ -31,9 +31,12 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     /// GREETING
                     Text(
-                      "Konnichiwa, ${controller.username.value}",
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
+  "${controller.greeting.value}, ${controller.username.value}",
+  style: const TextStyle(
+    color: Colors.grey,
+    fontSize: 12,
+  ),
+),
 
                     const SizedBox(height: 4),
 

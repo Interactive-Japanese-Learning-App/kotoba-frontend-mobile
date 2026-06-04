@@ -15,10 +15,16 @@ class WritingView extends GetView<WritingController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
+
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
-          onPressed: () => Get.back(),
+
+          /// ✅ FIX BACK NORMAL
+          onPressed: () {
+            Get.back();
+          },
         ),
+
         title: Text(
           "Writing Canvas",
           style: TextStyle(
@@ -32,19 +38,19 @@ class WritingView extends GetView<WritingController> {
       body: Padding(
         padding: const EdgeInsets.all(20),
 
-        /// ROOT OBX
         child: Obx(() {
           final data = controller.currentData;
 
           return Column(
             children: [
-
               /// TAB
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildTab("Hiragana", 0),
+
                   const SizedBox(width: 20),
+
                   _buildTab("Katakana", 1),
                 ],
               ),
@@ -55,19 +61,21 @@ class WritingView extends GetView<WritingController> {
               Expanded(
                 child: GridView.builder(
                   itemCount: data.length,
+
                   gridDelegate:
                       const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                   ),
+
                   itemBuilder: (context, index) {
                     final item = data[index];
 
                     return KanaCard(
                       label: item['label']!,
                       kana: item['kana']!,
-                      type: controller.currentType, // ✅ CLEAN
+                      type: controller.currentType,
                     );
                   },
                 ),
@@ -89,17 +97,21 @@ class WritingView extends GetView<WritingController> {
 
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
+
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 10,
           ),
+
           decoration: BoxDecoration(
             color: isActive ? AppColors.danger : Colors.transparent,
+
             borderRadius: BorderRadius.circular(20),
           ),
 
           child: Text(
             title,
+
             style: TextStyle(
               color: isActive ? Colors.white : Colors.black54,
               fontWeight: FontWeight.w500,
