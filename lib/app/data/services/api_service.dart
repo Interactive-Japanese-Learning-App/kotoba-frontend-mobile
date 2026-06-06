@@ -2,116 +2,96 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-
-  static const String baseUrl =
-      'http://10.15.183.68:5000/api';
+  static const String baseUrl = 'http://192.168.18.9:5000/api';
 
   // =========================
   // REGISTER USER
   // =========================
 
-  static Future<Map<String, dynamic>>
-      register({
-
+  static Future<Map<String, dynamic>> register({
     required String email,
     required String password,
-
   }) async {
-
     final response = await http.post(
+      Uri.parse('$baseUrl/users/user/register'),
 
-      Uri.parse(
-        '$baseUrl/users/user/register',
-      ),
+      headers: {'Content-Type': 'application/json'},
 
-      headers: {
-        'Content-Type':
-            'application/json',
-      },
-
-      body: jsonEncode({
-
-        'email': email,
-        'password': password,
-
-      }),
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
-    return jsonDecode(
-      response.body,
-    );
+    return jsonDecode(response.body);
   }
 
   // =========================
   // LOGIN USER
   // =========================
 
-  static Future<Map<String, dynamic>>
-      login({
-
+  static Future<Map<String, dynamic>> login({
     required String email,
     required String password,
-
   }) async {
-
     final response = await http.post(
+      Uri.parse('$baseUrl/users/user/login'),
 
-      Uri.parse(
-        '$baseUrl/users/user/login',
-      ),
+      headers: {'Content-Type': 'application/json'},
 
-      headers: {
-        'Content-Type':
-            'application/json',
-      },
-
-      body: jsonEncode({
-
-        'email': email,
-        'password': password,
-
-      }),
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
-    return jsonDecode(
-      response.body,
-    );
+    return jsonDecode(response.body);
   }
 
   // =========================
   // UPDATE PROFILE
   // =========================
 
-  static Future<Map<String, dynamic>>
-      updateProfile({
-
+  static Future<Map<String, dynamic>> updateProfile({
     required String id,
     required String email,
     required String password,
-
   }) async {
-
     final response = await http.put(
+      Uri.parse('$baseUrl/users/user/$id'),
 
-      Uri.parse(
-        '$baseUrl/users/user/$id',
-      ),
+      headers: {'Content-Type': 'application/json'},
 
-      headers: {
-        'Content-Type':
-            'application/json',
-      },
-
-      body: jsonEncode({
-
-        'email': email,
-        'password': password,
-
-      }),
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
-    return jsonDecode(
-      response.body,
+    return jsonDecode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/verify-otp'),
+
+      headers: {'Content-Type': 'application/json'},
+
+      body: jsonEncode({'email': email, 'otp': otp}),
     );
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // RESEND OTP
+  // =========================
+  static Future<Map<String, dynamic>> resendOtp({
+    required String email,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/resend-otp'),
+
+      headers: {'Content-Type': 'application/json'},
+
+      body: jsonEncode({'email': email}),
+    );
+
+    return jsonDecode(response.body);
   }
 }
+

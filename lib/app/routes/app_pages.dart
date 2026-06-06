@@ -1,34 +1,37 @@
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/modules/learn/bindings/learn_binding.dart';
-import 'package:kotoba_app/app/modules/learn/views/learn_view.dart';
-import 'package:kotoba_app/app/modules/quiz/membaca1/membaca1_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/membaca2/membaca2_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/menulis/menulis_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/pelafalan/pelafalan_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/puzzle/puzzle_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/membaca1/membaca1_view.dart';
-import 'package:kotoba_app/app/modules/quiz/membaca2/membaca2_view.dart';
-import 'package:kotoba_app/app/modules/quiz/menulis/menulis_view.dart';
-import 'package:kotoba_app/app/modules/quiz/pelafalan/pelafalan_view.dart';
-import 'package:kotoba_app/app/modules/quiz/puzzle/puzzle_view.dart';
-import 'package:kotoba_app/app/modules/quiz/result/result_binding.dart';
-import 'package:kotoba_app/app/modules/quiz/result/result_view.dart';
+
 import '../modules/camera/bindings/camera_binding.dart';
 import '../modules/camera/views/camera_view.dart';
 import '../modules/canvas/bindings/canvas_binding.dart';
 import '../modules/canvas/views/canvas_view.dart';
+import '../modules/learn/bindings/learn_binding.dart';
+import '../modules/learn/views/learn_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/main/bindings/main_binding.dart';
 import '../modules/main/views/main_view.dart';
 import '../modules/nihongo/bindings/nihongo_binding.dart';
 import '../modules/nihongo/views/nihongo_view.dart';
+import '../modules/otp/bindings/otp_binding.dart';
+import '../modules/otp/views/otp_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/about_app.dart';
 import '../modules/profile/views/edit_profile.dart';
 import '../modules/profile/views/profile_view.dart';
-import '../modules/profile/views/about_app.dart';
+import '../modules/quiz/membaca1/membaca1_binding.dart';
+import '../modules/quiz/membaca1/membaca1_view.dart';
+import '../modules/quiz/membaca2/membaca2_binding.dart';
+import '../modules/quiz/membaca2/membaca2_view.dart';
+import '../modules/quiz/menulis/menulis_binding.dart';
+import '../modules/quiz/menulis/menulis_view.dart';
+import '../modules/quiz/pelafalan/pelafalan_binding.dart';
+import '../modules/quiz/pelafalan/pelafalan_view.dart';
+import '../modules/quiz/puzzle/puzzle_binding.dart';
+import '../modules/quiz/puzzle/puzzle_view.dart';
 import '../modules/quiz/quiz/quiz_binding.dart';
 import '../modules/quiz/quiz/quiz_view.dart';
+import '../modules/quiz/result/result_binding.dart';
+import '../modules/quiz/result/result_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/speech/bindings/speech_binding.dart';
@@ -122,7 +125,6 @@ class AppPages {
       page: () => const QuizView(),
       binding: QuizBinding(),
     ),
-
     GetPage(
       name: _Paths.QUIZ_MEMBACA_1,
       page: () => const Membaca1View(),
@@ -152,6 +154,11 @@ class AppPages {
       name: Routes.QUIZ_RESULT,
       page: () => ResultView(),
       binding: ResultBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTP,
+      page: () => const OtpView(),
+      binding: OtpBinding(),
     ),
   ];
 }

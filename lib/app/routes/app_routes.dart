@@ -24,6 +24,7 @@ abstract class Routes {
   static const QUIZ_MENULIS = _Paths.QUIZ_MENULIS;
   static const QUIZ_PELAFALAN = _Paths.QUIZ_PELAFALAN;
   static const QUIZ_RESULT = _Paths.QUIZ_RESULT;
+  static const OTP = _Paths.OTP;
 }
 
 abstract class _Paths {
@@ -49,4 +50,5 @@ abstract class _Paths {
   static const QUIZ_MENULIS = '/quiz-menulis';
   static const QUIZ_PELAFALAN = '/quiz-pelafalan';
   static const QUIZ_RESULT = '/quiz-result';
+  static const OTP = '/otp';
 }

@@ -131,10 +131,10 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-
-    emailC.dispose();
-    passC.dispose();
-
+    // NOTE:
+    // TextEditingController disposal is handled by GetX widgets lifecycle.
+    // Disposing here can cause: "A TextEditingController was used after being disposed"
+    // when input focus/gestures complete after controller is closed.
     super.onClose();
   }
 }
