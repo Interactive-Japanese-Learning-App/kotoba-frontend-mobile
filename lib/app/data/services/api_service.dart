@@ -93,5 +93,64 @@ class ApiService {
 
     return jsonDecode(response.body);
   }
+  // =========================
+  // FORGOT PASSWORD
+  // =========================
+  static Future<Map<String, dynamic>> forgotPassword({
+    required String email,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/forgot-password'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+      }),
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // =========================
+  // RESET PASSWORD
+  // =========================
+
+  static Future<Map<String, dynamic>> verifyResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/verify-reset-otp'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'otp': otp}),
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> resetPassword({
+    required String email,
+    required String otp,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/reset-password'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'otp': otp,
+        'password': password,
+      }),
+    );
+
+    return jsonDecode(response.body);
+  }
+
 }
+
+
+
+
+
+
 

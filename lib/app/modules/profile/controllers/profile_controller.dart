@@ -5,49 +5,40 @@ import 'package:kotoba_app/app/data/theme/app_colors.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../data/services/api_service.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfileController extends GetxController {
-
   /// USER DATA
-  final RxString username =
-      "ranifa".obs;
+  final RxString username = ''.obs;
 
-  final RxString email =
-      "ranifa@gmail.com".obs;
+  final RxString email = ''.obs;
 
-  final RxString userId =
-      ''.obs;
+  final RxString userId = ''.obs;
 
   /// FORM CONTROLLER
-  final emailController =
-      TextEditingController();
+  final emailController = TextEditingController();
 
-  final oldPasswordController =
-      TextEditingController();
+  final oldPasswordController = TextEditingController();
 
-  final newPasswordController =
-      TextEditingController();
+  final newPasswordController = TextEditingController();
 
-  final confirmPasswordController =
-      TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   /// PASSWORD VISIBILITY
-  final oldPassObscure =
-      true.obs;
+  final oldPassObscure = true.obs;
 
-  final newPassObscure =
-      true.obs;
+  final newPassObscure = true.obs;
 
-  final confirmPassObscure =
-      true.obs;
+  final confirmPassObscure = true.obs;
 
   /// LOADING
-  final isLoading =
-      false.obs;
+  final isLoading = false.obs;
+
+  // STORAGE
+  final box = GetStorage();
 
   @override
   void onInit() {
-
     super.onInit();
 
     _loadArguments();
@@ -56,308 +47,153 @@ class ProfileController extends GetxController {
 
   // LOAD ARGUMENTS
   void _loadArguments() {
-
-    final args =
-        Get.arguments;
+    final args = Get.arguments;
 
     if (args is Map<String, dynamic>) {
+      userId.value = args['id']?.toString() ?? '';
 
-      final idArg =
-          args['id']
-                  ?.toString() ??
-              '';
+      email.value = args['email']?.toString() ?? '';
 
-      final emailArg =
-          args['email']
-                  ?.toString() ??
-              '';
+      username.value = args['username']?.toString() ?? '';
+    } else {
+      userId.value = box.read('userId') ?? '';
 
-      final usernameArg =
-          args['username']
-                  ?.toString() ??
-              '';
+      email.value = box.read('email') ?? '';
 
-      if (idArg.isNotEmpty) {
-
-        userId.value =
-            idArg;
-      }
-
-      if (usernameArg
-          .isNotEmpty) {
-
-        username.value =
-            usernameArg;
-      }
-
-      if (emailArg
-          .isNotEmpty) {
-
-        email.value =
-            emailArg;
-      }
-
-      if (usernameArg.isEmpty &&
-          emailArg.contains('@')) {
-
-        username.value =
-            emailArg
-                .split('@')
-                .first;
-      }
+      username.value = box.read('username') ?? '';
     }
   }
 
   // SYNC EMAIL
   void _syncEmailToForm() {
-
-    emailController.text =
-        email.value;
+    emailController.text = email.value;
   }
 
   // INIT EDIT PROFILE
   void initEditProfile() {
-
     _syncEmailToForm();
 
-    oldPasswordController
-        .clear();
+    oldPasswordController.clear();
 
-    newPasswordController
-        .clear();
+    newPasswordController.clear();
 
-    confirmPasswordController
-        .clear();
+    confirmPasswordController.clear();
   }
 
   // SNACKBAR
-  void showSnackbar(
-    String title,
-    String message,
-  ) {
-
+  void showSnackbar(String title, String message) {
     Get.snackbar(
-
       title,
       message,
 
-      snackPosition:
-          SnackPosition.TOP,
+      snackPosition: SnackPosition.TOP,
 
-      backgroundColor:
-          AppColors.primary,
+      backgroundColor: AppColors.primary,
 
-      colorText:
-          Colors.white,
+      colorText: Colors.white,
 
-      margin:
-          const EdgeInsets.all(
-        16,
-      ),
+      margin: const EdgeInsets.all(16),
 
       borderRadius: 12,
 
-      duration:
-          const Duration(
-        seconds: 2,
-      ),
+      duration: const Duration(seconds: 2),
     );
   }
 
   // NAVIGATION
   void goEditProfile() {
-
     initEditProfile();
 
     Get.toNamed(
       Routes.EDIT_PROFILE,
       arguments: {
+        'id': userId.value,
 
-        'id':
-            userId.value,
+        'email': email.value,
 
-        'email':
-            email.value,
-
-        'username':
-            username.value,
+        'username': username.value,
       },
     );
   }
 
   void goAboutApp() {
-
-    Get.toNamed(
-      Routes.ABOUT_APP,
-    );
+    Get.toNamed(Routes.ABOUT_APP);
   }
 
   // SUBMIT PROFILE
-  Future<void>
-      submitProfile() async {
-
-    if (emailController.text
-        .trim()
-        .isEmpty) {
-
-      showSnackbar(
-        "Error",
-        "Email tidak boleh kosong",
-      );
+  Future<void> submitProfile() async {
+    if (emailController.text.trim().isEmpty) {
+      showSnackbar("Error", "Email tidak boleh kosong");
 
       return;
     }
 
-    if (!GetUtils.isEmail(
-      emailController.text
-          .trim(),
-    )) {
-
-      showSnackbar(
-        "Error",
-        "Format email tidak valid",
-      );
+    if (!GetUtils.isEmail(emailController.text.trim())) {
+      showSnackbar("Error", "Format email tidak valid");
 
       return;
     }
 
     final hasPasswordInput =
-
-        oldPasswordController
-                .text
-                .isNotEmpty ||
-
-            newPasswordController
-                .text
-                .isNotEmpty ||
-
-            confirmPasswordController
-                .text
-                .isNotEmpty;
+        oldPasswordController.text.isNotEmpty ||
+        newPasswordController.text.isNotEmpty ||
+        confirmPasswordController.text.isNotEmpty;
 
     if (hasPasswordInput) {
-
-      final valid =
-          _validatePassword();
+      final valid = _validatePassword();
 
       if (!valid) return;
     }
 
     try {
+      isLoading.value = true;
 
-      isLoading.value =
-          true;
-
-      final result =
-          await ApiService
-              .updateProfile(
-
+      final result = await ApiService.updateProfile(
         id: userId.value,
 
-        email:
-            emailController
-                .text
-                .trim(),
+        email: emailController.text.trim(),
 
-        password:
-            newPasswordController
-                    .text
-                    .isEmpty
-                ? oldPasswordController
-                    .text
-                : newPasswordController
-                    .text,
+        password: newPasswordController.text.isEmpty
+            ? oldPasswordController.text
+            : newPasswordController.text,
       );
 
-      if (result['success'] ==
-          true) {
+      if (result['success'] == true) {
+        email.value = emailController.text.trim();
 
-        email.value =
-            emailController
-                .text
-                .trim();
-
-        username.value =
-            emailController
-                .text
-                .trim()
-                .split('@')
-                .first;
+        username.value = emailController.text.trim().split('@').first;
 
         Get.back();
 
-        showSnackbar(
-          "Berhasil",
-          "Profil berhasil diperbarui",
-        );
-
+        showSnackbar("Berhasil", "Profil berhasil diperbarui");
       } else {
-
-        showSnackbar(
-          "Error",
-          result['message'],
-        );
+        showSnackbar("Error", result['message']);
       }
-
     } catch (e) {
-
-      showSnackbar(
-        "Error",
-        e.toString(),
-      );
-
+      showSnackbar("Error", e.toString());
     } finally {
-
-      isLoading.value =
-          false;
+      isLoading.value = false;
     }
   }
 
   // VALIDATE PASSWORD
   bool _validatePassword() {
-
-    if (oldPasswordController
-            .text
-            .isEmpty ||
-
-        newPasswordController
-            .text
-            .isEmpty ||
-
-        confirmPasswordController
-            .text
-            .isEmpty) {
-
-      showSnackbar(
-        "Error",
-        "Semua field password harus diisi",
-      );
+    if (oldPasswordController.text.isEmpty ||
+        newPasswordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      showSnackbar("Error", "Semua field password harus diisi");
 
       return false;
     }
 
-    if (newPasswordController
-            .text
-            .length <
-        8) {
-
-      showSnackbar(
-        "Error",
-        "Password minimal 8 karakter",
-      );
+    if (newPasswordController.text.length < 8) {
+      showSnackbar("Error", "Password minimal 8 karakter");
 
       return false;
     }
 
-    if (newPasswordController
-            .text !=
-        confirmPasswordController
-            .text) {
-
-      showSnackbar(
-        "Error",
-        "Konfirmasi password tidak cocok",
-      );
+    if (newPasswordController.text != confirmPasswordController.text) {
+      showSnackbar("Error", "Konfirmasi password tidak cocok");
 
       return false;
     }
@@ -367,101 +203,51 @@ class ProfileController extends GetxController {
 
   // LOGOUT
   void logout() {
-
     Get.defaultDialog(
-
       title: "Keluar",
 
-      backgroundColor:
-          Colors.white,
+      backgroundColor: Colors.white,
 
       radius: 20,
 
-      titleStyle:
-          const TextStyle(
-        fontSize: 20,
-        fontWeight:
-            FontWeight.bold,
-      ),
+      titleStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
 
-      middleText:
-          "Yakin ingin keluar dari akun?",
+      middleText: "Yakin ingin keluar dari akun?",
 
-      middleTextStyle:
-          const TextStyle(
-        color: Colors.grey,
-        fontSize: 14,
-      ),
+      middleTextStyle: const TextStyle(color: Colors.grey, fontSize: 14),
 
-      confirm:
-          ElevatedButton(
+      confirm: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.danger,
 
-        style:
-            ElevatedButton
-                .styleFrom(
+          foregroundColor: Colors.white,
 
-          backgroundColor:
-              AppColors
-                  .danger,
-
-          foregroundColor:
-              Colors.white,
-
-          shape:
-              RoundedRectangleBorder(
-
-            borderRadius:
-                BorderRadius
-                    .circular(
-              12,
-            ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
 
-        onPressed: () {
+        onPressed: () async {
+          await box.remove('token');
+          await box.remove('userId');
+          await box.remove('email');
+          await box.remove('username');
 
           Get.back();
 
-          showSnackbar(
-            "Keluar",
-            "Berhasil logout",
-          );
+          showSnackbar("Keluar", "Berhasil logout");
 
-          Future.delayed(
-
-            const Duration(
-              milliseconds:
-                  700,
-            ),
-
-            () {
-
-              Get.offAllNamed(
-                Routes.LOGIN,
-              );
-            },
-          );
+          Future.delayed(const Duration(milliseconds: 700), () {
+            Get.offAllNamed(Routes.LOGIN);
+          });
         },
-
-        child:
-            const Text("Ya"),
+        child: const Text("Ya"),
       ),
 
       cancel: TextButton(
+        onPressed: () => Get.back(),
 
-        onPressed:
-            () => Get.back(),
-
-        child: Text(
-
-          "Tidak",
-
-          style: TextStyle(
-            color:
-                AppColors
-                    .danger,
-          ),
-        ),
+        child: Text("Tidak", style: TextStyle(color: AppColors.danger)),
       ),
     );
   }
@@ -469,17 +255,13 @@ class ProfileController extends GetxController {
   // DISPOSE
   @override
   void onClose() {
-
     emailController.dispose();
 
-    oldPasswordController
-        .dispose();
+    oldPasswordController.dispose();
 
-    newPasswordController
-        .dispose();
+    newPasswordController.dispose();
 
-    confirmPasswordController
-        .dispose();
+    confirmPasswordController.dispose();
 
     super.onClose();
   }

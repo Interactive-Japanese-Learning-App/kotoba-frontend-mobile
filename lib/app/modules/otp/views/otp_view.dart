@@ -14,7 +14,7 @@ class OtpView extends GetView<OtpController> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        title: const Text('Verifikasi OTP'),
+        title: Text(controller.isReset ? 'OTP Reset Password' : 'Verifikasi OTP'),
         foregroundColor: AppColors.primary,
       ),
       body: SafeArea(
@@ -25,7 +25,7 @@ class OtpView extends GetView<OtpController> {
             children: [
               const SizedBox(height: 10),
               Text(
-                'VERIFIKASI EMAIL',
+                controller.isReset ? 'RESET PASSWORD' : 'VERIFIKASI EMAIL',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,

@@ -25,6 +25,8 @@ abstract class Routes {
   static const QUIZ_PELAFALAN = _Paths.QUIZ_PELAFALAN;
   static const QUIZ_RESULT = _Paths.QUIZ_RESULT;
   static const OTP = _Paths.OTP;
+  static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
 }
 
 abstract class _Paths {
@@ -51,4 +53,6 @@ abstract class _Paths {
   static const QUIZ_PELAFALAN = '/quiz-pelafalan';
   static const QUIZ_RESULT = '/quiz-result';
   static const OTP = '/otp';
+  static const FORGOT_PASSWORD = '/forgot-password';
+  static const RESET_PASSWORD = '/reset-password';
 }

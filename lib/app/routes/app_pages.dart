@@ -4,6 +4,8 @@ import '../modules/camera/bindings/camera_binding.dart';
 import '../modules/camera/views/camera_view.dart';
 import '../modules/canvas/bindings/canvas_binding.dart';
 import '../modules/canvas/views/canvas_view.dart';
+import '../modules/forgot_password/bindings/forgot_password_binding.dart';
+import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/learn/bindings/learn_binding.dart';
 import '../modules/learn/views/learn_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -34,6 +36,8 @@ import '../modules/quiz/result/result_binding.dart';
 import '../modules/quiz/result/result_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
+import '../modules/reset_password/bindings/reset_password_binding.dart';
+import '../modules/reset_password/views/reset_password_view.dart';
 import '../modules/speech/bindings/speech_binding.dart';
 import '../modules/speech/views/speech_detail_view.dart';
 import '../modules/speech/views/speech_view.dart';
@@ -159,6 +163,16 @@ class AppPages {
       name: _Paths.OTP,
       page: () => const OtpView(),
       binding: OtpBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.RESET_PASSWORD,
+      page: () => const ResetPasswordView(),
+      binding: ResetPasswordBinding(),
     ),
   ];
 }

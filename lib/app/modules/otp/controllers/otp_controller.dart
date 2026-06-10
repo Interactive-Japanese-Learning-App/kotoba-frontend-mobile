@@ -20,12 +20,18 @@ class OtpController extends GetxController {
   Timer? _timer;
 
   late String email;
+  bool isReset = false;
+
 
   @override
   void onInit() {
     super.onInit();
 
     email = Get.arguments['email'];
+
+    // default untuk OTP verifikasi akun (register)
+    // reset password flow hanya jika isReset == true
+    isReset = Get.arguments['isReset'] == true;
 
     // Mulai countdown saat halaman OTP dibuka
     startCountdown();
@@ -64,19 +70,46 @@ class OtpController extends GetxController {
 
   Future<void> verifyOtp() async {
     if (otpC.text.length != 6) {
-      AppSnackbar.show(title: "Error", message: "OTP harus 6 digit");
+      AppSnackbar.show(
+        title: "Error",
+        message: "OTP harus 6 digit",
+      );
       return;
     }
 
     try {
       isLoading.value = true;
 
-      final result = await ApiService.verifyOtp(
-        email: email,
-        otp: otpC.text.trim(),
-      );
+      final otp = otpC.text.trim();
+
+      final result = isReset
+          ? await ApiService.verifyResetOtp(
+              email: email,
+              otp: otp,
+            )
+          : await ApiService.verifyOtp(
+              email: email,
+              otp: otp,
+            );
 
       if (result['success'] == true) {
+        if (isReset) {
+          AppSnackbar.show(
+            title: "Berhasil",
+            message: "OTP valid. Silakan buat password baru.",
+          );
+
+          isLoading.value = false;
+          Get.toNamed(
+            Routes.RESET_PASSWORD,
+            arguments: {
+              'email': email,
+              'otp': otp,
+            },
+          );
+          return;
+        }
+
         AppSnackbar.show(
           title: "Berhasil",
           message: "Email berhasil diverifikasi",
@@ -87,7 +120,11 @@ class OtpController extends GetxController {
         return;
       }
 
-      AppSnackbar.show(title: "Error", message: result['message']);
+      AppSnackbar.show(
+        title: "Error",
+        message: result['message'],
+      );
+
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;

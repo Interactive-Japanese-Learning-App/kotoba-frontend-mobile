@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../main/controllers/bottom_nav_controller.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomeController extends GetxController {
   final scrollController = ScrollController();
 
   final RxBool isScrolled = false.obs;
 
-  final RxString username = "ranifa".obs;
+  final RxString username = ''.obs;
 
   /// GREETING
   final greeting = "Konnichiwa".obs;
@@ -15,6 +16,9 @@ class HomeController extends GetxController {
   /// XP
   final RxInt streak = 12.obs;
   final RxInt progress = 75.obs;
+
+  // STORAGE
+  final box = GetStorage();
 
   /// VIDEO LIST
   var videos = [
@@ -40,32 +44,17 @@ class HomeController extends GetxController {
     Get.find<BottomNavController>().changeIndex(index);
   }
 
-  @override
-  void onInit() {
-    super.onInit();
+ @override
+void onInit() {
+  super.onInit();
 
-    /// SET GREETING
-    _setGreeting();
+  _setGreeting();
 
-    /// GET ARGUMENT LOGIN
-    final args = Get.arguments as Map<String, dynamic>?;
+  username.value =
+      box.read('username') ?? '';
 
-    if (args != null) {
-      final email = (args['email'] ?? '') as String;
-      final uname = (args['username'] ?? '') as String;
-
-      if (uname.isNotEmpty) {
-        username.value = uname;
-      }
-
-      /// fallback dari email
-      if (username.value.isEmpty && email.contains('@')) {
-        username.value = email.split('@').first;
-      }
-    }
-
-    scrollController.addListener(_onScroll);
-  }
+  scrollController.addListener(_onScroll);
+}
 
   /// GREETING BERDASARKAN JAM
   void _setGreeting() {

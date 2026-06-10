@@ -1,43 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
-import 'app/data/theme/app_theme.dart'; 
-import 'package:get_storage/get_storage.dart';
+import 'app/data/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
 
-  runApp(const MyApp());
+  final box = GetStorage();
+
+  final token = box.read('token');
+
+  runApp(
+    MyApp(
+      initialRoute:
+          token != null
+              ? Routes.MAIN
+              : AppPages.INITIAL,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+
+  const MyApp({
+    super.key,
+    required this.initialRoute,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: "Kotoba App",
-
-      // ✅ ROUTE AWAL (Welcome)
-      initialRoute: AppPages.INITIAL,
-
-      // ✅ ROUTING
+      initialRoute: initialRoute,
       getPages: AppPages.routes,
-
-      // ✅ THEME 
       theme: AppTheme.light,
-
-      // ✅ fallback kalau route tidak ada
-      unknownRoute: GetPage(
-        name: '/notfound',
-        page: () => const Scaffold(
-          body: Center(child: Text("Page Not Found")),
-        ),
-      ),
     );
   }
 }

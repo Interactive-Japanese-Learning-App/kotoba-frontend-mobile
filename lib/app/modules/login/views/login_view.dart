@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
+import '../../../routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -84,8 +85,8 @@ class LoginView extends GetView<LoginController> {
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap: () {
-                    // aksi lupa password
+                    onTap: () {
+Get.toNamed(Routes.FORGOT_PASSWORD);
                   },
                   child: Text(
                     "Lupa Password?",
