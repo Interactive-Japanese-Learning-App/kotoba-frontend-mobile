@@ -19,7 +19,6 @@ class WritingView extends GetView<WritingController> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
 
-          /// ✅ FIX BACK NORMAL
           onPressed: () {
             Get.back();
           },
@@ -35,19 +34,22 @@ class WritingView extends GetView<WritingController> {
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-
+      body: SafeArea(
+        top: false,
+        bottom: true,
         child: Obx(() {
           final data = controller.currentData;
 
           return Column(
             children: [
+              const SizedBox(height: 20),
+
               /// TAB
               SizedBox(
                 height: 45,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
                       _buildTab("Hiragana", 0),
@@ -63,25 +65,29 @@ class WritingView extends GetView<WritingController> {
 
               /// GRID
               Expanded(
-                child: GridView.builder(
-                  itemCount: data.length,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GridView.builder(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    itemCount: data.length,
 
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+
+                    itemBuilder: (context, index) {
+                      final item = data[index];
+
+                      return KanaCard(
+                        label: item['label']!,
+                        kana: item['kana']!,
+                        type: controller.currentType,
+                      );
+                    },
                   ),
-
-                  itemBuilder: (context, index) {
-                    final item = data[index];
-
-                    return KanaCard(
-                      label: item['label']!,
-                      kana: item['kana']!,
-                      type: controller.currentType,
-                    );
-                  },
                 ),
               ),
             ],
@@ -100,23 +106,16 @@ class WritingView extends GetView<WritingController> {
         onTap: () => controller.changeTab(index),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: isActive
-                ? AppColors.danger
-                : Colors.transparent,
+            color: isActive ? AppColors.danger : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             title,
             style: TextStyle(
               fontSize: 12,
-              color: isActive
-                  ? Colors.white
-                  : Colors.black54,
+              color: isActive ? Colors.white : Colors.black54,
             ),
           ),
         ),

@@ -11,9 +11,9 @@ class QuizView extends GetView<QuizController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white,
 
-      /// 🔥 APPBAR
+      /// APPBAR
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
@@ -39,33 +39,39 @@ class QuizView extends GetView<QuizController> {
         centerTitle: false,
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-
-            /// 🔥 HIRAGANA
-            _quizSection(
-              title: "Hiragana",
-              icon: "あ",
-              color: AppColors.danger,
-              levels: controller.sections[0]["levels"] as List,
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom,
             ),
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
 
-            const SizedBox(height: 60),
+                _quizSection(
+                  title: "Hiragana",
+                  icon: "あ",
+                  color: AppColors.danger,
+                  levels: controller.sections[0]["levels"] as List,
+                ),
 
-            /// 🔥 KATAKANA
-            _quizSection(
-              title: "Katakana",
-              icon: "ア",
-              color: AppColors.primary,
-              levels: controller.sections[1]["levels"] as List,
+                const SizedBox(height: 60),
+
+                _quizSection(
+                  title: "Katakana",
+                  icon: "ア",
+                  color: AppColors.primary,
+                  levels: controller.sections[1]["levels"] as List,
+                ),
+
+                const SizedBox(height: 40),
+              ],
             ),
-
-            const SizedBox(height: 40),
-          ],
+          ),
         ),
       ),
     );
@@ -79,7 +85,7 @@ class QuizView extends GetView<QuizController> {
   }) {
     return Column(
       children: [
-        /// 🔥 CARD
+        /// CARD
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(22),
@@ -145,7 +151,7 @@ class QuizView extends GetView<QuizController> {
 
         const SizedBox(height: 35),
 
-        /// 🔥 MAP
+        /// MAP
         SizedBox(
           height: 620,
 
@@ -155,12 +161,12 @@ class QuizView extends GetView<QuizController> {
 
               return Stack(
                 children: [
-                  /// 🔥 PATH
+                  /// PATH
                   Positioned.fill(
                     child: CustomPaint(painter: DuolingoPathPainter()),
                   ),
 
-                  /// 🔥 BUTTONS
+                  /// BUTTONS
                   ...List.generate(levels.length, (i) {
                     final unlocked = levels[i];
 
@@ -201,7 +207,7 @@ class QuizView extends GetView<QuizController> {
 
                         child: Column(
                           children: [
-                            /// 🔥 BULATAN
+                            /// BULATAN
                             Container(
                               width: 92,
                               height: 92,
@@ -246,7 +252,7 @@ class QuizView extends GetView<QuizController> {
 
                             const SizedBox(height: 10),
 
-                            /// 🔥 LABEL
+                            /// LABEL
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
@@ -289,7 +295,7 @@ class QuizView extends GetView<QuizController> {
   }
 }
 
-/// 🔥 PATH PAINTER
+/// PATH PAINTER
 class DuolingoPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {

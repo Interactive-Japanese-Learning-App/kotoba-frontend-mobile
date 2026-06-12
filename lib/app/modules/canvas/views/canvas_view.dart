@@ -32,11 +32,14 @@ class CanvasView extends GetView<CanvasController> {
         ),
       ),
 
-      body: Column(
+      body: SafeArea(
+      top: false,
+      bottom: true,
+      child: Column(
         children: [
           const SizedBox(height: 10),
 
-          /// 🔷 TYPE
+          /// TYPE
           Obx(
             () => Text(
               controller.type.value,
@@ -46,7 +49,7 @@ class CanvasView extends GetView<CanvasController> {
 
           const SizedBox(height: 5),
 
-          /// 🔷 LABEL
+          /// LABEL
           Obx(
             () => Text(
               "${controller.label.value} (${controller.kana.value})",
@@ -60,63 +63,55 @@ class CanvasView extends GetView<CanvasController> {
 
           const SizedBox(height: 20),
 
-          /// 🔥 CANVAS (SUPER RESPONSIVE - NO DELAY)
-          /// 🔥 CANVAS
+          /// CANVAS
           Expanded(
             child: Obx(
               () => Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
-
                 decoration: BoxDecoration(
                   color: AppColors.neutral,
                   borderRadius: BorderRadius.circular(20),
-
                   border: Border.all(
                     color: controller.strokeStatus.value == "benar"
                         ? Colors.green
                         : controller.strokeStatus.value == "salah"
-                        ? Colors.red
-                        : Colors.transparent,
+                            ? Colors.red
+                            : Colors.transparent,
                     width: 4,
                   ),
                 ),
-
                 child: GestureDetector(
                   onPanStart: (details) {
                     controller.startStroke(details.localPosition);
                   },
-
                   onPanUpdate: (details) {
                     controller.addPoint(details.localPosition);
                   },
-
                   onPanEnd: (_) {
                     if (controller.lastPoint != null) {
                       controller.endStrokeCheck();
                     }
                   },
-
                   child: GetBuilder<CanvasController>(
                     builder: (_) => Stack(
                       children: [
-                        /// 🔥 BACKGROUND HURUF
-                        /// BACKGROUND SKETCH (gambar kana)
-                        /// Mapping stroke guide tetap pakai lastX/lastY dari painter ini.
                         CustomPaint(
                           size: Size.infinite,
                           painter: KanaImageBackgroundPainter(
-                            assetPath: controller.kanaAssetPath(controller.kana.value),
+                            assetPath: controller.kanaAssetPath(
+                              controller.kana.value,
+                            ),
                           ),
                         ),
 
-                        /// Gambar aktual background kana (svg)
-                        /// berada di bawah stroke guide agar tidak nutupin sketsa.
                         Positioned.fill(
                           child: IgnorePointer(
                             child: Opacity(
                               opacity: 0.12,
                               child: SvgPicture.asset(
-                                controller.kanaAssetPath(controller.kana.value),
+                                controller.kanaAssetPath(
+                                  controller.kana.value,
+                                ),
                                 fit: BoxFit.contain,
                                 placeholderBuilder: (context) =>
                                     const SizedBox.shrink(),
@@ -125,16 +120,18 @@ class CanvasView extends GetView<CanvasController> {
                           ),
                         ),
 
-                        /// 🔥 STROKE GUIDE
                         CustomPaint(
                           size: Size.infinite,
-                          painter: StrokeOrderPainter(controller.strokeData),
+                          painter: StrokeOrderPainter(
+                            controller.strokeData,
+                          ),
                         ),
 
-                        /// 🔥 USER DRAWING
                         CustomPaint(
                           size: Size.infinite,
-                          painter: DrawingPainter(controller.points),
+                          painter: DrawingPainter(
+                            controller.points,
+                          ),
                         ),
                       ],
                     ),
@@ -146,21 +143,29 @@ class CanvasView extends GetView<CanvasController> {
 
           const SizedBox(height: 20),
 
-          /// 🔷 BUTTON
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _button("Hapus", Icons.delete, controller.clearCanvas),
-              _button("Undo", Icons.undo, controller.undo),
-
-              /// 🔥 FIX DI SINI
-              _button("Daftar", Icons.list, () => Get.back()),
+              _button(
+                "Hapus",
+                Icons.delete,
+                controller.clearCanvas,
+              ),
+              _button(
+                "Undo",
+                Icons.undo,
+                controller.undo,
+              ),
+              _button(
+                "Daftar",
+                Icons.list,
+                () => Get.back(),
+              ),
             ],
           ),
 
           const SizedBox(height: 20),
 
-          /// 🔷 KONFIRMASI
           GestureDetector(
             onTap: () {
               if (controller.isCompleted()) {
@@ -204,7 +209,10 @@ class CanvasView extends GetView<CanvasController> {
                   Get.back();
                 });
               } else {
-                Get.snackbar("Belum selesai", "Selesaikan semua stroke dulu");
+                Get.snackbar(
+                  "Belum selesai",
+                  "Selesaikan semua stroke dulu",
+                );
               }
             },
             child: Container(
@@ -216,17 +224,25 @@ class CanvasView extends GetView<CanvasController> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: const Center(
-                child: Text("Selesai", style: TextStyle(color: Colors.white)),
+                child: Text(
+                  "Selesai",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),
+
           const SizedBox(height: 20),
         ],
       ),
+    ),
     );
   }
 
-  /// 🔷 BUTTON
+  /// BUTTON
   Widget _button(String title, IconData icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,

@@ -50,9 +50,8 @@ class QuizController extends GetxController {
 
   double get accuracy => totalSoal == 0 ? 0 : (benar.value / totalSoal) * 100;
 
-  /// 🔥 FIX ERROR PERSEN
-  int get persen =>
-      maxXp == 0 ? 0 : ((xp.value / maxXp) * 100).toInt();
+  /// FIX ERROR PERSEN
+  int get persen => maxXp == 0 ? 0 : ((xp.value / maxXp) * 100).toInt();
 
   /// RESET
   void resetQuiz() {

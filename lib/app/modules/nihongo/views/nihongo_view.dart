@@ -31,108 +31,138 @@ class NihongoView extends GetView<NihongoController> {
         centerTitle: false,
       ),
 
-      body: Column(
-        children: [
-          const SizedBox(height: 10),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+              const SizedBox(height: 10),
 
-          /// TAB
-          SizedBox(
-            height: 45,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  _buildTab("Hiragana", 0),
-                  const SizedBox(width: 12),
+              /// TAB
+              SizedBox(
+                height: 45,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      _buildTab("Hiragana", 0),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Katakana", 1),
-                  const SizedBox(width: 12),
+                      _buildTab("Katakana", 1),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Angka", 2),
-                  const SizedBox(width: 12),
+                      _buildTab("Angka", 2),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Bulan Tanggal", 3),
-                  const SizedBox(width: 12),
+                      _buildTab("Bulan Tanggal", 3),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Keluarga", 4),
-                  const SizedBox(width: 12),
+                      _buildTab("Keluarga", 4),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Hewan", 5),
-                  const SizedBox(width: 12),
+                      _buildTab("Hewan", 5),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Makanan Minuman", 6),
-                  const SizedBox(width: 12),
+                      _buildTab("Makanan Minuman", 6),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Pekerjaan", 7),
-                  const SizedBox(width: 12),
+                      _buildTab("Pekerjaan", 7),
+                      const SizedBox(width: 12),
 
-                  _buildTab("Benda", 8),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 15),
-
-          ///  SEARCH
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: AppColors.neutral,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: TextField(
-                onChanged: controller.updateSearch,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.search, color: Colors.grey),
-                  hintText: "Cari huruf...",
-                  border: InputBorder.none,
+                      _buildTab("Benda", 8),
+                    ],
+                  ),
                 ),
               ),
-            ),
+
+              const SizedBox(height: 15),
+
+              /// SEARCH
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: AppColors.neutral,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: TextField(
+                    onChanged: controller.updateSearch,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.search, color: Colors.grey),
+                      hintText: "Cari huruf...",
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Expanded(
+                child: Obx(() {
+                  switch (controller.selectedIndex.value) {
+                    case 0:
+                      return _grid(
+                        controller.filteredHiragana,
+                        "HIRAGANA",
+                      );
+
+                    case 1:
+                      return _grid(
+                        controller.filteredKatakana,
+                        "KATAKANA",
+                      );
+
+                    case 2:
+                      return _grid(
+                        controller.filteredAngka,
+                        "ANGKA",
+                      );
+
+                    case 3:
+                      return _grid(
+                        controller.filteredBulanTanggal,
+                        "BULAN",
+                      );
+
+                    case 4:
+                      return _grid(
+                        controller.filteredKeluarga,
+                        "KELUARGA",
+                      );
+
+                    case 5:
+                      return _grid(
+                        controller.filteredHewan,
+                        "HEWAN",
+                      );
+
+                    case 6:
+                      return _grid(
+                        controller.filteredMakanan,
+                        "MAKANAN",
+                      );
+
+                    case 7:
+                      return _grid(
+                        controller.filteredPekerjaan,
+                        "PEKERJAAN",
+                      );
+
+                    default:
+                      return _grid(
+                        controller.filteredBenda,
+                        "BENDA",
+                      );
+                  }
+                }),
+              ),
+            ],
           ),
-
-          const SizedBox(height: 10),
-
-          /// CONTENT
-          Expanded(
-            child: Obx(() {
-              switch (controller.selectedIndex.value) {
-                case 0:
-                  return _grid(controller.filteredHiragana, "HIRAGANA");
-
-                case 1:
-                  return _grid(controller.filteredKatakana, "KATAKANA");
-
-                case 2:
-                  return _grid(controller.filteredAngka, "ANGKA");
-
-                case 3:
-                  return _grid(controller.filteredBulanTanggal, "BULAN");
-
-                case 4:
-                  return _grid(controller.filteredKeluarga, "KELUARGA");
-
-                case 5:
-                  return _grid(controller.filteredHewan, "HEWAN");
-
-                case 6:
-                  return _grid(controller.filteredMakanan, "MAKANAN");
-
-                case 7:
-                  return _grid(controller.filteredPekerjaan, "PEKERJAAN");
-
-                default:
-                  return _grid(controller.filteredBenda, "BENDA");
-              }
-            }),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
   }
 
   // TAB ITEM

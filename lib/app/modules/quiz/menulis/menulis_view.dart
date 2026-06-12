@@ -31,161 +31,135 @@ class MenulisView extends GetView<MenulisController> {
         ),
       ),
 
-      body: Column(
-        children: [
-          const SizedBox(height: 10),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
 
-          /// TYPE
-          Text(
-            q["type"]!,
-            style: const TextStyle(
-              color: Colors.grey,
+            /// TYPE
+            Text(q["type"]!, style: const TextStyle(color: Colors.grey)),
+
+            const SizedBox(height: 5),
+
+            /// LABEL
+            Text(
+              "Tuliskan huruf ${q["label"]}",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 5),
+            const SizedBox(height: 20),
 
-          /// LABEL
-          Text(
-            "Tuliskan huruf ${q["label"]}",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          /// CANVAS
-          Expanded(
-            child: GetBuilder<MenulisController>(
-              builder: (c) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral,
-                    borderRadius: BorderRadius.circular(20),
-
-                    border: Border.all(
-                      color: c.strokeStatus.value == "benar"
-                          ? Colors.green
-                          : c.strokeStatus.value == "salah"
-                              ? Colors.red
-                              : Colors.transparent,
-                      width: 3,
+            /// CANVAS
+            Expanded(
+              child: GetBuilder<MenulisController>(
+                builder: (c) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: AppColors.neutral,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: c.strokeStatus.value == "benar"
+                            ? Colors.green
+                            : c.strokeStatus.value == "salah"
+                            ? Colors.red
+                            : Colors.transparent,
+                        width: 3,
+                      ),
                     ),
-                  ),
-
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-
-                    onPanStart: (details) {
-                      c.startStroke(details.localPosition);
-                    },
-
-                    onPanUpdate: (details) {
-                      c.addPoint(details.localPosition);
-                    },
-
-                    onPanEnd: (_) {
-                      c.endStroke();
-                    },
-
-                    child: GetBuilder<MenulisController>(
-                      builder: (_) {
-                        return Stack(
-                          children: [
-                            /// GRID BACKGROUND
-                            CustomPaint(
-                              size: Size.infinite,
-                              painter: GridPainter(),
-                            ),
-
-                            /// USER DRAWING
-                            CustomPaint(
-                              size: Size.infinite,
-                              painter: DrawingPainter([
-                                ...c.points,
-                                ...c.tempStroke,
-                              ]),
-                            ),
-                          ],
-                        );
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onPanStart: (details) {
+                        c.startStroke(details.localPosition);
                       },
+                      onPanUpdate: (details) {
+                        c.addPoint(details.localPosition);
+                      },
+                      onPanEnd: (_) {
+                        c.endStroke();
+                      },
+                      child: GetBuilder<MenulisController>(
+                        builder: (_) {
+                          return Stack(
+                            children: [
+                              CustomPaint(
+                                size: Size.infinite,
+                                painter: GridPainter(),
+                              ),
+
+                              CustomPaint(
+                                size: Size.infinite,
+                                painter: DrawingPainter([
+                                  ...c.points,
+                                  ...c.tempStroke,
+                                ]),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// BUTTONS
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _button("Hapus", Icons.delete, controller.clearCanvas),
+                _button("Undo", Icons.undo, controller.undo),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            /// KONFIRMASI
+            GestureDetector(
+              onTap: () {
+                Get.snackbar(
+                  "OCR",
+                  "Nanti proses OCR di sini",
+                  backgroundColor: Colors.blue.shade100,
                 );
               },
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          /// BUTTONS
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _button(
-                "Hapus",
-                Icons.delete,
-                controller.clearCanvas,
-              ),
-
-              _button(
-                "Undo",
-                Icons.undo,
-                controller.undo,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          /// KONFIRMASI
-          GestureDetector(
-            onTap: () {
-              Get.snackbar(
-                "OCR",
-                "Nanti proses OCR di sini",
-                backgroundColor: Colors.blue.shade100,
-              );
-            },
-
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              width: double.infinity,
-              height: 50,
-
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(30),
-              ),
-
-              child: const Center(
-                child: Text(
-                  "Konfirmasi",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Konfirmasi",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _button(
-    String title,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
+  Widget _button(String title, IconData icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
 
@@ -205,10 +179,7 @@ class MenulisView extends GetView<MenulisController> {
 
             const SizedBox(height: 4),
 
-            Text(
-              title,
-              style: const TextStyle(fontSize: 12),
-            ),
+            Text(title, style: const TextStyle(fontSize: 12)),
           ],
         ),
       ),
