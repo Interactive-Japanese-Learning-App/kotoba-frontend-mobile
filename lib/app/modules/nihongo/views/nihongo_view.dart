@@ -218,6 +218,7 @@ class NihongoView extends GetView<NihongoController> {
             ],
           ),
           child: Stack(
+            
             children: [
               /// ROMAJI
               Positioned(

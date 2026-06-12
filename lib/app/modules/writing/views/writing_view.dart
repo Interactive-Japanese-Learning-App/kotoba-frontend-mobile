@@ -65,29 +65,26 @@ class WritingView extends GetView<WritingController> {
 
               /// GRID
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.builder(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    itemCount: data.length,
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: data.length,
 
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
-
-                    itemBuilder: (context, index) {
-                      final item = data[index];
-
-                      return KanaCard(
-                        label: item['label']!,
-                        kana: item['kana']!,
-                        type: controller.currentType,
-                      );
-                    },
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 15,
+                    childAspectRatio: 1,
                   ),
+
+                  itemBuilder: (context, index) {
+                    final item = data[index];
+
+                    return KanaCard(
+                      label: item['label']!,
+                      kana: item['kana']!,
+                      type: controller.currentType,
+                    );
+                  },
                 ),
               ),
             ],

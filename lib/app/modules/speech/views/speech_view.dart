@@ -82,130 +82,138 @@ class SpeechView extends GetView<SpeechController> {
               const SizedBox(height: 20),
 
               /// GRID
+              /// GRID
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.builder(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    itemCount: data.length,
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: data.length,
 
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    childAspectRatio: 1,
+                  ),
+
+                  itemBuilder: (context, index) {
+                    final Map<String, String> item = data[index];
+
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(25),
+
+                      onTap: () {
+                        controller.clearResult();
+
+                        Get.toNamed(
+                          Routes.SPEECH_DETAIL,
+                          arguments: {
+                            ...item,
+                            "type": [
+                              "ANGKA",
+                              "BULAN",
+                              "TANGGAL",
+                              "KELUARGA",
+                              "HEWAN",
+                              "MAKANAN",
+                              "MINUMAN",
+                              "PEKERJAAN",
+                              "BENDA",
+                            ][controller.selectedIndex.value],
+                          },
+                        );
+                      },
+
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
 
-                    itemBuilder: (context, index) {
-                      final Map<String, String> item = data[index];
-
-                      return InkWell(
-                        onTap: () {
-                          controller.clearResult();
-
-                          Get.toNamed(
-                            Routes.SPEECH_DETAIL,
-                            arguments: {
-                              ...item,
-                              "type": [
-                                "ANGKA",
-                                "BULAN",
-                                "TANGGAL",
-                                "KELUARGA",
-                                "HEWAN",
-                                "MAKANAN",
-                                "MINUMAN",
-                                "PEKERJAAN",
-                                "BENDA",
-                              ][controller.selectedIndex.value],
-                            },
-                          );
-                        },
-
-                        borderRadius: BorderRadius.circular(20),
-
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-
-                          child: Stack(
-                            children: [
-                              /// LABEL
-                              Positioned(
-                                top: 0,
-                                left: 0,
-                                child: Container(
-                                  constraints: const BoxConstraints(
-                                    minWidth: 35,
-                                    maxWidth: 65,
-                                    minHeight: 22,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 4,
-                                  ),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    item['label']!,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 9,
-                                      height: 1,
-                                    ),
+                        child: Stack(
+                          children: [
+                            /// LABEL
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  minWidth: 35,
+                                  maxWidth: 65,
+                                  minHeight: 22,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 4,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black12),
+                                ),
+                                child: Text(
+                                  item['label']!,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    height: 1,
                                   ),
                                 ),
                               ),
+                            ),
 
-                              /// ISI
-                              Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      height: 55,
-                                      child: Center(
-                                        child: FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            item['kana']!,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 36,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primary,
-                                            ),
+                            /// KANA
+                            Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: Center(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          item['kana']!,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.primary,
                                           ),
                                         ),
                                       ),
                                     ),
+                                  ),
 
-                                    const SizedBox(height: 6),
+                                  const SizedBox(height: 6),
 
-                                    Text(
-                                      item['indo'] ?? "",
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black54,
-                                      ),
+                                  Text(
+                                    item['indo'] ?? "",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black54,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                            ),
 
-                              /// TYPE
-                              Align(
-                                alignment: Alignment.bottomCenter,
+                            /// TYPE
+                            Positioned(
+                              bottom: 18,
+                              left: 0,
+                              right: 0,
+                              child: Center(
                                 child: Text(
                                   [
                                     "ANGKA",
@@ -224,12 +232,12 @@ class SpeechView extends GetView<SpeechController> {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
