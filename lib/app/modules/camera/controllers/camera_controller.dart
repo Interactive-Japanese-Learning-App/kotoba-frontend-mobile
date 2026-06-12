@@ -109,7 +109,7 @@ class CameraController extends GetxController {
     "couch": {"jp": "ソファー", "rm": "Sofaa", "tr": "Sofa"},
     "potted plant": {"jp": "うえきばち", "rm": "Uekibachi", "tr": "Tanaman Pot"},
     "bed": {"jp": "ベッド", "rm": "Beddo", "tr": "Tempat Tidur"},
-    "dining table": {"jp": "しょくたく", "rm": "Shokutaku", "tr": "Meja Makan"},
+    "dining table": {"jp": "しょくたく", "rm": "Shokutaku", "tr": "Meja"},
     "toilet": {"jp": "トイレット", "rm": "Toiretto", "tr": "Toilet"},
     "tv": {"jp": "テレビ", "rm": "Terebi", "tr": "TV"},
     "laptop": {"jp": "パソコン", "rm": "Pasokon", "tr": "Laptop"},
@@ -186,8 +186,8 @@ class CameraController extends GetxController {
         imageHeight: imageHeight.toInt(),
         imageWidth: imageWidth.toInt(),
         iouThreshold: 0.4,
-        confThreshold: 0.25,
-        classThreshold: 0.25,
+        confThreshold: 0.35,
+        classThreshold: 0.35,
       );
 
       if (result.isNotEmpty) {

@@ -88,6 +88,50 @@ class CameraView extends GetView<CameraController> {
     return Container(height: height, color: Colors.black.withOpacity(0.15));
   }
 
+  Widget _buildLabel(dynamic obj) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 100, maxWidth: 150),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFF355372).withOpacity(0.85),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              obj.jp,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              obj.rm,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white70, fontSize: 10),
+            ),
+            Text(
+              obj.tr,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// RENDER MULTIPEL BOUNDING BOX DAN LABEL DI ATASNYA
   Widget _buildDetectionOverlays(double areaHeight) {
     return Obx(() {
@@ -97,23 +141,63 @@ class CameraView extends GetView<CameraController> {
 
       final double screenWidth = Get.width;
       final double screenHeight = areaHeight;
+      final uniqueObjects = <String, dynamic>{};
 
-      // Map seluruh object yang ada di list untuk dijadikan widget Positioned
+      for (var obj in controller.detectedObjects) {
+        uniqueObjects[obj.jp] = obj;
+      }
+
+      final objects = uniqueObjects.values.where((obj) {
+        final w = obj.w * screenWidth;
+        final h = obj.h * screenHeight;
+
+        return w >= 20 && h >= 20;
+      }).toList();
+
       return Stack(
-        children: controller.detectedObjects.map((obj) {
+        children: objects.map((obj) {
           final double calculatedLeft = obj.x * screenWidth;
           final double calculatedTop = obj.y * screenHeight;
           final double calculatedWidth = obj.w * screenWidth;
           final double calculatedHeight = obj.h * screenHeight;
 
+          // UI helper: untuk bounding box kecil, label diposisikan ke atas box.
+          final bool smallBox = calculatedWidth < 180 || calculatedHeight < 100;
+
+          final double safeWidth = calculatedWidth;
+          final maxLeft = (screenWidth - calculatedWidth).clamp(
+            0.0,
+            double.infinity,
+          );
+
+          final double safeLeft = calculatedLeft.clamp(0.0, maxLeft);
+          final double labelWidth = 150;
+
+          final maxLabelLeft = (screenWidth - safeLeft - labelWidth).clamp(
+            0.0,
+            double.infinity,
+          );
+
+          final double labelLeft = ((safeWidth / 2) - (labelWidth / 2)).clamp(
+            0.0,
+            maxLabelLeft,
+          );
+          if (calculatedWidth <= 0 ||
+              calculatedHeight <= 0 ||
+              calculatedWidth.isNaN ||
+              calculatedHeight.isNaN) {
+            return const SizedBox();
+          }
+
           return Positioned(
-            left: calculatedLeft,
-            top: calculatedTop,
-            width: calculatedWidth,
+            left: safeLeft,
+            top: smallBox
+                ? (calculatedTop < 85 ? 85 : calculatedTop)
+                : calculatedTop,
+            width: safeWidth,
             height: calculatedHeight,
             child: Stack(
-              clipBehavior: Clip
-                  .none, // Membantu agar label menyembul keluar boks tanpa terpotong
+              clipBehavior: Clip.none,
               children: [
                 // 1. GARIS KOTAK MERAH (BOUNDING BOX)
                 Container(
@@ -130,67 +214,17 @@ class CameraView extends GetView<CameraController> {
                   ),
                 ),
 
-                // 2. LABEL INFORMASI (3 Baris: JP, Romaji, Indonesia)
-                Positioned(
-                  top:
-                      -80, // Ditinggikan agar teks 3 baris tidak menutupi kotak merah
-                  left: -20,
-                  right: -20,
-                  child: Center(
-                    child: Container(
-                      constraints: const BoxConstraints(minWidth: 90),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                          width: 1,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // 1. Baris Atas: Aksara Jepang
-                          Text(
-                            obj.jp,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 13,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          // 2. Baris Tengah: Romaji
-                          Text(
-                            obj.rm,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 10,
-                              color: Colors.white70,
-                            ),
-                          ),
-                          // 3. Baris Bawah: Indonesia
-                          Text(
-                            obj.tr,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 10,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // 2. LABEL INFORMASI
+                // - Jika box kecil => label dipindah ke atas (agar tidak bottom-overflow)
+                // - Jika box besar => label tetap di tengah
+                if (smallBox)
+                  Positioned(
+                    top: -75,
+                    left: labelLeft,
+                    child: SizedBox(width: labelWidth, child: _buildLabel(obj)),
+                  )
+                else
+                  Center(child: _buildLabel(obj)),
               ],
             ),
           );

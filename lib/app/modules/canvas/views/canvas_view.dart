@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/widgets/kana_background_painter.dart';
 import 'package:kotoba_app/app/widgets/stroke_order_painter.dart';
+import 'package:kotoba_app/app/widgets/kana_image_background_painter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/drawing_painter.dart';
 
@@ -98,9 +100,29 @@ class CanvasView extends GetView<CanvasController> {
                     builder: (_) => Stack(
                       children: [
                         /// 🔥 BACKGROUND HURUF
+                        /// BACKGROUND SKETCH (gambar kana)
+                        /// Mapping stroke guide tetap pakai lastX/lastY dari painter ini.
                         CustomPaint(
                           size: Size.infinite,
-                          painter: KanaBackgroundPainter(controller.kana.value),
+                          painter: KanaImageBackgroundPainter(
+                            assetPath: controller.kanaAssetPath(controller.kana.value),
+                          ),
+                        ),
+
+                        /// Gambar aktual background kana (svg)
+                        /// berada di bawah stroke guide agar tidak nutupin sketsa.
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: Opacity(
+                              opacity: 0.12,
+                              child: SvgPicture.asset(
+                                controller.kanaAssetPath(controller.kana.value),
+                                fit: BoxFit.contain,
+                                placeholderBuilder: (context) =>
+                                    const SizedBox.shrink(),
+                              ),
+                            ),
+                          ),
                         ),
 
                         /// 🔥 STROKE GUIDE

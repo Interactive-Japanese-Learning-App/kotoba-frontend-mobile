@@ -23,11 +23,8 @@ class StrokeOrderPainter extends CustomPainter {
 
     for (int i = 0; i < strokes.length; i++) {
       final stroke = strokes[i];
-
-      // Kalibrasi supaya titik merah/biru pas mengikuti sketsa.
-      // Kamu bilang “masih kurang pas dikit”, jadi ini koreksi kecil.
-      const adjustX = -5.0;
-      const adjustY = 13.0;
+      const adjustX = 0.0;
+      const adjustY = 0.0;
 
       final startX =
           KanaBackgroundPainter.lastX + (stroke.start.x * scaleX) + adjustX;
