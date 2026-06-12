@@ -36,7 +36,6 @@ class NihongoView extends GetView<NihongoController> {
           const SizedBox(height: 10),
 
           /// TAB
-          /// TAB
           SizedBox(
             height: 45,
             child: SingleChildScrollView(

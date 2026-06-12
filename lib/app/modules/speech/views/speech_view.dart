@@ -41,22 +41,40 @@ class SpeechView extends GetView<SpeechController> {
             children: [
               /// TAB
               SizedBox(
-                height: 45,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
+              height: 45,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
                     _buildTab("Angka", 0),
+                    const SizedBox(width: 12),
+
                     _buildTab("Bulan", 1),
+                    const SizedBox(width: 12),
+
                     _buildTab("Tanggal", 2),
+                    const SizedBox(width: 12),
+
                     _buildTab("Keluarga", 3),
+                    const SizedBox(width: 12),
+
                     _buildTab("Hewan", 4),
+                    const SizedBox(width: 12),
+
                     _buildTab("Makanan", 5),
+                    const SizedBox(width: 12),
+
                     _buildTab("Minuman", 6),
+                    const SizedBox(width: 12),
+
                     _buildTab("Pekerjaan", 7),
+                    const SizedBox(width: 12),
+
                     _buildTab("Benda", 8),
                   ],
                 ),
               ),
+            ),
 
               const SizedBox(height: 20),
 
@@ -80,7 +98,7 @@ class SpeechView extends GetView<SpeechController> {
                         Get.toNamed(
                           Routes.SPEECH_DETAIL,
                           arguments: {
-                            ...item, // <-- jangan dihapus
+                            ...item, 
                             "type": [
                               "ANGKA",
                               "BULAN",
@@ -220,22 +238,21 @@ class SpeechView extends GetView<SpeechController> {
 
       return GestureDetector(
         onTap: () => controller.changeTab(index),
-
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          width: 100,
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(right: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
           decoration: BoxDecoration(
             color: isActive ? AppColors.danger : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
             title,
-            textAlign: TextAlign.center,
             style: TextStyle(
+              fontSize: 12,
               color: isActive ? Colors.white : Colors.black54,
-              fontWeight: FontWeight.w500,
             ),
           ),
         ),

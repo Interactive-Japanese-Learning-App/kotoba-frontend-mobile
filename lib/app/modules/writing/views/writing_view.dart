@@ -44,15 +44,19 @@ class WritingView extends GetView<WritingController> {
           return Column(
             children: [
               /// TAB
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildTab("Hiragana", 0),
+              SizedBox(
+                height: 45,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildTab("Hiragana", 0),
+                      const SizedBox(width: 12),
 
-                  const SizedBox(width: 20),
-
-                  _buildTab("Katakana", 1),
-                ],
+                      _buildTab("Katakana", 1),
+                    ],
+                  ),
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -94,27 +98,25 @@ class WritingView extends GetView<WritingController> {
 
       return GestureDetector(
         onTap: () => controller.changeTab(index),
-
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-
           padding: const EdgeInsets.symmetric(
-            horizontal: 20,
+            horizontal: 16,
             vertical: 10,
           ),
-
           decoration: BoxDecoration(
-            color: isActive ? AppColors.danger : Colors.transparent,
-
+            color: isActive
+                ? AppColors.danger
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
-
           child: Text(
             title,
-
             style: TextStyle(
-              color: isActive ? Colors.white : Colors.black54,
-              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              color: isActive
+                  ? Colors.white
+                  : Colors.black54,
             ),
           ),
         ),
