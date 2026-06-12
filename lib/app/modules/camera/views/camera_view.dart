@@ -10,7 +10,22 @@ class CameraView extends GetView<CameraController> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.8;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final topPadding = MediaQuery.of(context).padding.top;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    const headerHeight = 100.0;
+    const navbarHeight = 80.0;
+
+    final height =
+        screenHeight -
+        headerHeight -
+        navbarHeight -
+        topPadding -
+        bottomPadding;
+
+    print("screenHeight = $screenHeight");
+    print("cameraHeight = $height");
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -148,10 +163,20 @@ class CameraView extends GetView<CameraController> {
       }
 
       final objects = uniqueObjects.values.where((obj) {
-        final w = obj.w * screenWidth;
-        final h = obj.h * screenHeight;
+        final left = obj.x * screenWidth;
+        final top = obj.y * screenHeight;
+        final width = obj.w * screenWidth;
+        final height = obj.h * screenHeight;
 
-        return w >= 20 && h >= 20;
+        final right = left + width;
+        final bottom = top + height;
+
+        return left >= 0 &&
+            top >= 0 &&
+            right <= screenWidth &&
+            bottom <= screenHeight &&
+            width >= 20 &&
+            height >= 20;
       }).toList();
 
       return Stack(
@@ -186,6 +211,11 @@ class CameraView extends GetView<CameraController> {
               calculatedHeight <= 0 ||
               calculatedWidth.isNaN ||
               calculatedHeight.isNaN) {
+            return const SizedBox();
+          }
+
+          if (calculatedWidth > screenWidth * 0.8 ||
+              calculatedHeight > screenHeight * 0.8) {
             return const SizedBox();
           }
 
