@@ -10,23 +10,7 @@ class CameraView extends GetView<CameraController> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final topPadding = MediaQuery.of(context).padding.top;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    const headerHeight = 100.0;
-    const navbarHeight = 80.0;
-
-    final height =
-        screenHeight -
-        headerHeight -
-        navbarHeight -
-        topPadding -
-        bottomPadding;
-
-    print("screenHeight = $screenHeight");
-    print("cameraHeight = $height");
-
+    // Menggunakan LayoutBuilder agar responsif mendapatkan tinggi/lebar aktual container kamera
     return Scaffold(
       backgroundColor: AppColors.white,
       body: CustomScrollView(
@@ -35,58 +19,70 @@ class CameraView extends GetView<CameraController> {
 
           /// CAMERA CONTENT
           SliverToBoxAdapter(
-            child: Obx(() {
-              if (!controller.isCameraReady.value) {
-                return SizedBox(
-                  height: height,
-                  child: const Center(child: CircularProgressIndicator()),
-                );
-              }
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Tentukan tinggi area kamera (misal: 80% dari tinggi layar)
+                final double areaHeight = MediaQuery.of(context).size.height * 0.8;
+                final double areaWidth = MediaQuery.of(context).size.width;
 
-              return SizedBox(
-                height: height,
-                child: ClipRRect(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      _background(),
-                      _overlay(height),
+                return Obx(() {
+                  if (!controller.isCameraReady.value) {
+                    return SizedBox(
+                      height: areaHeight,
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
 
-                      // Mengganti frame tunggal menjadi penampung multipel boks & label
-                      _buildDetectionOverlays(height),
+                  return SizedBox(
+                    height: areaHeight,
+                    width: areaWidth,
+                    child: ClipRRect(
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          _background(),
+                          _overlay(areaHeight),
 
-                      /// INDIKATOR PROSES LOADING FOTO
-                      Obx(
-                        () => controller.isProcessing.value
-                            ? const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
+                          // Mengirimkan dimensi pasti area kamera untuk kalkulasi bounding box
+                          _buildDetectionOverlays(
+                            areaWidth: areaWidth,
+                            areaHeight: areaHeight,
+                          ),
+
+                          /// INDIKATOR PROSES LOADING FOTO
+                          Obx(
+                            () => controller.isProcessing.value
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ),
+
+                          /// TOMBOL SHUTTER UNTUK DETEKSI
+                          Positioned(
+                            bottom: 20,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.white,
+                                onPressed: () => controller.captureAndDetect(),
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.black,
                                 ),
-                              )
-                            : const SizedBox(),
-                      ),
-
-                      /// TOMBOL SHUTTER UNTUK DETEKSI
-                      Positioned(
-                        bottom: 20,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.white,
-                            onPressed: () => controller.captureAndDetect(),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.black,
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              );
-            }),
+                    ),
+                  );
+                });
+              },
+            ),
           ),
         ],
       ),
@@ -105,158 +101,156 @@ class CameraView extends GetView<CameraController> {
 
   Widget _buildLabel(dynamic obj) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 100, maxWidth: 150),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: const Color(0xFF355372).withOpacity(0.85),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              obj.jp,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+      decoration: BoxDecoration(
+        color: const Color(0xFF355372).withOpacity(0.85),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            obj.jp,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14, // Ukuran disesuaikan agar lebih aman dari overflow
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              obj.rm,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white70, fontSize: 10),
+          ),
+          Text(
+            obj.rm,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white70, fontSize: 10),
+          ),
+          Text(
+            obj.tr,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
             ),
-            Text(
-              obj.tr,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   /// RENDER MULTIPEL BOUNDING BOX DAN LABEL DI ATASNYA
-  Widget _buildDetectionOverlays(double areaHeight) {
+  Widget _buildDetectionOverlays({required double areaWidth, required double areaHeight}) {
     return Obx(() {
       if (!controller.isDetecting.value || controller.detectedObjects.isEmpty) {
         return const SizedBox();
       }
 
-      final double screenWidth = Get.width;
-      final double screenHeight = areaHeight;
-      final uniqueObjects = <String, dynamic>{};
+      // Ambil preview size dari kamera untuk menghitung kecocokan rasio aspek (scaling factor)
+      // Ini kunci utama agar kotak presisi di semua ukuran HP
+      final previewSize = controller.cameraController.value.previewSize;
+      
+      // Default fallback jika previewSize belum termuat
+      double scaleY = areaHeight;
 
+      if (previewSize != null) {
+        // Kamera biasanya mendeteksi dalam kondisi Landscape secara sistem, 
+        // sehingga kita perlu mencocokkan koordinatnya ke Portrait layar HP.
+        final double previewHeight = previewSize.width; 
+        final double previewWidth = previewSize.height;
+
+        scaleY = areaHeight / previewHeight;
+      }
+
+      final uniqueObjects = <String, dynamic>{};
       for (var obj in controller.detectedObjects) {
         uniqueObjects[obj.jp] = obj;
       }
 
       final objects = uniqueObjects.values.where((obj) {
-        final left = obj.x * screenWidth;
-        final top = obj.y * screenHeight;
-        final width = obj.w * screenWidth;
-        final height = obj.h * screenHeight;
-
-        final right = left + width;
-        final bottom = top + height;
-
-        return left >= 0 &&
-            top >= 0 &&
-            right <= screenWidth &&
-            bottom <= screenHeight &&
-            width >= 20 &&
-            height >= 20;
+        // Kalkulasi dimensi mentah dengan skala rasio aspek
+        final w = obj.w * areaWidth;
+        final h = obj.h * areaHeight;
+        return w >= 20 && h >= 20;
       }).toList();
 
       return Stack(
         children: objects.map((obj) {
-          final double calculatedLeft = obj.x * screenWidth;
-          final double calculatedTop = obj.y * screenHeight;
-          final double calculatedWidth = obj.w * screenWidth;
-          final double calculatedHeight = obj.h * screenHeight;
+          // 1. Hitung koordinat Box Dasar
+          double calculatedLeft = obj.x * areaWidth;
+          double calculatedTop = obj.y * areaHeight;
+          double calculatedWidth = obj.w * areaWidth;
+          double calculatedHeight = obj.h * areaHeight;
 
-          // UI helper: untuk bounding box kecil, label diposisikan ke atas box.
-          final bool smallBox = calculatedWidth < 180 || calculatedHeight < 100;
+          // 2. Kunci agar BOX tidak melebihi batas tepi kamera (clamping)
+          calculatedWidth = calculatedWidth.clamp(0.0, areaWidth);
+          calculatedHeight = calculatedHeight.clamp(0.0, areaHeight);
+          calculatedLeft = calculatedLeft.clamp(0.0, areaWidth - calculatedWidth);
+          calculatedTop = calculatedTop.clamp(0.0, areaHeight - calculatedHeight);
 
-          final double safeWidth = calculatedWidth;
-          final maxLeft = (screenWidth - calculatedWidth).clamp(
-            0.0,
-            double.infinity,
-          );
-
-          final double safeLeft = calculatedLeft.clamp(0.0, maxLeft);
-          final double labelWidth = 150;
-
-          final maxLabelLeft = (screenWidth - safeLeft - labelWidth).clamp(
-            0.0,
-            double.infinity,
-          );
-
-          final double labelLeft = ((safeWidth / 2) - (labelWidth / 2)).clamp(
-            0.0,
-            maxLabelLeft,
-          );
-          if (calculatedWidth <= 0 ||
-              calculatedHeight <= 0 ||
-              calculatedWidth.isNaN ||
-              calculatedHeight.isNaN) {
+          if (calculatedWidth <= 0 || calculatedHeight <= 0 || calculatedWidth.isNaN || calculatedHeight.isNaN) {
             return const SizedBox();
           }
 
-          if (calculatedWidth > screenWidth * 0.8 ||
-              calculatedHeight > screenHeight * 0.8) {
-            return const SizedBox();
+          // 3. Logika Penempatan Label yang Aman (Tidak boleh negatif/keluar kamera)
+          const double labelWidth = 130; // Batasi lebar fix label
+          const double labelHeight = 65; // Perkiraan tinggi label maksimum
+
+          // Posisi horizontal label (tengah-tengah box)
+          double labelLeft = calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2);
+          labelLeft = labelLeft.clamp(0.0, areaWidth - labelWidth); // Jaga agar tidak keluar kanan/kiri kamera
+
+          // Posisi vertikal label
+          double labelTop;
+          final bool isSmallBox = calculatedWidth < 150 || calculatedHeight < 100;
+
+          if (isSmallBox) {
+            // Jika box kecil, coba letakkan di ATAS kotak
+            labelTop = calculatedTop - labelHeight - 8;
+            // JIKA di atas kotak ternyata mentok batas atas kamera (< 0), pindahkan ke BAWAH kotak
+            if (labelTop < 0) {
+              labelTop = calculatedTop + calculatedHeight + 8;
+            }
+          } else {
+            // Jika box besar, letakkan tepat di TENGAH kotak
+            labelTop = calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
           }
 
-          return Positioned(
-            left: safeLeft,
-            top: smallBox
-                ? (calculatedTop < 85 ? 85 : calculatedTop)
-                : calculatedTop,
-            width: safeWidth,
-            height: calculatedHeight,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // 1. GARIS KOTAK MERAH (BOUNDING BOX)
-                Container(
+          // Jaga final posisi vertikal label agar mutlak tetap berada di dalam area kamera
+          labelTop = labelTop.clamp(0.0, areaHeight - labelHeight);
+
+          return Stack(
+            children: [
+              // Bounding Box Merah
+              Positioned(
+                left: calculatedLeft,
+                top: calculatedTop,
+                width: calculatedWidth,
+                height: calculatedHeight,
+                child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.red, width: 2.5),
                     borderRadius: BorderRadius.circular(6),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.red.withOpacity(0.2),
+                        color: Colors.red.withOpacity(0.15),
                         blurRadius: 4,
                         spreadRadius: 1,
                       ),
                     ],
                   ),
                 ),
+              ),
 
-                // 2. LABEL INFORMASI
-                // - Jika box kecil => label dipindah ke atas (agar tidak bottom-overflow)
-                // - Jika box besar => label tetap di tengah
-                if (smallBox)
-                  Positioned(
-                    top: -75,
-                    left: labelLeft,
-                    child: SizedBox(width: labelWidth, child: _buildLabel(obj)),
-                  )
-                else
-                  Center(child: _buildLabel(obj)),
-              ],
-            ),
+              // Label Informasi Terpisah (Ditempatkan secara absolut pada level stack kamera utama)
+              Positioned(
+                left: labelLeft,
+                top: labelTop,
+                width: labelWidth,
+                child: _buildLabel(obj),
+              ),
+            ],
           );
         }).toList(),
       );
