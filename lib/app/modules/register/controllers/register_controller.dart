@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../widgets/app_snackbar.dart';
 import '../../../data/services/api_service.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterController extends GetxController {
   /// TEXT CONTROLLER
@@ -18,6 +21,15 @@ class RegisterController extends GetxController {
   /// LOADING
   final isLoading = false.obs;
 
+  /// STORAGE
+  final box = GetStorage();
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId: dotenv
+        .env['GOOGLE_WEB_CLIENT_ID'], 
+    scopes: ['email'],
+  );
+
   /// TOGGLE PASSWORD
   void togglePass() {
     isHiddenPass.toggle();
@@ -29,6 +41,7 @@ class RegisterController extends GetxController {
 
   /// REGISTER ACTION
   Future<void> register() async {
+    if (isLoading.value) return;
     final email = emailC.text.trim();
     final pass = passC.text.trim();
     final confirm = confirmC.text.trim();
@@ -94,6 +107,74 @@ class RegisterController extends GetxController {
       }
     } catch (e) {
       AppSnackbar.show(title: "Error", message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// GOOGLE REGISTER ACTION
+  Future<void> registerWithGoogle() async {
+    try {
+      isLoading.value = true;
+
+      // Paksa membersihkan sisa login otomatis lama
+      await _googleSignIn.signOut();
+
+      // 1. Munculkan dialog pilihan akun Google
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        isLoading.value = false;
+        return;
+      }
+
+      // 2. Ambil detail autentikasi Google
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        AppSnackbar.show(
+          title: "Error",
+          message: "Gagal mengamankan ID Token dari SDK Google",
+        );
+        isLoading.value = false;
+        return;
+      }
+
+      // 3. Kirim ID Token ke endpoint Google Login backend Node.js kamu
+      // Biasanya alur Google Sign-In langsung otomatis membuat akun jika email belum terdaftar
+      final result = await ApiService.loginWithGoogle(idToken: idToken);
+
+      if (result['success'] == true) {
+        final token = result['token'];
+        final user = result['user'];
+
+        // Simpan credentials ke lokal HP
+        await box.write('token', token);
+        await box.write('userId', user['_id']);
+        await box.write('email', user['email']);
+        await box.write('username', user['email'].split('@').first);
+
+        AppSnackbar.show(title: "Berhasil", message: "Daftar Google Berhasil");
+
+        // Alihkan user langsung masuk ke halaman Utama
+        Get.offAllNamed(
+          Routes.MAIN,
+          arguments: {
+            'id': user['_id'],
+            'email': user['email'],
+            'username': user['email'].split('@').first,
+          },
+        );
+      } else {
+        AppSnackbar.show(
+          title: "Daftar Gagal",
+          message: result['message'] ?? "Gagal memverifikasi akun ke backend",
+        );
+      }
+    } catch (e) {
+      AppSnackbar.show(title: "Error Autentikasi", message: e.toString());
     } finally {
       isLoading.value = false;
     }

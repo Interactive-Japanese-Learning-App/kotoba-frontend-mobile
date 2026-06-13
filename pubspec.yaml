@@ -45,6 +45,8 @@ dependencies:
   speech_to_text: ^7.0.0
   string_similarity: ^2.0.0
   flutter_tts: ^4.0.2
+  google_sign_in: ^6.2.1
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +71,8 @@ flutter:
     - assets/stroke_json/hiragana/
     - assets/stroke_json/katakana/
     - assets/kana_images/
-
+    - .env
+    
   fonts:
     - family: Poppins
       fonts:

@@ -15,13 +15,13 @@ class RegisterView extends GetView<RegisterController> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Column(
             children: [
-
               const SizedBox(height: 40),
 
               /// LOGO
               Image.asset(
                 "assets/images/kotoba-logo.png",
                 height: 120,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.image, size: 120),
               ),
 
               const SizedBox(height: 20),
@@ -69,8 +69,7 @@ class RegisterView extends GetView<RegisterController> {
               Obx(() => TextField(
                     controller: controller.confirmC,
                     obscureText: controller.isHiddenConfirm.value,
-                    decoration:
-                        _inputDecoration("Konfirmasi Kata Sandi").copyWith(
+                    decoration: _inputDecoration("Konfirmasi Kata Sandi").copyWith(
                       suffixIcon: IconButton(
                         icon: Icon(
                           controller.isHiddenConfirm.value
@@ -97,34 +96,41 @@ class RegisterView extends GetView<RegisterController> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : controller.register,
+                      onPressed: controller.isLoading.value ? null : controller.register,
                       child: controller.isLoading.value
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(
-                              "Daftar",
-                              style: TextStyle(fontSize: 16),
-                            ),
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text("Daftar", style: TextStyle(fontSize: 16)),
                     ),
                   )),
 
               const SizedBox(height: 20),
 
-              /// GOOGLE
+              /// GOOGLE BUTTON ACTION
               Column(
                 children: [
-                  Text(
+                  const Text(
                     "atau daftar dengan",
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    height: 40,
-                    child: Image.asset("assets/images/logo-google.png"),
-                  ),
+                  Obx(() => InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        // Jika sedang loading, fungsi klik dimatikan
+                        onTap: controller.isLoading.value
+                            ? null
+                            : () => controller.registerWithGoogle(),
+                        child: Opacity(
+                          opacity: controller.isLoading.value ? 0.5 : 1.0,
+                          child: SizedBox(
+                            height: 40,
+                            child: Image.asset(
+                              "assets/images/logo-google.png",
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.g_mobiledata, size: 40),
+                            ),
+                          ),
+                        ),
+                      )),
                 ],
               ),
 

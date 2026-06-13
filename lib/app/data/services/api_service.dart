@@ -24,6 +24,21 @@ class ApiService {
   }
 
   // =========================
+  // GOOGLE LOGIN
+  // =========================
+  static Future<Map<String, dynamic>> loginWithGoogle({
+    required String idToken,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/user/google-login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'idToken': idToken}),
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
   // LOGIN USER
   // =========================
 
