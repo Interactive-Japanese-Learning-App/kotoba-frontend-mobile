@@ -36,133 +36,122 @@ class NihongoView extends GetView<NihongoController> {
         bottom: true,
         child: Column(
           children: [
-              const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-              /// TAB
-              SizedBox(
-                height: 45,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      _buildTab("Hiragana", 0),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Katakana", 1),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Angka", 2),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Bulan Tanggal", 3),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Keluarga", 4),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Hewan", 5),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Makanan Minuman", 6),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Pekerjaan", 7),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Benda", 8),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              /// SEARCH
-              Padding(
+            /// TAB
+            SizedBox(
+              height: 45,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: TextField(
-                    onChanged: controller.updateSearch,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.search, color: Colors.grey),
-                      hintText: "Cari huruf...",
-                      border: InputBorder.none,
+                child: Row(
+                  children: [
+                    _buildTab("Hiragana", 0),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Katakana", 1),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Angka", 2),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Bulan", 3),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Tanggal", 4),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Keluarga", 5),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Hewan", 6),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Makanan", 7),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Minuman", 8),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Pekerjaan", 9),
+                    const SizedBox(width: 12),
+
+                    _buildTab("Benda", 10),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            /// SEARCH
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: AppColors.neutral,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: TextField(
+                  onChanged: controller.updateSearch,
+                  decoration: InputDecoration(
+                    icon: const Icon(Icons.search, color: Colors.grey),
+                    hintText: "Cari huruf...",
+                    hintStyle: const TextStyle(
+                      fontSize: 14, 
+                      color: Colors.grey,
                     ),
+                    border: InputBorder.none,
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-              Expanded(
-                child: Obx(() {
-                  switch (controller.selectedIndex.value) {
-                    case 0:
-                      return _grid(
-                        controller.filteredHiragana,
-                        "HIRAGANA",
-                      );
+            Expanded(
+              child: Obx(() {
+                switch (controller.selectedIndex.value) {
+                  case 0:
+                    return _grid(controller.filteredHiragana, "HIRAGANA");
 
-                    case 1:
-                      return _grid(
-                        controller.filteredKatakana,
-                        "KATAKANA",
-                      );
+                  case 1:
+                    return _grid(controller.filteredKatakana, "KATAKANA");
 
-                    case 2:
-                      return _grid(
-                        controller.filteredAngka,
-                        "ANGKA",
-                      );
+                  case 2:
+                    return _grid(controller.filteredAngka, "ANGKA");
 
-                    case 3:
-                      return _grid(
-                        controller.filteredBulanTanggal,
-                        "BULAN",
-                      );
+                  case 3:
+                    return _grid(controller.filteredBulan, "BULAN");
 
-                    case 4:
-                      return _grid(
-                        controller.filteredKeluarga,
-                        "KELUARGA",
-                      );
+                  case 4:
+                    return _grid(controller.filteredTanggal, "TANGGAL");
 
-                    case 5:
-                      return _grid(
-                        controller.filteredHewan,
-                        "HEWAN",
-                      );
+                  case 5:
+                    return _grid(controller.filteredKeluarga, "KELUARGA");
 
-                    case 6:
-                      return _grid(
-                        controller.filteredMakanan,
-                        "MAKANAN",
-                      );
+                  case 6:
+                    return _grid(controller.filteredHewan, "HEWAN");
 
-                    case 7:
-                      return _grid(
-                        controller.filteredPekerjaan,
-                        "PEKERJAAN",
-                      );
+                  case 7:
+                    return _grid(controller.filteredMakanan, "MAKANAN");
 
-                    default:
-                      return _grid(
-                        controller.filteredBenda,
-                        "BENDA",
-                      );
-                  }
-                }),
-              ),
-            ],
-          ),
+                  case 8:
+                    return _grid(controller.filteredMakanan, "MINUMAN");
+
+                  case 9:
+                    return _grid(controller.filteredPekerjaan, "PEKERJAAN");
+
+                  default:
+                    return _grid(controller.filteredBenda, "BENDA");
+                }
+              }),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   // TAB ITEM
@@ -192,87 +181,108 @@ class NihongoView extends GetView<NihongoController> {
   }
 
   // GRID
-  Widget _grid(List<Map<String, String>> data, String type) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(20),
-      itemCount: data.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 15,
-        crossAxisSpacing: 15,
-        childAspectRatio: 1,
-      ),
-      itemBuilder: (context, index) {
-        final item = data[index];
+  Widget _grid(List<Map<String, dynamic>> data, String type) {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        return Container(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+      if (data.isEmpty) {
+        return const Center(
+          child: Text(
+            "Data tidak ditemukan",
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          child: Stack(
-            
-            children: [
-              /// ROMAJI
-              Positioned(
-                top: 10,
-                left: 10,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black12, width: 1),
-                  ),
-                  child: Text(
-                    item["romaji"] ?? "",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+        );
+      }
+
+      return GridView.builder(
+        padding: const EdgeInsets.all(20),
+        itemCount: data.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 15,
+          crossAxisSpacing: 15,
+          childAspectRatio: 1,
+        ),
+        itemBuilder: (context, index) {
+          final item = data[index];
+
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                /// ROMAJI
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.black12, width: 1),
+                    ),
+                    child: Text(
+                      item["romaji"]?.toString() ?? "",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              /// HURUF
-              Center(
-                child: Text(
-                  item["char"] ?? "",
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-              /// ARTI
-              Positioned(
-                bottom: 18,
-                left: 0,
-                right: 0,
-                child: Center(
+                /// CHARACTER
+                Center(
                   child: Text(
-                    item["meaning"] ?? "",
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    item["character"]?.toString() ?? "",
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+
+                /// MEANING
+                Positioned(
+                  bottom: 18,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        item["meaning"]?.toString() ?? "",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 }

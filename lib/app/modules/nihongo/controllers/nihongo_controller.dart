@@ -1,112 +1,222 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 class NihongoController extends GetxController {
-  /// TAB INDEX
   final selectedIndex = 0.obs;
-
-  /// SEARCH
   final searchQuery = ''.obs;
+  final isLoading = false.obs;
 
-  // DATA
-  final hiragana = <Map<String, String>>[
-    {"char": "あ", "romaji": "a", "meaning": "a"},
-    {"char": "い", "romaji": "i", "meaning": "i"},
-    {"char": "う", "romaji": "u", "meaning": "u"},
-    {"char": "え", "romaji": "e", "meaning": "e"},
-    {"char": "お", "romaji": "o", "meaning": "o"},
-    {"char": "か", "romaji": "ka", "meaning": "ka"},
-    {"char": "き", "romaji": "ki", "meaning": "ki"},
-    {"char": "く", "romaji": "ku", "meaning": "ku"},
-  ];
+  final Dio dio = Dio();
 
-  final katakana = <Map<String, String>>[
-    {"char": "ア", "romaji": "a", "meaning": "a"},
-    {"char": "イ", "romaji": "i", "meaning": "i"},
-    {"char": "ウ", "romaji": "u", "meaning": "u"},
-    {"char": "エ", "romaji": "e", "meaning": "e"},
-    {"char": "オ", "romaji": "o", "meaning": "o"},
-    {"char": "カ", "romaji": "ka", "meaning": "ka"},
-    {"char": "キ", "romaji": "ki", "meaning": "ki"},
-    {"char": "ク", "romaji": "ku", "meaning": "ku"},
-  ];
+  final hiragana = <Map<String, dynamic>>[].obs;
+  final katakana = <Map<String, dynamic>>[].obs;
+  final angka = <Map<String, dynamic>>[].obs;
+  final bulan = <Map<String, dynamic>>[].obs;
+  final tanggal = <Map<String, dynamic>>[].obs;
+  final keluarga = <Map<String, dynamic>>[].obs;
+  final hewan = <Map<String, dynamic>>[].obs;
+  final makanan = <Map<String, dynamic>>[].obs;
+  final minuman = <Map<String, dynamic>>[].obs;
+  final pekerjaan = <Map<String, dynamic>>[].obs;
+  final benda = <Map<String, dynamic>>[].obs;
 
-  final angka = <Map<String, String>>[
-    {"char": "いち", "romaji": "ichi", "meaning": "satu"},
-    {"char": "に", "romaji": "ni", "meaning": "dua"},
-    {"char": "さん", "romaji": "san", "meaning": "tiga"},
-    {"char": "よん", "romaji": "yon", "meaning": "empat"},
-    {"char": "ご", "romaji": "go", "meaning": "lima"},
-  ];
+  static const String baseUrl = "http://10.143.77.127:5000/api/nihongo";
 
-  final bulanTanggal = <Map<String, String>>[
-    {"char": "つき", "romaji": "tsuki", "meaning": "bulan"},
-    {"char": "ひ", "romaji": "hi", "meaning": "hari"},
-  ];
+  @override
+  void onInit() {
+    super.onInit();
 
-  final keluarga = <Map<String, String>>[
-    {"char": "はは", "romaji": "haha", "meaning": "ibu"},
-    {"char": "ちち", "romaji": "chichi", "meaning": "ayah"},
-  ];
-
-  final hewan = <Map<String, String>>[
-    {"char": "いぬ", "romaji": "inu", "meaning": "anjing"},
-    {"char": "ねこ", "romaji": "neko", "meaning": "kucing"},
-  ];
-
-  final makanan = <Map<String, String>>[
-    {"char": "みず", "romaji": "mizu", "meaning": "air"},
-    {"char": "こめ", "romaji": "kome", "meaning": "beras"},
-  ];
-
-  final pekerjaan = <Map<String, String>>[
-    {"char": "せんせい", "romaji": "sensei", "meaning": "guru"},
-    {"char": "いしゃ", "romaji": "isha", "meaning": "dokter"},
-  ];
-
-  final benda = <Map<String, String>>[
-    {"char": "ほん", "romaji": "hon", "meaning": "buku"},
-    {"char": "くるま", "romaji": "kuruma", "meaning": "mobil"},
-  ];
-
-  // FILTER
-  List<Map<String, String>> _filter(List<Map<String, String>> data) {
-    if (searchQuery.value.isEmpty) return data;
-
-    return data
-        .where(
-          (item) =>
-              item["char"]!.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ||
-              item["romaji"]!.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ||
-              item["meaning"]!.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ),
-        )
-        .toList();
+    loadHiragana();
   }
 
-  List<Map<String, String>> get filteredHiragana => _filter(hiragana);
-  List<Map<String, String>> get filteredKatakana => _filter(katakana);
-  List<Map<String, String>> get filteredAngka => _filter(angka);
-  List<Map<String, String>> get filteredBulanTanggal => _filter(bulanTanggal);
-  List<Map<String, String>> get filteredKeluarga => _filter(keluarga);
-  List<Map<String, String>> get filteredHewan => _filter(hewan);
-  List<Map<String, String>> get filteredMakanan => _filter(makanan);
-  List<Map<String, String>> get filteredPekerjaan => _filter(pekerjaan);
-  List<Map<String, String>> get filteredBenda => _filter(benda);
+  Future<void> loadData(
+    String endpoint,
+    RxList<Map<String, dynamic>> target,
+  ) async {
+    try {
+      isLoading.value = true;
 
-  // ACTION
+      print("REQUEST => $baseUrl/$endpoint");
+
+      final response = await dio.get("$baseUrl/$endpoint");
+
+      print("STATUS => ${response.statusCode}");
+      print("DATA => ${response.data}");
+
+      final List data = response.data["data"];
+
+      target.assignAll(data.map((e) => Map<String, dynamic>.from(e)));
+
+      print("TOTAL => ${target.length}");
+    } catch (e) {
+      print("ERROR NIHONGO => $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> loadHiragana() async {
+    await loadData("hiragana", hiragana);
+  }
+
+  Future<void> loadKatakana() async {
+    await loadData("katakana", katakana);
+  }
+
+  Future<void> loadNumbers() async {
+    await loadData("numbers", angka);
+  }
+
+  Future<void> loadMonths() async {
+    await loadData("months", bulan);
+  }
+
+  Future<void> loadDates() async {
+    await loadData("dates", tanggal);
+  }
+
+  Future<void> loadFamily() async {
+    await loadData("family", keluarga);
+  }
+
+  Future<void> loadAnimals() async {
+    await loadData("animals", hewan);
+  }
+
+  Future<void> loadFoods() async {
+    await loadData("foods", makanan);
+  }
+
+  Future<void> loadDrinks() async {
+    await loadData("drinks", minuman);
+  }
+
+  Future<void> loadJobs() async {
+    await loadData("jobs", pekerjaan);
+  }
+
+  Future<void> loadObjects() async {
+    await loadData("object_vocab", benda);
+  }
+
+  List<Map<String, dynamic>> _filter(List<Map<String, dynamic>> data) {
+    if (searchQuery.value.isEmpty) {
+      return data;
+    }
+
+    return data.where((item) {
+      final character = item["character"]?.toString().toLowerCase() ?? "";
+
+      final romaji = item["romaji"]?.toString().toLowerCase() ?? "";
+
+      final meaning = item["meaning"]?.toString().toLowerCase() ?? "";
+
+      final query = searchQuery.value.toLowerCase();
+
+      return character.contains(query) ||
+          romaji.contains(query) ||
+          meaning.contains(query);
+    }).toList();
+  }
+
+  List<Map<String, dynamic>> get filteredHiragana => _filter(hiragana);
+
+  List<Map<String, dynamic>> get filteredKatakana => _filter(katakana);
+
+  List<Map<String, dynamic>> get filteredAngka => _filter(angka);
+
+  List<Map<String, dynamic>> get filteredBulan => _filter(bulan);
+
+  List<Map<String, dynamic>> get filteredTanggal => _filter(tanggal);
+
+  List<Map<String, dynamic>> get filteredKeluarga => _filter(keluarga);
+
+  List<Map<String, dynamic>> get filteredHewan => _filter(hewan);
+
+  List<Map<String, dynamic>> get filteredMakanan => _filter(makanan);
+
+  List<Map<String, dynamic>> get filteredMinuman => _filter(minuman);
+
+  List<Map<String, dynamic>> get filteredPekerjaan => _filter(pekerjaan);
+
+  List<Map<String, dynamic>> get filteredBenda => _filter(benda);
+
   void updateSearch(String value) {
     searchQuery.value = value;
   }
 
-  void changeTab(int index) {
+  Future<void> changeTab(int index) async {
     selectedIndex.value = index;
-    searchQuery.value = '';
+    searchQuery.value = "";
 
     Get.focusScope?.unfocus();
+
+    switch (index) {
+      case 0:
+        if (hiragana.isEmpty) {
+          await loadHiragana();
+        }
+        break;
+
+      case 1:
+        if (katakana.isEmpty) {
+          await loadKatakana();
+        }
+        break;
+
+      case 2:
+        if (angka.isEmpty) {
+          await loadNumbers();
+        }
+        break;
+
+      case 3:
+        if (bulan.isEmpty) {
+          await loadMonths();
+        }
+        break;
+
+      case 4:
+        if (tanggal.isEmpty) {
+          await loadDates();
+        }
+        break;
+
+      case 5:
+        if (keluarga.isEmpty) {
+          await loadFamily();
+        }
+        break;
+
+      case 6:
+        if (hewan.isEmpty) {
+          await loadAnimals();
+        }
+        break;
+
+      case 7:
+        if (makanan.isEmpty) {
+          await loadFoods();
+        }
+        break;
+
+      case 8:
+        if (minuman.isEmpty) {
+          await loadDrinks();
+        }
+        break;
+
+      case 9:
+        if (pekerjaan.isEmpty) {
+          await loadJobs();
+        }
+        break;
+
+      case 10:
+        if (benda.isEmpty) {
+          await loadObjects();
+        }
+        break;
+    }
   }
 }

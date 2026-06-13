@@ -39,7 +39,7 @@ class SpeechView extends GetView<SpeechController> {
 
           return Column(
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               /// TAB
               SizedBox(
@@ -79,9 +79,8 @@ class SpeechView extends GetView<SpeechController> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
-              /// GRID
               /// GRID
               Expanded(
                 child: GridView.builder(

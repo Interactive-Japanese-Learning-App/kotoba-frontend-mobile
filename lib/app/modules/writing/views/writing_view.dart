@@ -42,7 +42,7 @@ class WritingView extends GetView<WritingController> {
 
           return Column(
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               /// TAB
               SizedBox(
@@ -61,7 +61,7 @@ class WritingView extends GetView<WritingController> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               /// GRID
               Expanded(
