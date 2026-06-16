@@ -22,7 +22,8 @@ class CameraView extends GetView<CameraController> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 // Tentukan tinggi area kamera (misal: 80% dari tinggi layar)
-                final double areaHeight = MediaQuery.of(context).size.height * 0.8;
+                final double areaHeight =
+                    MediaQuery.of(context).size.height * 0.8;
                 final double areaWidth = MediaQuery.of(context).size.width;
 
                 return Obx(() {
@@ -61,17 +62,19 @@ class CameraView extends GetView<CameraController> {
                           ),
 
                           /// TOMBOL SHUTTER UNTUK DETEKSI
-                          Positioned(
-                            bottom: 20,
-                            left: 0,
-                            right: 0,
-                            child: Center(
-                              child: FloatingActionButton(
-                                backgroundColor: Colors.white,
-                                onPressed: () => controller.captureAndDetect(),
-                                child: const Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.black,
+                          SafeArea(
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 50),
+                                child: FloatingActionButton(
+                                  backgroundColor: Colors.white,
+                                  onPressed: controller.captureAndDetect,
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.black,
+                                    size: 25,
+                                  ),
                                 ),
                               ),
                             ),
@@ -141,7 +144,10 @@ class CameraView extends GetView<CameraController> {
   }
 
   /// RENDER MULTIPEL BOUNDING BOX DAN LABEL DI ATASNYA
-  Widget _buildDetectionOverlays({required double areaWidth, required double areaHeight}) {
+  Widget _buildDetectionOverlays({
+    required double areaWidth,
+    required double areaHeight,
+  }) {
     return Obx(() {
       if (!controller.isDetecting.value || controller.detectedObjects.isEmpty) {
         return const SizedBox();
@@ -150,14 +156,14 @@ class CameraView extends GetView<CameraController> {
       // Ambil preview size dari kamera untuk menghitung kecocokan rasio aspek (scaling factor)
       // Ini kunci utama agar kotak presisi di semua ukuran HP
       final previewSize = controller.cameraController.value.previewSize;
-      
+
       // Default fallback jika previewSize belum termuat
       double scaleY = areaHeight;
 
       if (previewSize != null) {
-        // Kamera biasanya mendeteksi dalam kondisi Landscape secara sistem, 
+        // Kamera biasanya mendeteksi dalam kondisi Landscape secara sistem,
         // sehingga kita perlu mencocokkan koordinatnya ke Portrait layar HP.
-        final double previewHeight = previewSize.width; 
+        final double previewHeight = previewSize.width;
         final double previewWidth = previewSize.height;
 
         scaleY = areaHeight / previewHeight;
@@ -186,10 +192,19 @@ class CameraView extends GetView<CameraController> {
           // 2. Kunci agar BOX tidak melebihi batas tepi kamera (clamping)
           calculatedWidth = calculatedWidth.clamp(0.0, areaWidth);
           calculatedHeight = calculatedHeight.clamp(0.0, areaHeight);
-          calculatedLeft = calculatedLeft.clamp(0.0, areaWidth - calculatedWidth);
-          calculatedTop = calculatedTop.clamp(0.0, areaHeight - calculatedHeight);
+          calculatedLeft = calculatedLeft.clamp(
+            0.0,
+            areaWidth - calculatedWidth,
+          );
+          calculatedTop = calculatedTop.clamp(
+            0.0,
+            areaHeight - calculatedHeight,
+          );
 
-          if (calculatedWidth <= 0 || calculatedHeight <= 0 || calculatedWidth.isNaN || calculatedHeight.isNaN) {
+          if (calculatedWidth <= 0 ||
+              calculatedHeight <= 0 ||
+              calculatedWidth.isNaN ||
+              calculatedHeight.isNaN) {
             return const SizedBox();
           }
 
@@ -198,12 +213,17 @@ class CameraView extends GetView<CameraController> {
           const double labelHeight = 65; // Perkiraan tinggi label maksimum
 
           // Posisi horizontal label (tengah-tengah box)
-          double labelLeft = calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2);
-          labelLeft = labelLeft.clamp(0.0, areaWidth - labelWidth); // Jaga agar tidak keluar kanan/kiri kamera
+          double labelLeft =
+              calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2);
+          labelLeft = labelLeft.clamp(
+            0.0,
+            areaWidth - labelWidth,
+          ); // Jaga agar tidak keluar kanan/kiri kamera
 
           // Posisi vertikal label
           double labelTop;
-          final bool isSmallBox = calculatedWidth < 150 || calculatedHeight < 100;
+          final bool isSmallBox =
+              calculatedWidth < 150 || calculatedHeight < 100;
 
           if (isSmallBox) {
             // Jika box kecil, coba letakkan di ATAS kotak
@@ -214,7 +234,8 @@ class CameraView extends GetView<CameraController> {
             }
           } else {
             // Jika box besar, letakkan tepat di TENGAH kotak
-            labelTop = calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
+            labelTop =
+                calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
           }
 
           // Jaga final posisi vertikal label agar mutlak tetap berada di dalam area kamera

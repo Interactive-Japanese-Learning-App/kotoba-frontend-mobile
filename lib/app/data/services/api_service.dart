@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 class ApiService {
-  static const String baseUrl = 'http://10.143.77.127:5000/api';
+  static const String baseUrl = 'http://192.168.18.9:5000/api';
 
   // =========================
   // REGISTER USER
@@ -160,6 +161,29 @@ class ApiService {
 
     return jsonDecode(response.body);
   }
+  //DETECT OBJECT API
+
+static Future<List<dynamic>> detectObject(File image) async {
+  var request = http.MultipartRequest(
+    'POST',
+    Uri.parse('$baseUrl/detect'),
+  );
+
+  request.files.add(
+    await http.MultipartFile.fromPath(
+      'image',
+      image.path,
+    ),
+  );
+
+  final streamedResponse = await request.send();
+
+  final response = await http.Response.fromStream(
+    streamedResponse,
+  );
+
+  return jsonDecode(response.body);
+}
 
 }
 

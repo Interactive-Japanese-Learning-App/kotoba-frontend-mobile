@@ -158,7 +158,7 @@ class CameraController extends GetxController {
   Future<void> loadModel() async {
     await vision.loadYoloModel(
       labels: 'assets/ml/labels.txt',
-      modelPath: 'assets/ml/yolov8n_float32.tflite',
+      modelPath: 'assets/ml/yolov8s_float32.tflite',
       modelVersion: "yolov8",
       quantization: false,
       numThreads: 2,
@@ -185,9 +185,9 @@ class CameraController extends GetxController {
         bytesList: bytes,
         imageHeight: imageHeight.toInt(),
         imageWidth: imageWidth.toInt(),
-        iouThreshold: 0.4,
-        confThreshold: 0.35,
-        classThreshold: 0.35,
+        confThreshold: 0.5,
+        classThreshold: 0.5,
+        iouThreshold: 0.45,
       );
 
       if (result.isNotEmpty) {
@@ -195,6 +195,14 @@ class CameraController extends GetxController {
 
         for (var item in result) {
           final String label = item["tag"]?.toString() ?? "";
+
+          final double confidence =
+              double.tryParse(item["box"][4].toString()) ?? 0;
+
+          if (confidence < 0.7) continue;
+
+          print("Label: $label | Confidence: $confidence");
+
           final box = item["box"];
 
           final data = objectData[label];
