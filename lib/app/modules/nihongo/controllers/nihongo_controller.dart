@@ -20,7 +20,7 @@ class NihongoController extends GetxController {
   final pekerjaan = <Map<String, dynamic>>[].obs;
   final benda = <Map<String, dynamic>>[].obs;
 
-  static const String baseUrl = "http://192.168.18.9:5000/api/nihongo";
+  static const String baseUrl = "http://10.154.20.127:5000/api/nihongo";
 
   @override
   void onInit() {

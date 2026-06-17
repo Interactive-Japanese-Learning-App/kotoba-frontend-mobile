@@ -1,48 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../../../data/services/api_service.dart';
+import '../quiz/quiz_controller.dart';
 
 class PuzzleController extends GetxController {
-
-  final options = [
-    "さ",
-    "し",
-    "か",
-    "す",
-    "く",
-  ];
+  final isLoading = true.obs;
 
   final selectedAnswers = <String>[].obs;
-  var isAnswered = false.obs;
 
-  final correctAnswers = [
-    "さ",
-    "し",
-    "す",
-  ];
+  final isAnswered = false.obs;
 
-  /// PILIH
+  final question = Rxn<Map<String, dynamic>>();
+
+  late String sectionId;
+  late String sectionTitle;
+  late int questionNo;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    final args = Get.arguments ?? {};
+
+    sectionId = args["sectionId"] ?? "";
+    sectionTitle = args["sectionTitle"] ?? "";
+    questionNo = args["questionNo"] ?? 3;
+
+    loadQuestion();
+  }
+
+  Future<void> loadQuestion() async {
+    try {
+      isLoading.value = true;
+
+      final response =
+          await ApiService.getQuizQuestions(sectionId);
+
+      if (response["success"] == true) {
+        final questions = List<Map<String, dynamic>>.from(
+          response["data"] ?? [],
+        );
+
+        question.value = questions.firstWhere(
+          (q) => q["questionNo"] == questionNo,
+          orElse: () => {},
+        );
+
+        if (question.value!.isEmpty) {
+          question.value = null;
+        }
+      }
+    } catch (e) {
+      print("LOAD PUZZLE ERROR: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   void selectAnswer(String answer) {
+    if (isAnswered.value) return;
 
-    if (selectedAnswers.contains(answer)) return;
+    final targetLength =
+        question.value?["answer"]
+                ?.toString()
+                .characters
+                .length ??
+            0;
 
-    if (selectedAnswers.length >= 3) return;
+    if (selectedAnswers.length >= targetLength) {
+      return;
+    }
 
     selectedAnswers.add(answer);
 
-    if (selectedAnswers.length == 3) {
+    if (selectedAnswers.length == targetLength) {
       isAnswered.value = true;
 
       Future.delayed(
-        const Duration(milliseconds: 300),
-        () {
-
+        const Duration(milliseconds: 400),
+        () async {
           if (isCorrect()) {
-
-            showSuccessDialog();
-
+            await submitAnswer();
           } else {
-
             showWrongDialog();
           }
         },
@@ -50,30 +91,52 @@ class PuzzleController extends GetxController {
     }
   }
 
-  /// CEK BENAR
   bool isCorrect() {
+    final answer =
+        question.value?["answer"]?.toString() ?? "";
 
-    return selectedAnswers.join("") ==
-        correctAnswers.join("");
+    return selectedAnswers.join("") == answer;
   }
 
-  /// POPUP BENAR
-  void showSuccessDialog() {
+  Future<void> submitAnswer() async {
+    try {
+      final userId =
+          GetStorage().read("userId");
 
+      if (userId == null) {
+        Get.snackbar(
+          "Error",
+          "User belum login",
+        );
+        return;
+      }
+
+      final response =
+          await ApiService.submitQuizAnswer(
+        userId: userId,
+        sectionId: sectionId,
+        questionNo: questionNo,
+        answer: selectedAnswers.join(""),
+      );
+
+      if (response["correct"] == true) {
+        showSuccessDialog();
+      } else {
+        showWrongDialog();
+      }
+    } catch (e) {
+      print("SUBMIT PUZZLE ERROR: $e");
+    }
+  }
+
+  void showSuccessDialog() {
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-
         child: Padding(
           padding: const EdgeInsets.all(24),
-
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              /// ICON
               const Icon(
                 Icons.check_circle,
                 color: Colors.green,
@@ -82,7 +145,6 @@ class PuzzleController extends GetxController {
 
               const SizedBox(height: 16),
 
-              /// TITLE
               const Text(
                 "Benar!",
                 style: TextStyle(
@@ -93,41 +155,26 @@ class PuzzleController extends GetxController {
 
               const SizedBox(height: 10),
 
-              /// SUBTITLE
               const Text(
-                "Puzzle berhasil diselesaikan",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                "Nomor berikutnya terbuka",
               ),
 
               const SizedBox(height: 20),
 
-              /// BUTTON
               SizedBox(
                 width: double.infinity,
-
                 child: ElevatedButton(
-                  onPressed: () {
-                    final quizC = Get.find<QuizController>();
-                    quizC.jawab(isBenar: true);
+                  onPressed: () async {
+                    final quizC =
+                        Get.find<QuizController>();
+
+                    await quizC.loadData();
 
                     Get.back(); // tutup dialog
-                    Get.back(); // kembali quiz
+                    Get.back(); // kembali ke roadmap
                   },
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-
                   child: const Text(
-                    "Kembali ke Quiz",
+                    "Kembali",
                   ),
                 ),
               ),
@@ -135,28 +182,18 @@ class PuzzleController extends GetxController {
           ),
         ),
       ),
-
       barrierDismissible: false,
     );
   }
 
-  /// POPUP SALAH
   void showWrongDialog() {
-
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-
         child: Padding(
           padding: const EdgeInsets.all(24),
-
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              /// ICON
               const Icon(
                 Icons.cancel,
                 color: Colors.red,
@@ -165,9 +202,8 @@ class PuzzleController extends GetxController {
 
               const SizedBox(height: 16),
 
-              /// TITLE
               const Text(
-                "Oops!",
+                "Salah!",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -176,39 +212,22 @@ class PuzzleController extends GetxController {
 
               const SizedBox(height: 10),
 
-              /// SUBTITLE
               const Text(
-                "Jawaban masih salah",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                "Coba lagi",
               ),
 
               const SizedBox(height: 20),
 
-              /// BUTTON
               SizedBox(
                 width: double.infinity,
-
                 child: ElevatedButton(
                   onPressed: () {
-
                     Get.back();
 
                     selectedAnswers.clear();
+
                     isAnswered.value = false;
                   },
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-
                   child: const Text(
                     "Coba Lagi",
                   ),
@@ -218,7 +237,6 @@ class PuzzleController extends GetxController {
           ),
         ),
       ),
-
       barrierDismissible: false,
     );
   }

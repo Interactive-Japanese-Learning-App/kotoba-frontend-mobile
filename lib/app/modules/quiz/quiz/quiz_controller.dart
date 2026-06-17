@@ -1,33 +1,167 @@
 import 'package:get/get.dart';
-import '../../../data/theme/app_colors.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../../../data/models/quiz_section_model.dart';
+import '../../../data/services/api_service.dart';
 
 class QuizController extends GetxController {
-  /// DATA QUIZ
-  final sections = [
-    {
-      "title": "Hiragana",
-      "icon": "あ",
-      "color": AppColors.danger,
-      "levels": [true, true, true, true, true],
-    },
-    {
-      "title": "Katakana",
-      "icon": "ア",
-      "color": AppColors.primary,
-      "levels": [true, true, false, false, false],
-    },
-  ];
+  /// =========================
+  /// LOADING
+  /// =========================
 
-  /// QUIZ LOGIC
-  var totalSoal = 5;
-  var benar = 0.obs;
-  var currentIndex = 0.obs;
+  final isLoading = false.obs;
 
-  /// XP SYSTEM
-  var xp = 0.obs;
-  var xpPerSoal = 20;
+  /// =========================
+  /// SECTION DARI BACKEND
+  /// =========================
+
+  final sections = <QuizSection>[].obs;
+
+  /// =========================
+  /// PROGRESS USER
+  /// =========================
+
+  final currentSection = 1.obs;
+
+  final currentQuestion = 1.obs;
+
+  final currentSectionId = "".obs;
+
+  /// =========================
+  /// STORAGE
+  /// =========================
+
+  final box = GetStorage();
+
+  String? get userId => box.read('userId');
+
+  /// =========================
+  /// RESULT QUIZ
+  /// =========================
+
+  final benar = 0.obs;
+
+  final xp = 0.obs;
+
+  final currentIndex = 0.obs;
+
+  final totalSoal = 5;
+
+  final xpPerSoal = 20;
+
+  final pelafalanAccuracy = 0.0.obs;
 
   int get maxXp => totalSoal * xpPerSoal;
+
+  /// =========================
+  /// INIT
+  /// =========================
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    try {
+      isLoading.value = true;
+
+      await loadSections();
+
+      await loadProgress();
+    } catch (e) {
+      print("Quiz Load Error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// =========================
+  /// LOAD SECTION
+  /// =========================
+
+  Future<void> loadSections() async {
+    try {
+      final response = await ApiService.getQuizSections();
+
+      if (response["success"] == true) {
+        sections.value = (response["data"] as List)
+            .map((e) => QuizSection.fromJson(e))
+            .toList();
+      }
+    } catch (e) {
+      print("Load Section Error: $e");
+    }
+  }
+
+  /// =========================
+  /// LOAD PROGRESS
+  /// =========================
+
+  Future<void> loadProgress() async {
+    try {
+      if (userId == null) return;
+
+      if (sections.isEmpty) return;
+
+      final firstSectionId = sections.first.id;
+
+      final response = await ApiService.getQuizProgress(
+        userId: userId!,
+        sectionId: firstSectionId,
+      );
+
+      if (response["success"] == true) {
+        final data = response["data"];
+
+        currentSectionId.value = data["sectionId"] ?? "";
+
+        currentQuestion.value = data["currentQuestion"] ?? 1;
+
+        final sectionCompleted = data["sectionCompleted"] ?? false;
+
+        if (sectionCompleted && sections.length > 1) {
+          currentSection.value = 2;
+        } else {
+          currentSection.value = 1;
+        }
+
+        print("========== QUIZ PROGRESS ==========");
+        print("User ID : $userId");
+        print("Section : ${currentSection.value}");
+        print("Question: ${currentQuestion.value}");
+        print("Completed: $sectionCompleted");
+        print("===================================");
+      }
+    } catch (e) {
+      print("Load Progress Error: $e");
+    }
+  }
+
+  /// =========================
+  /// LOCK / UNLOCK
+  /// =========================
+
+  bool isSectionUnlocked(int sectionNumber) {
+    return sectionNumber <= currentSection.value;
+  }
+
+  bool isQuestionUnlocked(int sectionNumber, int questionNumber) {
+    if (sectionNumber < currentSection.value) {
+      return true;
+    }
+
+    if (sectionNumber == currentSection.value) {
+      return questionNumber <= currentQuestion.value;
+    }
+
+    return false;
+  }
+
+  /// =========================
+  /// RESULT
+  /// =========================
 
   void tambahBenar() {
     benar.value++;
@@ -35,7 +169,10 @@ class QuizController extends GetxController {
   }
 
   void jawab({required bool isBenar}) {
-    if (isBenar) tambahBenar();
+    if (isBenar) {
+      tambahBenar();
+    }
+
     nextSoal();
   }
 
@@ -45,26 +182,43 @@ class QuizController extends GetxController {
     }
   }
 
-  /// PROGRESS
-  double get progress => maxXp == 0 ? 0 : xp.value / maxXp;
+  double get progress {
+    if (maxXp == 0) return 0;
 
-  double get accuracy => totalSoal == 0 ? 0 : (benar.value / totalSoal) * 100;
-
-  /// FIX ERROR PERSEN
-  int get persen => maxXp == 0 ? 0 : ((xp.value / maxXp) * 100).toInt();
-
-  /// RESET
-  void resetQuiz() {
-    benar.value = 0;
-    currentIndex.value = 0;
-    xp.value = 0;
-    pelafalanAccuracy.value = 0;
+    return xp.value / maxXp;
   }
 
+  double get accuracy {
+    if (totalSoal == 0) return 0;
+
+    return (benar.value / totalSoal) * 100;
+  }
+
+  int get persen {
+    if (maxXp == 0) return 0;
+
+    return ((xp.value / maxXp) * 100).toInt();
+  }
+
+  /// =========================
   /// PELAFALAN
-  var pelafalanAccuracy = 0.0.obs;
+  /// =========================
 
   void setPelafalanAccuracy(double value) {
     pelafalanAccuracy.value = value;
+  }
+
+  /// =========================
+  /// RESET
+  /// =========================
+
+  void resetQuiz() {
+    benar.value = 0;
+
+    currentIndex.value = 0;
+
+    xp.value = 0;
+
+    pelafalanAccuracy.value = 0;
   }
 }

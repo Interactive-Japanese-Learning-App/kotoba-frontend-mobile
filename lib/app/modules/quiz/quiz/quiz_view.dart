@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:kotoba_app/app/modules/main/controllers/bottom_nav_controller.dart';
 import 'package:kotoba_app/app/modules/quiz/quiz/quiz_controller.dart';
 import 'package:kotoba_app/app/routes/app_pages.dart';
+
+import '../../../data/models/quiz_section_model.dart';
 import '../../../data/theme/app_colors.dart';
 
 class QuizView extends GetView<QuizController> {
@@ -13,7 +16,6 @@ class QuizView extends GetView<QuizController> {
     return Scaffold(
       backgroundColor: AppColors.white,
 
-      /// APPBAR
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
@@ -21,13 +23,12 @@ class QuizView extends GetView<QuizController> {
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () {
             Get.offNamed(Routes.MAIN);
+
             Future.delayed(Duration.zero, () {
-              final navC = Get.find<BottomNavController>();
-              navC.changeIndex(2);
+              Get.find<BottomNavController>().changeIndex(2);
             });
           },
         ),
-
         title: Text(
           "Quiz",
           style: TextStyle(
@@ -35,70 +36,60 @@ class QuizView extends GetView<QuizController> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
-        centerTitle: false,
       ),
 
-      body: SafeArea(
-        top: false,
-        bottom: true,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom,
-            ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.sections.isEmpty) {
+          return const Center(child: Text("Belum ada section"));
+        }
+
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(
-              children: [
-                const SizedBox(height: 8),
+              children: List.generate(controller.sections.length, (index) {
+                final section = controller.sections[index];
 
-                _quizSection(
-                  title: "Hiragana",
-                  icon: "あ",
-                  color: AppColors.danger,
-                  levels: controller.sections[0]["levels"] as List,
-                ),
-
-                const SizedBox(height: 60),
-
-                _quizSection(
-                  title: "Katakana",
-                  icon: "ア",
-                  color: AppColors.primary,
-                  levels: controller.sections[1]["levels"] as List,
-                ),
-
-                const SizedBox(height: 40),
-              ],
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 60),
+                  child: _quizSection(
+                    section: section,
+                    sectionNumber: index + 1,
+                  ),
+                );
+              }),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
   Widget _quizSection({
-    required String title,
-    required String icon,
-    required Color color,
-    required List levels,
+    required QuizSection section,
+    required int sectionNumber,
   }) {
+    final sectionUnlocked = controller.isSectionUnlocked(sectionNumber);
+
+    final color = Color(int.parse(section.color.replaceFirst("#", "0xff")));
+
     return Column(
       children: [
-        /// CARD
+        /// HEADER
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(22),
-
           decoration: BoxDecoration(
-            color: color,
+            color: sectionUnlocked ? color : Colors.grey.shade400,
             borderRadius: BorderRadius.circular(28),
           ),
-
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              /// TEXT
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -110,11 +101,9 @@ class QuizView extends GetView<QuizController> {
                       letterSpacing: 2,
                     ),
                   ),
-
                   const SizedBox(height: 6),
-
                   Text(
-                    title,
+                    section.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -124,19 +113,16 @@ class QuizView extends GetView<QuizController> {
                 ],
               ),
 
-              /// ICON
               Container(
                 width: 58,
                 height: 58,
-
                 decoration: BoxDecoration(
                   color: AppColors.warning,
                   borderRadius: BorderRadius.circular(18),
                 ),
-
                 child: Center(
                   child: Text(
-                    icon,
+                    "${sectionNumber}",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -151,24 +137,26 @@ class QuizView extends GetView<QuizController> {
 
         const SizedBox(height: 35),
 
-        /// MAP
+        /// ROADMAP
         SizedBox(
           height: 620,
-
           child: LayoutBuilder(
             builder: (context, constraints) {
               final center = constraints.maxWidth / 2;
 
               return Stack(
                 children: [
-                  /// PATH
                   Positioned.fill(
                     child: CustomPaint(painter: DuolingoPathPainter()),
                   ),
 
-                  /// BUTTONS
-                  ...List.generate(levels.length, (i) {
-                    final unlocked = levels[i];
+                  ...List.generate(5, (i) {
+                    final questionNo = i + 1;
+
+                    final unlocked = controller.isQuestionUnlocked(
+                      sectionNumber,
+                      questionNo,
+                    );
 
                     double left;
 
@@ -187,52 +175,63 @@ class QuizView extends GetView<QuizController> {
                     return Positioned(
                       top: i * 110,
                       left: left,
-
                       child: GestureDetector(
                         onTap: unlocked
                             ? () {
-                                if (i == 0) {
-                                  Get.toNamed(Routes.QUIZ_MEMBACA1);
-                                } else if (i == 1) {
-                                  Get.toNamed(Routes.QUIZ_MEMBACA2);
-                                } else if (i == 2) {
-                                  Get.toNamed(Routes.QUIZ_PUZZLE);
-                                } else if (i == 3) {
-                                  Get.toNamed(Routes.QUIZ_MENULIS);
-                                } else if (i == 4) {
-                                  Get.toNamed(Routes.QUIZ_PELAFALAN);
+                                switch (i) {
+                                  case 0:
+                                    Get.toNamed(
+                                      Routes.QUIZ_MEMBACA1,
+                                      arguments: {
+                                        "sectionId": section.id,
+                                        "sectionTitle": section.title,
+                                      },
+                                    );
+                                    break;
+
+                                  case 1:
+                                    Get.toNamed(
+                                      Routes.QUIZ_MEMBACA2,
+                                      arguments: {
+                                        "sectionId": section.id,
+                                        "sectionTitle": section.title,
+                                      },
+                                    );
+                                    break;
+
+                                  case 2:
+                                    Get.toNamed(
+                                      Routes.QUIZ_PUZZLE,
+                                      arguments: {
+                                        "sectionId": section.id,
+                                        "sectionTitle": section.title,
+                                      },
+                                    );
+                                    break;
+
+                                  case 3:
+                                    Get.toNamed(Routes.QUIZ_MENULIS);
+                                    break;
+
+                                  case 4:
+                                    Get.toNamed(Routes.QUIZ_PELAFALAN);
+                                    break;
                                 }
                               }
                             : null,
-
                         child: Column(
                           children: [
-                            /// BULATAN
                             Container(
                               width: 92,
                               height: 92,
-
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-
                                 color: unlocked ? color : Colors.grey.shade300,
-
                                 border: Border.all(
                                   color: Colors.white,
                                   width: 5,
                                 ),
-
-                                boxShadow: unlocked
-                                    ? [
-                                        BoxShadow(
-                                          color: color.withOpacity(0.25),
-                                          blurRadius: 16,
-                                          offset: const Offset(0, 8),
-                                        ),
-                                      ]
-                                    : [],
                               ),
-
                               child: Icon(
                                 [
                                   Icons.menu_book_rounded,
@@ -241,9 +240,7 @@ class QuizView extends GetView<QuizController> {
                                   Icons.edit_note_rounded,
                                   Icons.mic_rounded,
                                 ][i],
-
                                 size: 40,
-
                                 color: unlocked
                                     ? Colors.white
                                     : Colors.grey.shade500,
@@ -252,33 +249,14 @@ class QuizView extends GetView<QuizController> {
 
                             const SizedBox(height: 10),
 
-                            /// LABEL
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 6,
-                              ),
-
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-
-                              child: Text(
-                                [
-                                  "Membaca 1",
-                                  "Membaca 2",
-                                  "Puzzle",
-                                  "Menulis",
-                                  "Pelafalan",
-                                ][i],
-
-                                style: TextStyle(
-                                  color: color,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 11,
-                                ),
-                              ),
+                            Text(
+                              [
+                                "Membaca 1",
+                                "Membaca 2",
+                                "Puzzle",
+                                "Menulis",
+                                "Pelafalan",
+                              ][i],
                             ),
                           ],
                         ),
@@ -295,7 +273,6 @@ class QuizView extends GetView<QuizController> {
   }
 }
 
-/// PATH PAINTER
 class DuolingoPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -325,10 +302,8 @@ class DuolingoPathPainter extends CustomPainter {
 
     path.quadraticBezierTo(centerX - 60, 480, centerX, 520);
 
-    /// DRAW
     canvas.drawPath(path, outerPaint);
 
-    /// DASH
     final metrics = path.computeMetrics();
 
     for (final metric in metrics) {

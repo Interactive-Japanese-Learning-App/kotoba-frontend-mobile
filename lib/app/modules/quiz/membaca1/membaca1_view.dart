@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../data/theme/app_colors.dart';
 import 'membaca1_controller.dart';
 
@@ -31,7 +32,19 @@ class Membaca1View extends GetView<Membaca1Controller> {
       ),
 
       body: Obx(() {
-        final question = controller.question;
+        /// LOADING
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        /// DATA SOAL
+        final question = controller.question.value;
+
+        if (question == null) {
+          return const Center(child: Text("Soal tidak ditemukan"));
+        }
+
+        final options = List<String>.from(question["options"] ?? []);
 
         return SafeArea(
           child: SingleChildScrollView(
@@ -44,7 +57,7 @@ class Membaca1View extends GetView<Membaca1Controller> {
 
                   /// TITLE
                   Text(
-                    "HIRAGANA",
+                    controller.sectionTitle.toUpperCase(),
                     style: TextStyle(
                       color: Colors.grey.shade500,
                       fontSize: 11,
@@ -56,13 +69,13 @@ class Membaca1View extends GetView<Membaca1Controller> {
                   const SizedBox(height: 8),
 
                   Text(
-                    "Tebak huruf berikut",
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                    "Apa arti dari kata Jepang berikut?",
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 50),
 
-                  /// SOAL
+                  /// SOAL BESAR
                   Text(
                     question["question"].toString(),
                     style: TextStyle(
@@ -72,13 +85,12 @@ class Membaca1View extends GetView<Membaca1Controller> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 50),
 
-                  /// OPTIONS
-                  ...List.generate((question["options"] as List).length, (
-                    index,
-                  ) {
-                    final option = (question["options"] as List)[index];
+                  /// PILIHAN JAWABAN
+                  ...List.generate(options.length, (index) {
+                    final option = options[index];
+
                     final selected = controller.selectedAnswer.value == option;
 
                     Color bgColor = const Color(0xFFD6D9DD);
@@ -99,11 +111,14 @@ class Membaca1View extends GetView<Membaca1Controller> {
 
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
+
                           width: double.infinity,
-                          height: 56,
+
+                          height: 58,
 
                           decoration: BoxDecoration(
                             color: bgColor,
+
                             borderRadius: BorderRadius.circular(30),
                           ),
 
@@ -114,7 +129,9 @@ class Membaca1View extends GetView<Membaca1Controller> {
                                 color: controller.isAnswered.value
                                     ? Colors.white
                                     : AppColors.primary,
+
                                 fontSize: 22,
+
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
