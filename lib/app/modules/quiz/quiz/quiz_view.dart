@@ -210,12 +210,25 @@ class QuizView extends GetView<QuizController> {
                                     break;
 
                                   case 3:
-                                    Get.toNamed(Routes.QUIZ_MENULIS);
+                                    Get.toNamed(
+                                      Routes.QUIZ_MENULIS,
+                                      arguments: {
+                                        "sectionId": section.id,
+                                        "sectionTitle": section.title,
+                                      },
+                                    );
                                     break;
 
                                   case 4:
-                                    Get.toNamed(Routes.QUIZ_PELAFALAN);
+                                    Get.toNamed(
+                                      Routes.QUIZ_PELAFALAN,
+                                      arguments: {
+                                        "sectionId": section.id,
+                                        "sectionTitle": section.title,
+                                      },
+                                    );
                                     break;
+
                                 }
                               }
                             : null,

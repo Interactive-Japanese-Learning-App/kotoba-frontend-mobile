@@ -99,7 +99,7 @@ class NihongoView extends GetView<NihongoController> {
                     icon: const Icon(Icons.search, color: Colors.grey),
                     hintText: "Cari huruf...",
                     hintStyle: const TextStyle(
-                      fontSize: 14, 
+                      fontSize: 14,
                       color: Colors.grey,
                     ),
                     border: InputBorder.none,
@@ -138,7 +138,7 @@ class NihongoView extends GetView<NihongoController> {
                     return _grid(controller.filteredMakanan, "MAKANAN");
 
                   case 8:
-                    return _grid(controller.filteredMakanan, "MINUMAN");
+                    return _grid(controller.filteredMinuman, "MINUMAN");
 
                   case 9:
                     return _grid(controller.filteredPekerjaan, "PEKERJAAN");
@@ -249,12 +249,19 @@ class NihongoView extends GetView<NihongoController> {
 
                 /// CHARACTER
                 Center(
-                  child: Text(
-                    item["character"]?.toString() ?? "",
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
+                  child: SizedBox(
+                    width: 100,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        item["character"]?.toString() ?? "",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),

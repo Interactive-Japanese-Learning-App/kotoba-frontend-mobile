@@ -142,11 +142,18 @@ class Membaca2Controller extends GetxController {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.back(); // dialog
-
+                    Get.back(); // tutup dialog
                     Get.back(); // kembali ke roadmap
                   },
-                  child: const Text("Kembali"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],
@@ -190,12 +197,21 @@ class Membaca2Controller extends GetxController {
                 child: ElevatedButton(
                   onPressed: () {
                     Get.back();
-
                     selectedAnswer.value = "";
-
                     isAnswered.value = false;
                   },
-                  child: const Text("Coba Lagi"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Coba Lagi",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
             ],

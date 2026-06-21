@@ -17,10 +17,7 @@ class Membaca2View extends GetView<Membaca2Controller> {
         backgroundColor: Colors.white,
         leadingWidth: 50,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: AppColors.primary,
-          ),
+          icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -36,33 +33,21 @@ class Membaca2View extends GetView<Membaca2Controller> {
 
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.question.value == null) {
-          return const Center(
-            child: Text(
-              "Soal tidak ditemukan",
-            ),
-          );
+          return const Center(child: Text("Soal tidak ditemukan"));
         }
 
-        final question =
-            controller.question.value!;
+        final question = controller.question.value!;
 
-        final options =
-            question["options"] as List;
+        final options = question["options"] as List;
 
         return SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 20,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
 
               child: Column(
                 children: [
@@ -70,15 +55,12 @@ class Membaca2View extends GetView<Membaca2Controller> {
 
                   /// SECTION TITLE
                   Text(
-                    controller.sectionTitle
-                        .toUpperCase(),
+                    controller.sectionTitle.toUpperCase(),
                     style: TextStyle(
-                      color:
-                          Colors.grey.shade500,
+                      color: Colors.grey.shade500,
                       fontSize: 11,
                       letterSpacing: 3,
-                      fontWeight:
-                          FontWeight.w600,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
 
@@ -86,130 +68,83 @@ class Membaca2View extends GetView<Membaca2Controller> {
 
                   Text(
                     "Pilih huruf Jepang yang benar",
-                    style: TextStyle(
-                      color:
-                          Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
 
                   const SizedBox(height: 40),
 
                   /// SOAL
                   Text(
-                    question["question"]
-                        .toString(),
-                    textAlign:
-                        TextAlign.center,
+                    question["question"].toString(),
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color:
-                          AppColors.primary,
+                      color: AppColors.primary,
                       fontSize: 48,
-                      fontWeight:
-                          FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
 
                   const SizedBox(height: 40),
 
                   /// OPTIONS
-                  ...List.generate(
-                    options.length,
-                    (index) {
-                      final option =
-                          options[index]
-                              .toString();
+                  ...List.generate(options.length, (index) {
+                    final option = options[index].toString();
+                    // ... di dalam List.generate (bagian OPTIONS)
 
-                      final selected =
-                          controller
-                                  .selectedAnswer
-                                  .value ==
-                              option;
+                    final selected = controller.selectedAnswer.value == option;
+                    Color bgColor = const Color(0xFFD6D9DD);
 
-                      Color bgColor =
-                          const Color(
-                            0xFFD6D9DD,
-                          );
-
-                      if (controller
-                          .isAnswered
-                          .value) {
-                        if (option ==
-                            question[
-                                "answer"]) {
-                          bgColor =
-                              Colors.green;
-                        } else if (selected) {
-                          bgColor =
-                              Colors.red;
+                    if (controller.isAnswered.value) {
+                      // Hanya beri warna jika tombol ini ADALAH yang dipilih user
+                      if (selected) {
+                        if (option == question["answer"]) {
+                          bgColor = Colors.green; // Hijau jika benar
+                        } else {
+                          bgColor = Colors.red; // Merah jika salah
                         }
                       }
+                      // Tombol yang tidak dipilih akan tetap berwarna abu-abu (default)
+                      // karena kita tidak mengecek kondisi lain di sini.
+                    }
 
-                      return Padding(
-                        padding:
-                            const EdgeInsets.only(
-                          bottom: 16,
-                        ),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
 
-                        child: GestureDetector(
-                          onTap: () =>
-                              controller
-                                  .selectAnswer(
-                            option,
+                      child: GestureDetector(
+                        onTap: () => controller.selectAnswer(option),
+
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+
+                          width: double.infinity,
+
+                          height: 56,
+
+                          decoration: BoxDecoration(
+                            color: bgColor,
+
+                            borderRadius: BorderRadius.circular(30),
                           ),
 
-                          child:
-                              AnimatedContainer(
-                            duration:
-                                const Duration(
-                              milliseconds:
-                                  250,
-                            ),
+                          child: Center(
+                            child: Text(
+                              option,
 
-                            width:
-                                double.infinity,
+                              style: TextStyle(
+                                color: controller.isAnswered.value
+                                    ? Colors.white
+                                    : AppColors.primary,
 
-                            height: 56,
+                                fontSize: 22,
 
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  bgColor,
-
-                              borderRadius:
-                                  BorderRadius.circular(
-                                30,
-                              ),
-                            ),
-
-                            child: Center(
-                              child: Text(
-                                option,
-
-                                style:
-                                    TextStyle(
-                                  color: controller
-                                          .isAnswered
-                                          .value
-                                      ? Colors
-                                          .white
-                                      : AppColors
-                                          .primary,
-
-                                  fontSize:
-                                      22,
-
-                                  fontWeight:
-                                      FontWeight
-                                          .w600,
-                                ),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
 
                   const SizedBox(height: 20),
                 ],

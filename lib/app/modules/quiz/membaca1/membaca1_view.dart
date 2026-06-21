@@ -91,18 +91,24 @@ class Membaca1View extends GetView<Membaca1Controller> {
                   ...List.generate(options.length, (index) {
                     final option = options[index];
 
+                    // ... di dalam List.generate
                     final selected = controller.selectedAnswer.value == option;
-
                     Color bgColor = const Color(0xFFD6D9DD);
 
                     if (controller.isAnswered.value) {
-                      if (option == question["answer"]) {
-                        bgColor = Colors.green;
-                      } else if (selected) {
-                        bgColor = Colors.red;
+                      if (selected) {
+                        // Jika tombol ini yang dipilih
+                        if (option == question["answer"]) {
+                          // Jika yang dipilih adalah jawaban benar -> WARNA HIJAU
+                          bgColor = Colors.green;
+                        } else {
+                          // Jika yang dipilih adalah jawaban salah -> WARNA MERAH
+                          bgColor = Colors.red;
+                        }
                       }
+                      // KITA TIDAK MENAMBAHKAN kondisi untuk mewarnai jawaban benar
+                      // jika user tidak memilihnya. Jadi kunci jawaban tetap abu-abu.
                     }
-
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
 

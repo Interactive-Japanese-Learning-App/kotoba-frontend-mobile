@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'dart:io';
 import 'dart:async';
 import '../../../widgets/app_snackbar.dart'; // Menambahkan import untuk Timer
+import 'package:image/image.dart' as img;
 
 // Model data baru untuk menampung properti tiap objek yang terdeteksi
 class DetectedObject {
@@ -158,8 +159,8 @@ class CameraController extends GetxController {
   Future<void> loadModel() async {
     await vision.loadYoloModel(
       labels: 'assets/ml/labels.txt',
-      modelPath: 'assets/ml/yolov8s_float32.tflite',
-      modelVersion: "yolov8",
+      modelPath: 'assets/ml/yolov5.tflite',
+      modelVersion: "yolov5",
       quantization: false,
       numThreads: 2,
       useGpu: false,
@@ -174,17 +175,25 @@ class CameraController extends GetxController {
       isProcessing.value = true;
       _clearDetection();
 
+      // 1. Ambil foto
       final cam.XFile photo = await cameraController.takePicture();
-      final File file = File(photo.path);
-      final bytes = await file.readAsBytes();
+      final bytes = await File(photo.path).readAsBytes();
 
-      double imageWidth = 720.0;
-      double imageHeight = 1280.0;
+      // 2. Gunakan library 'image' untuk mendapatkan dimensi asli (lebih akurat daripada hardcode)
+      final decodedImage = img.decodeImage(bytes);
+      if (decodedImage == null) {
+        isProcessing.value = false;
+        return;
+      }
 
+      final int imageWidth = decodedImage.width;
+      final int imageHeight = decodedImage.height;
+
+      // 3. Jalankan deteksi YOLO
       final result = await vision.yoloOnImage(
         bytesList: bytes,
-        imageHeight: imageHeight.toInt(),
-        imageWidth: imageWidth.toInt(),
+        imageHeight: imageHeight,
+        imageWidth: imageWidth,
         confThreshold: 0.5,
         classThreshold: 0.5,
         iouThreshold: 0.45,
@@ -192,24 +201,28 @@ class CameraController extends GetxController {
 
       if (result.isNotEmpty) {
         final List<DetectedObject> tempObjects = [];
+        final Set<String> addedLabels =
+            {}; // Tambahkan ini untuk melacak label yang sudah muncul
 
         for (var item in result) {
           final String label = item["tag"]?.toString() ?? "";
-
           final double confidence =
               double.tryParse(item["box"][4].toString()) ?? 0;
 
-          if (confidence < 0.7) continue;
+          if (confidence < 0.5) continue;
 
-          print("Label: $label | Confidence: $confidence");
+          // LOGIKA FILTER: Cek apakah label sudah ada
+          if (addedLabels.contains(label)) continue;
 
           final box = item["box"];
+          
 
           final data = objectData[label];
           final String jp = data != null ? data["jp"]! : "物体";
           final String rm = data != null ? data["rm"]! : "Buttai";
           final String tr = data != null ? data["tr"]! : label;
 
+          // Normalisasi koordinat agar range 0.0 - 1.0
           double xMin = box[0] / imageWidth;
           double yMin = box[1] / imageHeight;
           double xMax = box[2] / imageWidth;
@@ -229,13 +242,13 @@ class CameraController extends GetxController {
               h: h,
             ),
           );
+          addedLabels.add(label);
         }
 
         detectedObjects.assignAll(tempObjects);
         isDetecting.value = true;
-
-        // Memulai Timer untuk menghapus deteksi setelah 3 menit
-        _startDetectionTimer(const Duration(seconds: 15));
+        _startDetectionTimer(const Duration(seconds: 7));
+        
       } else {
         AppSnackbar.show(
           title: "Pemberitahuan",

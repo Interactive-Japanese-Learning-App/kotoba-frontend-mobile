@@ -10,10 +10,10 @@ class SpeechDetailView extends GetView<SpeechController> {
   Widget build(BuildContext context) {
     final args = Get.arguments as Map<String, dynamic>;
 
-    final kana = args["kana"] ?? "";
-    final label = args["label"] ?? "";
+    final character = args["character"] ?? "";
+    final romaji = args["romaji"] ?? "";
     final type = args["type"] ?? "";
-    final indo = args["indo"] ?? "";
+    final meaning = args["meaning"] ?? "";
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -63,7 +63,8 @@ class SpeechDetailView extends GetView<SpeechController> {
 
                       /// TITLE
                       Text(
-                        "Ucapkan: $label",
+                        "Ucapkan: $romaji",
+
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -74,12 +75,16 @@ class SpeechDetailView extends GetView<SpeechController> {
                       const SizedBox(height: 20),
 
                       /// CARD
-                      _buildCard(kana: kana, label: label, indo: indo),
+                      _buildCard(
+                        character: character,
+                        romaji: romaji,
+                        meaning: meaning,
+                      ),
 
                       const SizedBox(height: 30),
 
                       /// MIC
-                      Obx(() => _buildMic(label)),
+                      Obx(() => _buildMic(romaji)),
 
                       const SizedBox(height: 15),
 
@@ -130,9 +135,9 @@ class SpeechDetailView extends GetView<SpeechController> {
   // =====================================================
 
   Widget _buildCard({
-    required String kana,
-    required String label,
-    required String indo,
+    required String character,
+    required String romaji,
+    required String meaning,
   }) {
     return Container(
       width: 280,
@@ -175,7 +180,7 @@ class SpeechDetailView extends GetView<SpeechController> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        kana,
+                        character,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 90,
@@ -190,7 +195,7 @@ class SpeechDetailView extends GetView<SpeechController> {
                 const SizedBox(height: 10),
 
                 Text(
-                  indo,
+                  meaning,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 16,
@@ -203,7 +208,7 @@ class SpeechDetailView extends GetView<SpeechController> {
 
                 /// BUTTON
                 GestureDetector(
-                  onTap: () => controller.speak(kana),
+                  onTap: () => controller.speak(character),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,

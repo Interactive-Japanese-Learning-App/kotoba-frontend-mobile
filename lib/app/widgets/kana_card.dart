@@ -51,13 +51,23 @@ class KanaCard extends StatelessWidget {
                   top: 0,
                   left: 0,
                   child: Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.black12, width: 1),
                     ),
-                    child: Text(label, style: const TextStyle(fontSize: 12)),
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
                 ),
 

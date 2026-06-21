@@ -35,8 +35,7 @@ class PuzzleController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response =
-          await ApiService.getQuizQuestions(sectionId);
+      final response = await ApiService.getQuizQuestions(sectionId);
 
       if (response["success"] == true) {
         final questions = List<Map<String, dynamic>>.from(
@@ -63,11 +62,7 @@ class PuzzleController extends GetxController {
     if (isAnswered.value) return;
 
     final targetLength =
-        question.value?["answer"]
-                ?.toString()
-                .characters
-                .length ??
-            0;
+        question.value?["answer"]?.toString().characters.length ?? 0;
 
     if (selectedAnswers.length >= targetLength) {
       return;
@@ -78,41 +73,32 @@ class PuzzleController extends GetxController {
     if (selectedAnswers.length == targetLength) {
       isAnswered.value = true;
 
-      Future.delayed(
-        const Duration(milliseconds: 400),
-        () async {
-          if (isCorrect()) {
-            await submitAnswer();
-          } else {
-            showWrongDialog();
-          }
-        },
-      );
+      Future.delayed(const Duration(milliseconds: 400), () async {
+        if (isCorrect()) {
+          await submitAnswer();
+        } else {
+          showWrongDialog();
+        }
+      });
     }
   }
 
   bool isCorrect() {
-    final answer =
-        question.value?["answer"]?.toString() ?? "";
+    final answer = question.value?["answer"]?.toString() ?? "";
 
     return selectedAnswers.join("") == answer;
   }
 
   Future<void> submitAnswer() async {
     try {
-      final userId =
-          GetStorage().read("userId");
+      final userId = GetStorage().read("userId");
 
       if (userId == null) {
-        Get.snackbar(
-          "Error",
-          "User belum login",
-        );
+        Get.snackbar("Error", "User belum login");
         return;
       }
 
-      final response =
-          await ApiService.submitQuizAnswer(
+      final response = await ApiService.submitQuizAnswer(
         userId: userId,
         sectionId: sectionId,
         questionNo: questionNo,
@@ -137,27 +123,18 @@ class PuzzleController extends GetxController {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 80,
-              ),
+              const Icon(Icons.check_circle, color: Colors.green, size: 80),
 
               const SizedBox(height: 16),
 
               const Text(
                 "Benar!",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 10),
 
-              const Text(
-                "Nomor berikutnya terbuka",
-              ),
+              const Text("Nomor berikutnya terbuka"),
 
               const SizedBox(height: 20),
 
@@ -165,17 +142,20 @@ class PuzzleController extends GetxController {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    final quizC =
-                        Get.find<QuizController>();
-
+                    final quizC = Get.find<QuizController>();
                     await quizC.loadData();
-
                     Get.back(); // tutup dialog
                     Get.back(); // kembali ke roadmap
                   },
-                  child: const Text(
-                    "Kembali",
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],
@@ -194,27 +174,18 @@ class PuzzleController extends GetxController {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.cancel,
-                color: Colors.red,
-                size: 80,
-              ),
+              const Icon(Icons.cancel, color: Colors.red, size: 80),
 
               const SizedBox(height: 16),
 
               const Text(
                 "Salah!",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 10),
 
-              const Text(
-                "Coba lagi",
-              ),
+              const Text("Coba lagi"),
 
               const SizedBox(height: 20),
 
@@ -223,13 +194,20 @@ class PuzzleController extends GetxController {
                 child: ElevatedButton(
                   onPressed: () {
                     Get.back();
-
                     selectedAnswers.clear();
-
                     isAnswered.value = false;
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   child: const Text(
                     "Coba Lagi",
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ),

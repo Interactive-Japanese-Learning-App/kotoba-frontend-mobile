@@ -151,29 +151,54 @@ class PuzzleView extends GetView<PuzzleController> {
                   runSpacing: 16,
                   alignment: WrapAlignment.center,
                   children: options.map((item) {
-                    final selected = controller.selectedAnswers.contains(item);
+                    final isSelected = controller.selectedAnswers.contains(
+                      item,
+                    );
+
+                    // 1. Tentukan warna dasar (abu-abu)
+                    Color bgColor = const Color(0xFFD6D9DD);
+                    Color textColor = AppColors.primary;
+
+                    // 2. Jika user sudah memilih semua huruf (isAnswered = true)
+                    if (controller.isAnswered.value) {
+                      // Periksa apakah hasil susunan user benar atau salah secara keseluruhan
+                      if (controller.isCorrect()) {
+                        // Jika benar, semua yang dipilih user jadi hijau
+                        if (isSelected) {
+                          bgColor = Colors.green;
+                          textColor = Colors.white;
+                        }
+                      } else {
+                        // Jika salah, tombol yang dipilih user jadi MERAH
+                        // (Jawaban benar tetap abu-abu karena kondisi ini tidak menyentuh tombol yang tidak dipilih)
+                        if (isSelected) {
+                          bgColor = Colors.redAccent;
+                          textColor = Colors.white;
+                        }
+                      }
+                    } else {
+                      // 3. Jika belum di-submit, beri warna penanda bahwa huruf sedang dipilih
+                      if (isSelected) {
+                        bgColor = AppColors.primary.withOpacity(0.4);
+                      }
+                    }
 
                     return GestureDetector(
-                      onTap: selected
+                      onTap: isSelected
                           ? null
                           : () => controller.selectAnswer(item),
-
                       child: Container(
                         width: 90,
                         height: 58,
                         decoration: BoxDecoration(
-                          color: selected
-                              ? Colors.green
-                              : const Color(0xFFD6D9DD),
+                          color: bgColor,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Center(
                           child: Text(
                             item,
                             style: TextStyle(
-                              color: selected
-                                  ? Colors.white
-                                  : AppColors.primary,
+                              color: textColor,
                               fontSize: 22,
                               fontWeight: FontWeight.w600,
                             ),
@@ -183,7 +208,6 @@ class PuzzleView extends GetView<PuzzleController> {
                     );
                   }).toList(),
                 ),
-
                 const SizedBox(height: 30),
               ],
             ),

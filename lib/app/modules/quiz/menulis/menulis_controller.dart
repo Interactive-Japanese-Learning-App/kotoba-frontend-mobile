@@ -1,67 +1,139 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../data/models/stroke_model.dart';
 import '../../../data/services/stroke_service.dart';
 import '../../../widgets/kana_background_painter.dart';
+import '../../../data/services/api_service.dart';
+import '../quiz/quiz_controller.dart';
 
 class MenulisController extends GetxController {
-  final question = {
-    "label": "a",
-    "kana": "あ",
-    "type": "hiragana",
-  };
+  // Reactive States untuk MongoDB
+  final isLoading = true.obs;
 
+  final isAllStrokesDone = false.obs;
+  final isOcrProcessing = false.obs;
+  final isAnswered = false.obs;
+  final question = Rxn<Map<String, dynamic>>();
   final RxList<StrokeData> strokeData = <StrokeData>[].obs;
 
+  // State Goresan/Stroke Kanvas Asli
   final currentStroke = 0.obs;
-
   final strokeStatus = ''.obs;
-
-  /// stroke permanen
   final List<Offset?> points = [];
-
-  /// stroke sementara
   final List<Offset> tempStroke = [];
+  final box = GetStorage();
+
+  String? get userId => box.read('userId');
 
   bool isDrawing = false;
-
+  bool canvasReady = false;
   Offset? lastPoint;
 
-  /// canvas ready
-  bool canvasReady = false;
+  // Route Arguments Penampung ID MongoDB
+  late String sectionId;
+  late String sectionTitle;
+  late int questionNo;
 
   @override
   void onInit() {
     super.onInit();
+    print("ARGUMENTS = ${Get.arguments}");
 
-    loadStroke();
+    final args = Get.arguments ?? {};
+    sectionId = args["sectionId"] ?? "";
+    sectionTitle = args["sectionTitle"] ?? "";
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        canvasReady = true;
-      });
-    });
-  }
-
-  /// LOAD JSON
-  Future<void> loadStroke() async {
-    try {
-      final data = await StrokeService.loadStroke(
-        question["kana"]!,
-        question["type"]!,
-      );
-
-      strokeData.assignAll(data);
-
-      update();
-    } catch (e) {
-      debugPrint("ERROR LOAD STROKE: $e");
+    if (sectionId.isNotEmpty) {
+      loadQuestionData();
+    } else {
+      canvasReady = true;
+      loadStroke();
+      isLoading.value = false;
     }
   }
 
-  /// TRANSFORM JSON -> CANVAS
+  // Mengambil data pertanyaan menulis dari database MongoDB
+  Future<void> loadQuestionData() async {
+    try {
+      isLoading.value = true;
+
+      print("SECTION ID = $sectionId");
+
+      final response = await ApiService.getQuizQuestions(sectionId);
+
+      print("RESPONSE = $response");
+
+      if (response["success"] == true) {
+        final questions = response["data"] as List;
+
+        print("QUESTIONS = $questions");
+
+        final found = questions.where((e) => e["questionNo"] == 4);
+
+        print("FOUND = ${found.toList()}");
+
+        if (found.isNotEmpty) {
+          question.value = found.first;
+          questionNo = found.first["questionNo"];
+          await loadStroke();
+          canvasReady = true;
+          print("QUESTION = ${question.value}");
+        }
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Mengambil pola stroke berdasarkan huruf Kana
+  Future<void> loadStroke() async {
+    try {
+      if (question.value?["kana"] == null) return;
+
+      final data = await StrokeService.loadStroke(
+        question.value!["kana"].toString(),
+        "hiragana",
+      );
+
+      strokeData.assignAll(data);
+      update();
+    } catch (e) {
+      debugPrint("ERROR LOAD STROKE : $e");
+    }
+  }
+
+  // Pengiriman progress jawaban ke API MongoDB
+  Future<void> submitWritingAnswer() async {
+    if (isAnswered.value) return;
+
+    try {
+      print("USER ID = $userId");
+      print("SECTION ID = $sectionId");
+      print("QUESTION NO = $questionNo");
+
+      final targetAnswer =
+          question.value?["answer"] ?? question.value?["kana"] ?? "";
+      print("ANSWER = $targetAnswer");
+
+      final result = await ApiService.submitQuizAnswer(
+        userId: userId ?? "",
+        sectionId: sectionId,
+        questionNo: questionNo,
+        answer: targetAnswer,
+      );
+
+      print("SUBMIT RESULT = $result");
+      isAnswered.value = true;
+    } catch (e) {
+      print("SUBMIT ERROR = $e");
+    }
+  }
+
   Offset transformPoint(double x, double y) {
     const size = 300.0;
 
@@ -81,10 +153,8 @@ class MenulisController extends GetxController {
     );
   }
 
-  /// STATUS
   void showStatus(String status) {
     strokeStatus.value = status;
-
     update();
 
     Future.delayed(const Duration(milliseconds: 700), () {
@@ -95,206 +165,190 @@ class MenulisController extends GetxController {
     });
   }
 
-  /// HARUS MULAI DARI START POINT JSON
-  bool isNearStroke(Offset p, StrokeData stroke) {
-    final start = transformPoint(
-      stroke.start.x,
-      stroke.start.y,
-    );
-
-    return (p - start).distance < 70;
+  bool isNearStroke(Offset point, StrokeData stroke) {
+    final start = transformPoint(stroke.start.x, stroke.start.y);
+    return (point - start).distance < 70;
   }
 
-  /// START STROKE
   void startStroke(Offset point) {
     if (!canvasReady) return;
-
-    if (currentStroke.value >= strokeData.length) return;
-
     if (strokeData.isEmpty) return;
+    if (currentStroke.value >= strokeData.length) return;
 
     final stroke = strokeData[currentStroke.value];
 
-    if (KanaBackgroundPainter.lastWidth == 0 ||
-        KanaBackgroundPainter.lastHeight == 0) {
-      return;
-    }
-
-    /// wajib mulai dari titik awal yg benar
     if (!isNearStroke(point, stroke)) {
       showStatus("salah");
       return;
     }
 
     isDrawing = true;
-
-    lastPoint = point;
-
     tempStroke.clear();
-
     tempStroke.add(point);
-
+    lastPoint = point;
     update();
   }
 
-  /// ADD POINT
   void addPoint(Offset point) {
     if (!isDrawing) return;
 
     if (lastPoint != null) {
       final dist = (point - lastPoint!).distance;
 
-      /// smooth
       if (dist < 2) return;
 
-      /// cegah teleport ekstrem
       if (dist > 150) {
         isDrawing = false;
-
-        lastPoint = null;
-
         tempStroke.clear();
-
+        lastPoint = null;
         showStatus("salah");
-
         update();
-
         return;
       }
     }
 
     lastPoint = point;
-
     tempStroke.add(point);
-
     update();
   }
 
-  /// END STROKE
-  void endStroke() {
+  Future<void> endStroke() async {
     if (!isDrawing) return;
-
     if (lastPoint == null) return;
 
     final stroke = strokeData[currentStroke.value];
-
-    final start = transformPoint(
-      stroke.start.x,
-      stroke.start.y,
-    );
-
-    final end = transformPoint(
-      stroke.end.x,
-      stroke.end.y,
-    );
-
-    /// =========================
-    /// VALIDASI END POINT
-    /// =========================
+    final start = transformPoint(stroke.start.x, stroke.start.y);
+    final end = transformPoint(stroke.end.x, stroke.end.y);
     final endDist = (lastPoint! - end).distance;
 
-    /// =========================
-    /// VALIDASI ARAH
-    /// =========================
     final userStart = tempStroke.first;
     final userEnd = tempStroke.last;
 
     final jsonDx = end.dx - start.dx;
     final jsonDy = end.dy - start.dy;
-
     final userDx = userEnd.dx - userStart.dx;
     final userDy = userEnd.dy - userStart.dy;
 
-    /// dot product
+    final expectedLength = (end - start).distance;
+    final userLength = (userEnd - userStart).distance;
+
+    final lengthRatio = userLength / expectedLength;
+
+    final isLengthCorrect = lengthRatio >= 0.5 && lengthRatio <= 1.5;
+
     final dot = (jsonDx * userDx) + (jsonDy * userDy);
-
-    /// panjang vector
     final jsonLength = sqrt((jsonDx * jsonDx) + (jsonDy * jsonDy));
-
-    final userLength = sqrt((userDx * userDx) + (userDy * userDy));
+    final userVectorLength = sqrt((userDx * userDx) + (userDy * userDy));
 
     double similarity = 0;
-
     if (jsonLength > 0 && userLength > 0) {
       similarity = dot / (jsonLength * userLength);
     }
 
-    /// =========================
-    /// VALIDASI FINAL
-    /// =========================
-
     final isDirectionCorrect = similarity > 0.4;
-
     final isEndCorrect = endDist < 110;
 
-    if (isDirectionCorrect && isEndCorrect) {
+    if (isDirectionCorrect && isEndCorrect && isLengthCorrect) {
       showStatus("benar");
 
-      /// simpan stroke
       points.addAll(tempStroke);
-
-      /// separator
       points.add(null);
-
       tempStroke.clear();
 
       currentStroke.value++;
+
+      // Sukses stroke, tapi keputusan benar/salah & submit akan dilakukan saat Konfirmasi (OCR)
+      if (currentStroke.value >= strokeData.length) {
+        isAllStrokesDone.value = true;
+        strokeStatus.value = "";
+
+        await submitWritingAnswer();
+        showSuccessDialog();
+      }
     } else {
       showStatus("salah");
-
       tempStroke.clear();
     }
 
     isDrawing = false;
-
     lastPoint = null;
-
     update();
   }
 
-  /// CLEAR
+  void showSuccessDialog() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.check_circle, size: 80, color: Colors.green),
+              const SizedBox(height: 16),
+              const Text(
+                "Benar!",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Text("Huruf ${question.value?["kana"] ?? ""} berhasil ditulis."),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    Get.back(); // tutup dialog
+                    final quizC = Get.find<QuizController>();
+                    await quizC.loadData();
+                    Get.back(); // kembali ke roadmap
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Warna konsisten
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
   void clearCanvas() {
     points.clear();
-
     tempStroke.clear();
-
     currentStroke.value = 0;
-
     isDrawing = false;
-
     lastPoint = null;
-
     strokeStatus.value = "";
-
+    isAnswered.value = false;
     update();
   }
 
-  /// UNDO
   void undo() {
     if (points.isEmpty) return;
 
-    isDrawing = false;
-
-    lastPoint = null;
-
-    tempStroke.clear();
-
-    strokeStatus.value = "";
-
-    /// hapus separator null
     while (points.isNotEmpty && points.last == null) {
       points.removeLast();
     }
 
-    /// hapus 1 stroke terakhir
     while (points.isNotEmpty && points.last != null) {
       points.removeLast();
     }
 
-    /// balik stroke
     if (currentStroke.value > 0) {
       currentStroke.value--;
     }
+
+    // reset confirm/OCR state
+    isAllStrokesDone.value = false;
 
     update();
   }

@@ -95,7 +95,7 @@ class SpeechView extends GetView<SpeechController> {
                   ),
 
                   itemBuilder: (context, index) {
-                    final Map<String, String> item = data[index];
+                    final SpeechItem item = data[index];
 
                     return InkWell(
                       borderRadius: BorderRadius.circular(25),
@@ -106,7 +106,9 @@ class SpeechView extends GetView<SpeechController> {
                         Get.toNamed(
                           Routes.SPEECH_DETAIL,
                           arguments: {
-                            ...item,
+                            "character": item.character,
+                            "romaji": item.romaji,
+                            "meaning": item.meaning,
                             "type": [
                               "ANGKA",
                               "BULAN",
@@ -142,92 +144,64 @@ class SpeechView extends GetView<SpeechController> {
                               top: 10,
                               left: 10,
                               child: Container(
-                                constraints: const BoxConstraints(
-                                  minWidth: 35,
-                                  maxWidth: 65,
-                                  minHeight: 22,
-                                ),
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 4,
+                                  horizontal: 10,
+                                  vertical: 6,
                                 ),
-                                alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.black12),
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Text(
-                                  item['label']!,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                  item.romaji,
                                   style: const TextStyle(
-                                    fontSize: 9,
-                                    height: 1,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
                                   ),
                                 ),
                               ),
                             ),
 
-                            /// KANA
+                            /// CHARACTER
                             Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    height: 55,
-                                    child: Center(
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          item['kana']!,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  item.character,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
                                   ),
-
-                                  const SizedBox(height: 6),
-
-                                  Text(
-                                    item['indo'] ?? "",
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
 
-                            /// TYPE
+                            /// MEANING
                             Positioned(
                               bottom: 18,
                               left: 0,
                               right: 0,
                               child: Center(
-                                child: Text(
-                                  [
-                                    "ANGKA",
-                                    "BULAN",
-                                    "TANGGAL",
-                                    "KELUARGA",
-                                    "HEWAN",
-                                    "MAKANAN",
-                                    "MINUMAN",
-                                    "PEKERJAAN",
-                                    "BENDA",
-                                  ][controller.selectedIndex.value],
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
+                                  child: Text(
+                                    item.meaning,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                               ),

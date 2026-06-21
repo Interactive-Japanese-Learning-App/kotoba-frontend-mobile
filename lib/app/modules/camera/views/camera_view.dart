@@ -46,6 +46,7 @@ class CameraView extends GetView<CameraController> {
 
                           // Mengirimkan dimensi pasti area kamera untuk kalkulasi bounding box
                           _buildDetectionOverlays(
+                            context: context,
                             areaWidth: areaWidth,
                             areaHeight: areaHeight,
                           ),
@@ -145,6 +146,7 @@ class CameraView extends GetView<CameraController> {
 
   /// RENDER MULTIPEL BOUNDING BOX DAN LABEL DI ATASNYA
   Widget _buildDetectionOverlays({
+    required BuildContext context,
     required double areaWidth,
     required double areaHeight,
   }) {
@@ -153,97 +155,55 @@ class CameraView extends GetView<CameraController> {
         return const SizedBox();
       }
 
-      // Ambil preview size dari kamera untuk menghitung kecocokan rasio aspek (scaling factor)
-      // Ini kunci utama agar kotak presisi di semua ukuran HP
+      // 1. Ambil dimensi asli preview kamera
       final previewSize = controller.cameraController.value.previewSize;
+      final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-      // Default fallback jika previewSize belum termuat
-      double scaleY = areaHeight;
+      // Gunakan nilai default dari areaWidth/Height jika previewSize belum ada
+      double pWidth = previewSize?.width ?? areaWidth;
+      double pHeight = previewSize?.height ?? areaHeight;
 
-      if (previewSize != null) {
-        // Kamera biasanya mendeteksi dalam kondisi Landscape secara sistem,
-        // sehingga kita perlu mencocokkan koordinatnya ke Portrait layar HP.
-        final double previewHeight = previewSize.width;
-        final double previewWidth = previewSize.height;
-
-        scaleY = areaHeight / previewHeight;
+      // 2. Koreksi orientasi jika perlu
+      if (isPortrait && pWidth > pHeight) {
+        final temp = pWidth;
+        pWidth = pHeight;
+        pHeight = temp;
       }
 
-      final uniqueObjects = <String, dynamic>{};
-      for (var obj in controller.detectedObjects) {
-        uniqueObjects[obj.jp] = obj;
-      }
-
-      final objects = uniqueObjects.values.where((obj) {
-        // Kalkulasi dimensi mentah dengan skala rasio aspek
-        final w = obj.w * areaWidth;
-        final h = obj.h * areaHeight;
-        return w >= 20 && h >= 20;
-      }).toList();
+      // 3. Tentukan skala (Hapus deklarasi ulang pWidth/pHeight yang lama di sini!)
+      final double scaleX = areaWidth / pWidth;
+      final double scaleY = areaHeight / pHeight;
 
       return Stack(
-        children: objects.map((obj) {
-          // 1. Hitung koordinat Box Dasar
-          double calculatedLeft = obj.x * areaWidth;
-          double calculatedTop = obj.y * areaHeight;
-          double calculatedWidth = obj.w * areaWidth;
-          double calculatedHeight = obj.h * areaHeight;
+        children: controller.detectedObjects.map((obj) {
+          // 4. Hitung koordinat dengan skala yang sudah benar
+          double calculatedLeft = obj.x * pWidth * scaleX;
+          double calculatedTop = obj.y * pHeight * scaleY;
+          double calculatedWidth = obj.w * pWidth * scaleX;
+          double calculatedHeight = obj.h * pHeight * scaleY;
 
-          // 2. Kunci agar BOX tidak melebihi batas tepi kamera (clamping)
+          // 5. Clamping agar box tidak keluar dari area kamera
           calculatedWidth = calculatedWidth.clamp(0.0, areaWidth);
           calculatedHeight = calculatedHeight.clamp(0.0, areaHeight);
-          calculatedLeft = calculatedLeft.clamp(
-            0.0,
-            areaWidth - calculatedWidth,
-          );
-          calculatedTop = calculatedTop.clamp(
-            0.0,
-            areaHeight - calculatedHeight,
-          );
+          calculatedLeft = calculatedLeft.clamp(0.0, areaWidth - calculatedWidth);
+          calculatedTop = calculatedTop.clamp(0.0, areaHeight - calculatedHeight);
 
-          if (calculatedWidth <= 0 ||
-              calculatedHeight <= 0 ||
-              calculatedWidth.isNaN ||
-              calculatedHeight.isNaN) {
-            return const SizedBox();
-          }
-
-          // 3. Logika Penempatan Label yang Aman (Tidak boleh negatif/keluar kamera)
-          const double labelWidth = 130; // Batasi lebar fix label
-          const double labelHeight = 65; // Perkiraan tinggi label maksimum
-
-          // Posisi horizontal label (tengah-tengah box)
-          double labelLeft =
-              calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2);
-          labelLeft = labelLeft.clamp(
-            0.0,
-            areaWidth - labelWidth,
-          ); // Jaga agar tidak keluar kanan/kiri kamera
-
-          // Posisi vertikal label
+          // (Logika Label tetap sama)
+          const double labelWidth = 130;
+          const double labelHeight = 65;
+          double labelLeft = (calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2)).clamp(0.0, areaWidth - labelWidth);
+          
           double labelTop;
-          final bool isSmallBox =
-              calculatedWidth < 150 || calculatedHeight < 100;
-
-          if (isSmallBox) {
-            // Jika box kecil, coba letakkan di ATAS kotak
+          if (calculatedWidth < 150 || calculatedHeight < 100) {
             labelTop = calculatedTop - labelHeight - 8;
-            // JIKA di atas kotak ternyata mentok batas atas kamera (< 0), pindahkan ke BAWAH kotak
-            if (labelTop < 0) {
-              labelTop = calculatedTop + calculatedHeight + 8;
-            }
+            if (labelTop < 0) labelTop = calculatedTop + calculatedHeight + 8;
           } else {
-            // Jika box besar, letakkan tepat di TENGAH kotak
-            labelTop =
-                calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
+            labelTop = calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
           }
-
-          // Jaga final posisi vertikal label agar mutlak tetap berada di dalam area kamera
           labelTop = labelTop.clamp(0.0, areaHeight - labelHeight);
 
           return Stack(
             children: [
-              // Bounding Box Merah
               Positioned(
                 left: calculatedLeft,
                 top: calculatedTop,
@@ -253,18 +213,9 @@ class CameraView extends GetView<CameraController> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.red, width: 2.5),
                     borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.red.withOpacity(0.15),
-                        blurRadius: 4,
-                        spreadRadius: 1,
-                      ),
-                    ],
                   ),
                 ),
               ),
-
-              // Label Informasi Terpisah (Ditempatkan secara absolut pada level stack kamera utama)
               Positioned(
                 left: labelLeft,
                 top: labelTop,
@@ -276,5 +227,5 @@ class CameraView extends GetView<CameraController> {
         }).toList(),
       );
     });
-  }
+    }
 }

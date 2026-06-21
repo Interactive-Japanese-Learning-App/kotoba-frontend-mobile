@@ -128,11 +128,19 @@ class Membaca1Controller extends GetxController {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.back(); // dialog
-
-                    Get.back(); // quiz page
+                    Get.back(); // tutup dialog
+                    Get.back(); // kembali ke halaman sebelumnya
                   },
-                  child: const Text("Kembali"),
+                  // GANTI STYLE DI SINI
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Warna sukses
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],
@@ -172,12 +180,23 @@ class Membaca1Controller extends GetxController {
                 child: ElevatedButton(
                   onPressed: () {
                     Get.back();
-
                     selectedAnswer.value = "";
-
                     isAnswered.value = false;
                   },
-                  child: const Text("Coba Lagi"),
+                  // GANTI STYLE DI SINI
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Colors.redAccent, // Warna untuk tombol coba lagi
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Coba Lagi",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
             ],
