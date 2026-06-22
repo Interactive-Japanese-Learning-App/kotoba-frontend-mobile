@@ -278,21 +278,27 @@ class MenulisController extends GetxController {
   void showSuccessDialog() {
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.check_circle, size: 80, color: Colors.green),
+
               const SizedBox(height: 16),
+
               const Text(
                 "Benar!",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
+
               const SizedBox(height: 10),
-              Text("Huruf ${question.value?["kana"] ?? ""} berhasil ditulis."),
+
+              const Text("Nomor berikutnya terbuka"),
+
               const SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -303,14 +309,12 @@ class MenulisController extends GetxController {
                     Get.back(); // kembali ke roadmap
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Warna konsisten
+                    backgroundColor:
+                        Colors.green, // Warna konsisten sukses (Hijau)
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    elevation: 2, // Efek bayangan halus
                   ),
-                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
+                  child: const Text("Selesai"),
                 ),
               ),
             ],

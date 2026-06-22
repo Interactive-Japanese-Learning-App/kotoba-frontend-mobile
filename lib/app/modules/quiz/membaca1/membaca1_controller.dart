@@ -133,14 +133,11 @@ class Membaca1Controller extends GetxController {
                   },
                   // GANTI STYLE DI SINI
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Warna sukses
+                    backgroundColor: Colors.green, // Warna sukses (Hijau)
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    elevation: 2, // Memberikan efek bayangan timbul halus
                   ),
-                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
+                  child: const Text("Selesai"),
                 ),
               ),
             ],
@@ -186,17 +183,11 @@ class Membaca1Controller extends GetxController {
                   // GANTI STYLE DI SINI
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        Colors.redAccent, // Warna untuk tombol coba lagi
+                        Colors.red, // Disamakan jadi warna Merah murni
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    elevation: 2, // Memberikan efek bayangan timbul halus
                   ),
-                  child: const Text(
-                    "Coba Lagi",
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: const Text("Coba Lagi"),
                 ),
               ),
             ],

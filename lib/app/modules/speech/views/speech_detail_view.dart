@@ -104,24 +104,45 @@ class SpeechDetailView extends GetView<SpeechController> {
 
                       const SizedBox(height: 10),
 
-                      
+                      /// RECOGNIZED TEXT
                       /// RECOGNIZED TEXT
                       Obx(() {
                         // Masukkan variabel 'romaji' dari argument halaman ke fungsi baru
                         String hasilRomaji = controller.getRomajiResult(romaji);
 
-                        if (controller.score.value <= 0 || hasilRomaji.isEmpty) {
+                        if (controller.score.value <= 0 ||
+                            hasilRomaji.isEmpty) {
                           return const SizedBox();
                         }
 
-                        return Text(
-                          "Hasil: $hasilRomaji",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                            color: Colors.black87,
+                        // GANTI BAGIAN INI:
+                        return Text.rich(
+                          TextSpan(
+                            style: const TextStyle(
+                              fontStyle: FontStyle.italic,
+                            ), // <--- Membuat seluruh teks menjadi miring
+                            children: [
+                              const TextSpan(
+                                text: "Hasil: ",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color:
+                                      Colors.grey, // "Hasil:" berwarna abu-abu
+                                ),
+                              ),
+                              TextSpan(
+                                text: hasilRomaji,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .black87, // Nilai romaji berwarna hitam pekat
+                                ),
+                              ),
+                            ],
                           ),
+                          textAlign: TextAlign.center,
                         );
                       }),
                       const SizedBox(height: 20),

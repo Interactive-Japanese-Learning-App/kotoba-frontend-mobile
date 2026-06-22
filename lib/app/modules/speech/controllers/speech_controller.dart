@@ -388,20 +388,38 @@ class SpeechController extends GetxController {
               const SizedBox(height: 10),
 
               Text(message, style: const TextStyle(color: Colors.grey)),
-
               if (score.value > 0 && popupRomajiResult.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                Text(
-                  popupRomajiResult,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.black87,
+                const SizedBox(
+                  height: 12,
+                ), // Jarak diatur sedikit lebih longgar agar rapi
+                Text.rich(
+                  TextSpan(
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                    ), // <--- Mengatur seluruh anak teks menjadi miring bersamaan
+                    children: [
+                      const TextSpan(
+                        text: "Hasil: ",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey, // Label "Hasil:" diatur abu-abu
+                        ),
+                      ),
+                      TextSpan(
+                        text: popupRomajiResult,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors
+                              .black87, // Hasil teks romajinya tetap hitam pekat
+                        ),
+                      ),
+                    ],
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ],
-
               const SizedBox(height: 20),
 
               SizedBox(

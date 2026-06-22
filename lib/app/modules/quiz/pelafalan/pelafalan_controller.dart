@@ -278,7 +278,7 @@ class PelafalanController extends GetxController {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-
+              // ... Potongan kode di dalam showResultDialog ...
               if (displayRomaji.isNotEmpty) ...[
                 const SizedBox(height: 15),
                 const Text(
@@ -286,13 +286,39 @@ class PelafalanController extends GetxController {
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  displayRomaji,
+
+                Text.rich(
+                  TextSpan(
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                    children: [
+                      const TextSpan(
+                        text: "Hasil: ",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      TextSpan(
+                        text: displayRomaji,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                ),
+              ],
+              if (isSuccess) ...[
+                const SizedBox(height: 8),
+                const Text(
+                  "Semua soal telah selesai!",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -315,14 +341,16 @@ class PelafalanController extends GetxController {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: isSuccess
+                        ? Colors.green
+                        : Colors.red, // Warna dinamis lolos/gagal
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    elevation:
+                        2, // Memberikan efek bayangan (shadow) halus di bawah tombol
                   ),
-                  child: const Text("Lihat Hasil", style: TextStyle(fontSize: 16)),
+                  child: Text(
+                    isSuccess ? "Lihat Hasil" : "Coba Lagi",
+                  ), // Teks tombol otomatis berubah dinamis
                 ),
               ),
             ],

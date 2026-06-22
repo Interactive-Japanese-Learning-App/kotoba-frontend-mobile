@@ -38,7 +38,7 @@ class PelafalanView extends GetView<PelafalanController> {
         }
 
         final q = controller.question.value!;
-        
+
         final targetWord = q["kana"] ?? q["question"] ?? "";
         final romaji = q["answer"] ?? q["label"] ?? q["romaji"] ?? "";
 
@@ -56,9 +56,11 @@ class PelafalanView extends GetView<PelafalanController> {
 
                         /// TYPE / SECTION TITLE
                         Text(
-                          controller.sectionTitle.isNotEmpty 
+                          controller.sectionTitle.isNotEmpty
                               ? controller.sectionTitle.toUpperCase()
-                              : (q["type"] ?? "PRONUNCIATION").toString().toUpperCase(),
+                              : (q["type"] ?? "PRONUNCIATION")
+                                    .toString()
+                                    .toUpperCase(),
                           style: TextStyle(
                             fontSize: 11,
                             letterSpacing: 2,
@@ -114,17 +116,17 @@ class PelafalanView extends GetView<PelafalanController> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      targetWord, 
+                                      targetWord,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontSize: 48, 
+                                        fontSize: 48,
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.primary,
                                       ),
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      romaji, 
+                                      romaji,
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         color: Colors.grey,
@@ -141,7 +143,9 @@ class PelafalanView extends GetView<PelafalanController> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFF4E7C2),
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
                                         ),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -204,7 +208,9 @@ class PelafalanView extends GetView<PelafalanController> {
                                   width: 65,
                                   height: 65,
                                   decoration: BoxDecoration(
-                                    color: listening ? Colors.red : AppColors.primary,
+                                    color: listening
+                                        ? Colors.red
+                                        : AppColors.primary,
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
@@ -218,7 +224,7 @@ class PelafalanView extends GetView<PelafalanController> {
                           }),
                         ),
                         const SizedBox(height: 15),
-                        
+
                         /// STATUS TEXT MENDENGARKAN
                         Obx(() {
                           return Text(
@@ -233,25 +239,61 @@ class PelafalanView extends GetView<PelafalanController> {
                           );
                         }),
                         const SizedBox(height: 15),
-                        
-                        /// RECOGNIZED LIVE TEXT ROMAJI RESULT (Hasil dijamin selalu teks latin bebas aksara jepang)
+
+                        /// RECOGNIZED LIVE TEXT ROMAJI RESULT (Hasil di bawah tombol mic)
                         Obx(() {
                           if (controller.recognizedText.value.trim().isEmpty) {
                             return const SizedBox(height: 22);
                           }
 
-                          String liveRomaji = controller.convertedRomajiResult.value.trim();
+                          String liveRomaji = controller
+                              .convertedRomajiResult
+                              .value
+                              .trim();
+
+                          bool isGagal =
+                              (liveRomaji == "Pelafalan kurang tepat");
 
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              liveRomaji, 
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: liveRomaji.startsWith("(") ? Colors.red.shade400 : Colors.black87,
+                            child: Text.rich(
+                              TextSpan(
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                children: [
+                                  if (!isGagal) ...[
+                                    const TextSpan(
+                                      text: "Hasil: ",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors
+                                            .grey, // "Hasil:" miring berwarna abu-abu
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: liveRomaji,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    TextSpan(
+                                      text: liveRomaji,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.red.shade400,
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           );
                         }),

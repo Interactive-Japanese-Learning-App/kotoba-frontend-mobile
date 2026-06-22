@@ -146,14 +146,12 @@ class Membaca2Controller extends GetxController {
                     Get.back(); // kembali ke roadmap
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor:
+                        Colors.green, // Warna konsisten sukses (Hijau)
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    elevation: 2, // Efek bayangan halus
                   ),
-                  child: const Text("Selesai", style: TextStyle(fontSize: 16)),
+                  child: const Text("Selesai"),
                 ),
               ),
             ],
@@ -201,17 +199,12 @@ class Membaca2Controller extends GetxController {
                     isAnswered.value = false;
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
+                    backgroundColor:
+                        Colors.red, // Warna konsisten gagal/ulang (Merah)
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    elevation: 2, // Efek bayangan halus
                   ),
-                  child: const Text(
-                    "Coba Lagi",
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: const Text("Coba Lagi"),
                 ),
               ),
             ],
