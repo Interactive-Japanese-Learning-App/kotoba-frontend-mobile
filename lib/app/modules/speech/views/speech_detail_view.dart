@@ -104,17 +104,23 @@ class SpeechDetailView extends GetView<SpeechController> {
 
                       const SizedBox(height: 10),
 
+                      
                       /// RECOGNIZED TEXT
                       Obx(() {
-                        if (controller.score.value <= 0) {
+                        // Masukkan variabel 'romaji' dari argument halaman ke fungsi baru
+                        String hasilRomaji = controller.getRomajiResult(romaji);
+
+                        if (controller.score.value <= 0 || hasilRomaji.isEmpty) {
                           return const SizedBox();
                         }
 
                         return Text(
-                          controller.getRomajiResult(),
+                          "Hasil: $hasilRomaji",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black87,
                           ),
                         );
                       }),

@@ -4,6 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:string_similarity/string_similarity.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:dio/dio.dart';
+import 'package:kana_kit/kana_kit.dart';
 
 class SpeechItem {
   final String character;
@@ -47,6 +48,7 @@ class SpeechController extends GetxController {
   final SpeechToText speech = SpeechToText();
   final FlutterTts tts = FlutterTts();
   final Dio dio = Dio();
+  final kanaKit = KanaKit();
 
   static const String baseUrl = "http://192.168.18.9:5000/api/nihongo";
   @override
@@ -79,150 +81,9 @@ class SpeechController extends GetxController {
   }
 
   String normalizeSpeech(String text) {
-    text = text.toLowerCase().trim();
-    final specialMap = {
-      // KELUARGA
-      "かぞく": "kazoku",
-      "家族": "kazoku",
+    text = text.trim().toLowerCase().replaceAll(" ", "");
 
-      "ちち": "chichi",
-      "父": "chichi",
-
-      "はは": "haha",
-      "母": "haha",
-
-      "りょうしん": "ryoushin",
-      "両親": "ryoushin",
-
-      "あに": "ani",
-      "兄": "ani",
-
-      "あね": "ane",
-      "姉": "ane",
-
-      "おとうと": "otouto",
-      "弟": "otouto",
-
-      "いもうと": "imouto",
-      "妹": "imouto",
-
-      // HEWAN
-      "いぬ": "inu",
-      "犬": "inu",
-
-      "ねこ": "neko",
-      "猫": "neko",
-
-      "とり": "tori",
-      "鳥": "tori",
-
-      "さかな": "sakana",
-      "魚": "sakana",
-
-      "うま": "uma",
-      "馬": "uma",
-
-      "うし": "ushi",
-      "牛": "ushi",
-
-      // MAKANAN
-      "ごはん": "gohan",
-      "ご飯": "gohan",
-
-      "すし": "sushi",
-      "寿司": "sushi",
-
-      "たまご": "tamago",
-      "卵": "tamago",
-
-      "にく": "niku",
-      "肉": "niku",
-
-      "やさい": "yasai",
-      "野菜": "yasai",
-
-      "くだもの": "kudamono",
-      "果物": "kudamono",
-
-      "りんご": "ringo",
-      "林檎": "ringo",
-
-      // MINUMAN
-      "みず": "mizu",
-      "水": "mizu",
-
-      "おちゃ": "ocha",
-      "お茶": "ocha",
-
-      "ぎゅうにゅう": "gyuunyuu",
-      "牛乳": "gyuunyuu",
-
-      "こうちゃ": "koucha",
-      "紅茶": "koucha",
-
-      "りょくちゃ": "ryokucha",
-      "緑茶": "ryokucha",
-
-      "とうにゅう": "tounyuu",
-      "豆乳": "tounyuu",
-
-      // PEKERJAAN
-      "センセイ": "sensei",
-      "せんせい": "sensei",
-      "先生": "sensei",
-
-      "イシャ": "isha",
-      "いしゃ": "isha",
-      "医者": "isha",
-
-      "ガクセイ": "gakusei",
-      "がくせい": "gakusei",
-      "学生": "gakusei",
-
-      "ケイサツ": "keisatsu",
-      "けいさつ": "keisatsu",
-      "警察": "keisatsu",
-
-      // BENDA
-      "つくえ": "tsukue",
-      "机": "tsukue",
-
-      "いす": "isu",
-      "椅子": "isu",
-
-      "ほん": "hon",
-      "本": "hon",
-
-      "えんぴつ": "enpitsu",
-      "鉛筆": "enpitsu",
-
-      "かばん": "kaban",
-      "鞄": "kaban",
-
-      "とけい": "tokei",
-      "時計": "tokei",
-
-      "まど": "mado",
-      "窓": "mado",
-
-      "でんわ": "denwa",
-      "電話": "denwa",
-
-      "れいぞうこ": "reizouko",
-      "冷蔵庫": "reizouko",
-
-      "くつ": "kutsu",
-      "靴": "kutsu",
-
-      "ふく": "fuku",
-      "服": "fuku",
-
-      "かさ": "kasa",
-      "傘": "kasa",
-
-      "こくばん": "kokuban",
-      "黒板": "kokuban",
-
+    final Map<String, String> numberMap = {
       // ANGKA
       "1": "ichi",
       "2": "ni",
@@ -292,46 +153,91 @@ class SpeechController extends GetxController {
       "30日": "sanjuunichi",
       "31日": "sanjuuichinichi",
     };
-    final allWords = [
-      ...numbers,
-      ...months,
-      ...dates,
-      ...family,
-      ...animals,
-      ...foods,
-      ...drinks,
-      ...jobs,
-      ...objects,
-    ];
-    for (final item in allWords) {
-      final character = item.character.trim().toLowerCase();
-      final romaji = item.romaji.trim().toLowerCase();
-
-      if (text == character) {
-        print("MATCH CHARACTER => $character -> $romaji");
-        return romaji;
-      }
-
-      if (text == romaji) {
-        print("MATCH ROMAJI => $romaji");
-        return romaji;
-      }
+    if (numberMap.containsKey(text)) {
+      return numberMap[text]!;
     }
 
-    // baru cek special map
-    if (specialMap.containsKey(text)) {
-      return specialMap[text]!;
+    if (kanaKit.isRomaji(text)) {
+      return text;
+    }
+
+    if (kanaKit.isHiragana(text) ||
+        kanaKit.isKatakana(text) ||
+        kanaKit.isMixed(text)) {
+      return kanaKit.toRomaji(text);
     }
 
     return text;
   }
 
-  String getRomajiResult() {
-    if (score.value <= 0) {
+  /// =====================================================
+  /// KALKULASI SKOR (FIX UNTUK KANJI VS HIRAGANA)
+  /// =====================================================
+  void calculateScore(String targetRomaji, String spoken) {
+    if (spoken.isEmpty) {
+      score.value = 0;
+      return;
+    }
+
+    String expected = targetRomaji.trim().toLowerCase().replaceAll(" ", "");
+    String heard = normalizeSpeech(spoken);
+
+    if (!kanaKit.isRomaji(heard)) {
+      final allItems = [
+        ...numbers,
+        ...months,
+        ...dates,
+        ...family,
+        ...animals,
+        ...foods,
+        ...drinks,
+        ...jobs,
+        ...objects,
+      ];
+
+      for (final item in allItems) {
+        if (item.romaji.trim().toLowerCase().replaceAll(" ", "") == expected) {
+          String dbHiraganaAsRomaji = kanaKit.toRomaji(
+            item.character.trim().replaceAll(" ", ""),
+          );
+
+          if (dbHiraganaAsRomaji == expected) {
+            heard = expected;
+            print(
+              "DEBUG KANNA -> Kanji '$spoken' sukses dicocokkan dengan Hiragana DB via Romaji Match!",
+            );
+            break;
+          }
+        }
+      }
+    }
+
+    print("DEBUG KANNA -> Target: $expected | Didengar: $heard");
+
+    if (expected == heard || heard.contains(expected)) {
+      score.value = 100.0;
+    } else {
+      double similarity = expected.similarityTo(heard);
+      score.value = similarity * 100;
+    }
+  }
+
+  String getRomajiResult(String targetRomaji) {
+    if (score.value <= 0 || recognizedText.value.isEmpty) return "";
+
+    String expected = targetRomaji.trim().toLowerCase().replaceAll(" ", "");
+
+    if (score.value >= 90) {
+      return expected;
+    }
+
+    String result = normalizeSpeech(recognizedText.value);
+
+    if (!kanaKit.isRomaji(result)) {
       return "";
     }
 
-    return normalizeSpeech(recognizedText.value);
+    return result;
   }
 
   Future<void> loadData(String endpoint, RxList<SpeechItem> target) async {
@@ -412,43 +318,14 @@ class SpeechController extends GetxController {
 
     isListening.value = false;
 
-    // kalau tidak ada suara sama sekali, langsung keluar
     if (recognizedText.value.trim().isEmpty) {
       clearResult();
       return;
     }
 
     Future.delayed(const Duration(milliseconds: 500), () {
-      showResultDialog();
+      showResultDialog(target);
     });
-  }
-
-  void calculateScore(String target, String spoken) {
-    if (spoken.isEmpty) {
-      score.value = 0;
-      return;
-    }
-
-    print("RAW TARGET : $target");
-    print("RAW SPOKEN : $spoken");
-
-    String expected = normalizeSpeech(target);
-    String heard = normalizeSpeech(spoken);
-
-    print("NORMAL TARGET : $expected");
-    print("NORMAL HEARD : $heard");
-
-    expected = expected.toLowerCase().trim();
-    heard = heard.toLowerCase().trim();
-
-    expected = expected.replaceAll(" ", "");
-    heard = heard.replaceAll(" ", "");
-
-    double similarity = expected.similarityTo(heard);
-
-    score.value = similarity * 100;
-
-    print("SCORE : ${score.value}");
   }
 
   void toggleMic(String target) {
@@ -464,10 +341,10 @@ class SpeechController extends GetxController {
     score.value = 0;
   }
 
-  /// =========================
+  // =========================
   /// RESULT POPUP
   /// =========================
-  void showResultDialog() {
+  void showResultDialog(String targetRomaji) {
     String message;
 
     if (score.value == 0) {
@@ -479,6 +356,9 @@ class SpeechController extends GetxController {
     } else {
       message = "Pelafalan Bagus!";
     }
+
+    String popupRomajiResult = getRomajiResult(targetRomaji);
+
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -509,14 +389,15 @@ class SpeechController extends GetxController {
 
               Text(message, style: const TextStyle(color: Colors.grey)),
 
-              if (score.value > 0) ...[
+              if (score.value > 0 && popupRomajiResult.isNotEmpty) ...[
                 const SizedBox(height: 10),
-
                 Text(
-                  getRomajiResult(),
+                  popupRomajiResult,
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -529,14 +410,13 @@ class SpeechController extends GetxController {
                   onPressed: () {
                     final isSuccess = score.value >= 90;
 
-                    clearResult();
-
                     if (isSuccess) {
                       Get.back();
                       Get.back();
                     } else {
                       Get.back();
                     }
+                    clearResult();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: (score.value >= 90)
