@@ -17,10 +17,7 @@ class EditProfileView extends GetView<ProfileController> {
         backgroundColor: AppColors.white,
 
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: AppColors.primary,
-          ),
+          icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
 
@@ -38,30 +35,22 @@ class EditProfileView extends GetView<ProfileController> {
 
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const SizedBox(height: 10),
 
               /// FOTO PROFIL
               Center(
                 child: Column(
                   children: [
-
                     CircleAvatar(
                       radius: 45,
                       backgroundColor: AppColors.neutral,
 
-                      child: const Icon(
-                        Icons.person,
-                        size: 50,
-                      ),
+                      child: const Icon(Icons.person, size: 50),
                     ),
 
                     const SizedBox(height: 10),
@@ -84,10 +73,7 @@ class EditProfileView extends GetView<ProfileController> {
               const SizedBox(height: 30),
 
               /// EMAIL
-              _input(
-                controller.emailController,
-                "Email",
-              ),
+              _input(controller.emailController, "Email"),
 
               const SizedBox(height: 15),
 
@@ -129,42 +115,66 @@ class EditProfileView extends GetView<ProfileController> {
 
               /// BUTTON SIMPAN
               Obx(
-                () => SizedBox(
-                  width: double.infinity,
-                  height: 52,
-
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                () => Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : controller.submitProfile,
+                        child: controller.isLoading.value
+                            ? const SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                "Simpan",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ),
 
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : controller.submitProfile,
+                    const SizedBox(height: 15),
 
-                    child: controller.isLoading.value
-                        ? const SizedBox(
-                            height: 22,
-                            width: 22,
-
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            "Simpan",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.red),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                  ),
+                        ),
+                        onPressed: () {
+                          controller.confirmDeleteAccount();
+                        },
+                        child: const Text(
+                          "Hapus Akun",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -175,19 +185,14 @@ class EditProfileView extends GetView<ProfileController> {
   }
 
   // INPUT
-  Widget _input(
-    TextEditingController controller,
-    String hint,
-  ) {
+  Widget _input(TextEditingController controller, String hint) {
     return TextField(
       controller: controller,
 
       decoration: InputDecoration(
         hintText: hint,
 
-        hintStyle: TextStyle(
-          color: Colors.grey[600],
-        ),
+        hintStyle: TextStyle(color: Colors.grey[600]),
 
         filled: true,
         fillColor: AppColors.neutral,
@@ -210,10 +215,7 @@ class EditProfileView extends GetView<ProfileController> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
 
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 1.2,
-          ),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
         ),
       ),
     );
@@ -233,9 +235,7 @@ class EditProfileView extends GetView<ProfileController> {
       decoration: InputDecoration(
         hintText: hint,
 
-        hintStyle: TextStyle(
-          color: Colors.grey[600],
-        ),
+        hintStyle: TextStyle(color: Colors.grey[600]),
 
         filled: true,
         fillColor: AppColors.neutral,
@@ -258,17 +258,12 @@ class EditProfileView extends GetView<ProfileController> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
 
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 1.2,
-          ),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
         ),
 
         suffixIcon: IconButton(
           icon: Icon(
-            obscure
-                ? Icons.visibility_off
-                : Icons.visibility,
+            obscure ? Icons.visibility_off : Icons.visibility,
 
             color: AppColors.primary,
           ),

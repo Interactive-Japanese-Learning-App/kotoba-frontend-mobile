@@ -22,8 +22,7 @@ class LoginController extends GetxController {
   final box = GetStorage();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId: dotenv
-        .env['GOOGLE_WEB_CLIENT_ID'], 
+    serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
     scopes: ['email'],
   );
 
@@ -56,6 +55,11 @@ class LoginController extends GetxController {
         await box.write('userId', user['_id']);
         await box.write('email', user['email']);
         await box.write('username', user['email'].split('@').first);
+
+        await ApiService.saveLoginActivity(
+          userId: user['_id'],
+          email: user['email'],
+        );
 
         AppSnackbar.show(title: "Berhasil", message: "Login berhasil");
 
@@ -121,6 +125,11 @@ class LoginController extends GetxController {
         await box.write('userId', user['_id']);
         await box.write('email', user['email']);
         await box.write('username', user['email'].split('@').first);
+
+        await ApiService.saveLoginActivity(
+          userId: user['_id'],
+          email: user['email'],
+        );
 
         AppSnackbar.show(title: "Berhasil", message: "Login Google Berhasil");
 

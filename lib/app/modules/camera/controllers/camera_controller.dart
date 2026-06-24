@@ -5,6 +5,8 @@ import 'dart:io';
 import 'dart:async';
 import '../../../widgets/app_snackbar.dart'; // Menambahkan import untuk Timer
 import 'package:image/image.dart' as img;
+import 'package:get_storage/get_storage.dart';
+import '../../../data/services/api_service.dart';
 
 // Model data baru untuk menampung properti tiap objek yang terdeteksi
 class DetectedObject {
@@ -155,6 +157,7 @@ class CameraController extends GetxController {
     await loadModel();
     isCameraReady.value = true;
   }
+  
 
   Future<void> loadModel() async {
     await vision.loadYoloModel(
@@ -248,6 +251,21 @@ class CameraController extends GetxController {
         detectedObjects.assignAll(tempObjects);
         isDetecting.value = true;
         _startDetectionTimer(const Duration(seconds: 7));
+
+        final box = GetStorage();
+
+final userId = box.read('userId');
+
+if (userId != null && tempObjects.isNotEmpty) {
+  await ApiService.saveActivity(
+    userId: userId,
+    activityType: "object_detection",
+    title: "Deteksi Objek",
+    detail: tempObjects
+        .map((e) => e.tr)
+        .join(", "),
+  );
+}
         
       } else {
         AppSnackbar.show(

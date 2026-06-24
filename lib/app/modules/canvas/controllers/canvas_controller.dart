@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:kotoba_app/app/widgets/kana_background_painter.dart';
 import '../../../data/models/stroke_model.dart';
 import '../../../data/services/stroke_service.dart';
+import 'package:get_storage/get_storage.dart';
+import '../../../data/services/api_service.dart';
 
 class CanvasController extends GetxController {
   final List<Offset?> points = [];
   List<Offset> currentStrokePoints = [];
-  
+
   String kanaAssetPath(String kana) {
     switch (kana) {
       // =====================
@@ -225,7 +227,6 @@ class CanvasController extends GetxController {
     }
   }
 
-
   final RxList<StrokeData> strokeData = <StrokeData>[].obs;
 
   final currentStroke = 0.obs;
@@ -310,7 +311,7 @@ class CanvasController extends GetxController {
     update();
   }
 
-  void endStrokeCheck() {
+  Future<void> endStrokeCheck() async {
     if (!isDrawing) return;
 
     isDrawing = false;
@@ -330,6 +331,19 @@ class CanvasController extends GetxController {
       currentStrokePoints = [];
       currentStroke.value++;
 
+      if (isCompleted()) {
+        final box = GetStorage();
+        final userId = box.read('userId');
+
+        if (userId != null) {
+          await ApiService.saveActivity(
+            userId: userId,
+            activityType: "kana_writing",
+            title: "Latihan Menulis",
+            detail: "${type.value} • ${kana.value} (${label.value})"
+          );
+        }
+      }
       _resetStatus();
     } else {
       strokeStatus.value = "salah";

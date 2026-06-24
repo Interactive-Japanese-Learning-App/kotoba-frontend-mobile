@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:kotoba_app/app/modules/activity%20log/bindings/activity_log_binding.dart';
+import 'package:kotoba_app/app/modules/activity%20log/views/activity_log_view.dart';
 
 import '../modules/camera/bindings/camera_binding.dart';
 import '../modules/camera/views/camera_view.dart';
@@ -173,6 +175,11 @@ class AppPages {
       name: _Paths.RESET_PASSWORD,
       page: () => const ResetPasswordView(),
       binding: ResetPasswordBinding(),
+    ),
+    GetPage(
+      name: Routes.ACTIVITY_LOG,
+      page: () => const ActivityLogView(),
+      binding: ActivityLogBinding(),
     ),
   ];
 }

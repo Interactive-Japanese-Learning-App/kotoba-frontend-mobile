@@ -56,6 +56,18 @@ class ApiService {
     return jsonDecode(response.body);
   }
 
+  //DELETE USER
+  static Future<Map<String, dynamic>> deleteAccount({
+    required String userId,
+  }) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/users/user/delete-account/$userId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return jsonDecode(response.body);
+  }
+
   // =========================
   // UPDATE PROFILE
   // =========================
@@ -168,6 +180,107 @@ class ApiService {
   // =========================
   static Future<Map<String, dynamic>> getQuizSections() async {
     final response = await http.get(Uri.parse('$baseUrl/quiz/sections'));
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // SAVE ACTIVITY
+  // =========================
+  static Future saveActivity({
+    required String userId,
+    required String activityType,
+    required String title,
+    required String detail,
+    int? score,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/activity/activity-log'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'userId': userId,
+        'activityType': activityType,
+        'title': title,
+        'detail': detail,
+        'score': score,
+      }),
+    );
+    
+
+    return jsonDecode(response.body);
+  }
+
+  // LOGIN ACTIVITY
+  static Future saveLoginActivity({
+    required String userId,
+    required String email,
+  }) async {
+    return await saveActivity(
+      userId: userId,
+      activityType: "login",
+      title: "Login Akun",
+      detail: "$email berhasil masuk ke aplikasi",
+    );
+  }
+
+  // REGISTER ACTIVITY
+  static Future saveRegisterActivity({
+    required String userId,
+    required String email,
+  }) async {
+    return await saveActivity(
+      userId: userId,
+      activityType: "register",
+      title: "Registrasi Akun",
+      detail: "$email berhasil membuat akun",
+    );
+  }
+
+  // EDIT PROFILE ACTIVITY
+  static Future saveEditProfileActivity({
+    required String userId,
+    required String email,
+  }) async {
+    return await saveActivity(
+      userId: userId,
+      activityType: "edit_profile",
+      title: "Edit Profil",
+      detail: "Profil diperbarui",
+    );
+  }
+
+  // LOGOUT ACTIVITY
+  static Future saveLogoutActivity({
+    required String userId,
+    required String email,
+  }) async {
+    return await saveActivity(
+      userId: userId,
+      activityType: "logout",
+      title: "Logout Akun",
+      detail: "$email keluar dari aplikasi",
+    );
+  }
+
+  static Future saveDeleteAccountActivity({
+    required String userId,
+    required String email,
+  }) async {
+    return await saveActivity(
+      userId: userId,
+      activityType: "delete_account",
+      title: "Hapus Akun",
+      detail: "$email menghapus akun",
+    );
+  }
+
+  // GET ACTIVITIES
+  static Future<Map<String, dynamic>> getActivities({
+    required String userId,
+  }) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/activity/activity-log/$userId'),
+    );
 
     return jsonDecode(response.body);
   }

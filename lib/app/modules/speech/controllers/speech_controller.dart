@@ -5,6 +5,8 @@ import 'package:string_similarity/string_similarity.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:dio/dio.dart';
 import 'package:kana_kit/kana_kit.dart';
+import 'package:get_storage/get_storage.dart';
+import '../../../data/services/api_service.dart';
 
 class SpeechItem {
   final String character;
@@ -358,6 +360,26 @@ class SpeechController extends GetxController {
     }
 
     String popupRomajiResult = getRomajiResult(targetRomaji);
+    SpeechItem? selectedItem;
+
+    final allItems = [
+      ...numbers,
+      ...months,
+      ...dates,
+      ...family,
+      ...animals,
+      ...foods,
+      ...drinks,
+      ...jobs,
+      ...objects,
+    ];
+
+    try {
+      selectedItem = allItems.firstWhere(
+        (e) =>
+            e.romaji.trim().toLowerCase() == targetRomaji.trim().toLowerCase(),
+      );
+    } catch (_) {}
 
     Get.dialog(
       Dialog(
@@ -425,15 +447,31 @@ class SpeechController extends GetxController {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final isSuccess = score.value >= 90;
 
                     if (isSuccess) {
+                      final box = GetStorage();
+                      final userId = box.read('userId');
+
+                      if (userId != null) {
+                        await ApiService.saveActivity(
+                          userId: userId,
+                          activityType: "pronunciation",
+                          title: "Latihan Pelafalan",
+                          detail: selectedItem != null
+                              ? "${selectedItem.character} - ${selectedItem.romaji} (${selectedItem.meaning})"
+                              : targetRomaji,
+                          score: score.value.toInt(),
+                        );
+                      }
+
                       Get.back();
                       Get.back();
                     } else {
                       Get.back();
                     }
+
                     clearResult();
                   },
                   style: ElevatedButton.styleFrom(

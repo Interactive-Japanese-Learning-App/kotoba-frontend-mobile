@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:kotoba_app/app/data/theme/app_colors.dart';
+import 'package:kotoba_app/app/widgets/app_snackbar.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../data/services/api_service.dart';
@@ -120,6 +121,11 @@ class ProfileController extends GetxController {
     Get.toNamed(Routes.ABOUT_APP);
   }
 
+  void goActivityLog() {
+    print("CLICK ACTIVITY");
+    Get.toNamed(Routes.ACTIVITY_LOG);
+  }
+
   // SUBMIT PROFILE
   Future<void> submitProfile() async {
     if (emailController.text.trim().isEmpty) {
@@ -159,6 +165,11 @@ class ProfileController extends GetxController {
       );
 
       if (result['success'] == true) {
+        await ApiService.saveEditProfileActivity(
+          userId: userId.value,
+          email: emailController.text.trim(),
+        );
+
         email.value = emailController.text.trim();
 
         username.value = emailController.text.trim().split('@').first;
@@ -200,7 +211,101 @@ class ProfileController extends GetxController {
 
     return true;
   }
+  void confirmDeleteAccount() {
+  Get.defaultDialog(
+    title: "Hapus Akun",
 
+    backgroundColor: Colors.white,
+
+    radius: 20,
+
+    titleStyle: const TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+
+    middleText:
+        "Yakin ingin menghapus akun?",
+
+    middleTextStyle: const TextStyle(
+      color: Colors.grey,
+      fontSize: 14,
+    ),
+
+    confirm: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.danger,
+
+        foregroundColor: Colors.white,
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+
+      onPressed: () async {
+        Get.back();
+
+        await deleteAccount();
+      },
+
+      child: const Text("Ya"),
+    ),
+
+    cancel: TextButton(
+      onPressed: () => Get.back(),
+
+      child: Text(
+        "Tidak",
+        style: TextStyle(
+          color: AppColors.danger,
+        ),
+      ),
+    ),
+  );
+}
+//DELETE AKUN
+Future<void> deleteAccount() async {
+  try {
+    isLoading.value = true;
+
+    final userId = box.read('userId');
+    final email = box.read('email');
+
+    // SIMPAN ACTIVITY
+    await ApiService.saveDeleteAccountActivity(
+      userId: userId,
+      email: email,
+    );
+
+    final result = await ApiService.deleteAccount(
+      userId: userId,
+    );
+
+    if (result['success'] == true) {
+      await box.erase();
+
+      AppSnackbar.show(
+        title: "Berhasil",
+        message: "Akun berhasil dihapus",
+      );
+
+      Get.offAllNamed(Routes.LOGIN);
+    } else {
+      AppSnackbar.show(
+        title: "Error",
+        message: result['message'],
+      );
+    }
+  } catch (e) {
+    AppSnackbar.show(
+      title: "Error",
+      message: e.toString(),
+    );
+  } finally {
+    isLoading.value = false;
+  }
+}
   // LOGOUT
   void logout() {
     Get.defaultDialog(
@@ -228,6 +333,10 @@ class ProfileController extends GetxController {
         ),
 
         onPressed: () async {
+          await ApiService.saveLogoutActivity(
+            userId: userId.value,
+            email: email.value,
+          );
           await box.remove('token');
           await box.remove('userId');
           await box.remove('email');

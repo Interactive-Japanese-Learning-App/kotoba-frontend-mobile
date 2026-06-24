@@ -33,29 +33,35 @@ class ProfileView extends GetView<ProfileController> {
                   const SizedBox(height: 16),
 
                   /// USERNAME
-                  Obx(() => Text(
-                        controller.username.value.toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )),
+                  Obx(
+                    () => Text(
+                      controller.username.value.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(height: 6),
 
                   /// EMAIL
-                  Obx(() => Text(
-                        controller.email.value,
-                        style: TextStyle(color: Colors.grey[600]),
-                      )),
+                  Obx(
+                    () => Text(
+                      controller.email.value,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ),
 
                   const SizedBox(height: 30),
 
                   _menuItem("Edit Profil", controller.goEditProfile),
                   _divider(),
+                  _menuItem("Riwayat Aktivitas", controller.goActivityLog),
+                  _divider(),
                   _menuItem("Tentang Aplikasi", controller.goAboutApp),
                   _divider(),
-                  
+
                   const SizedBox(height: 40),
 
                   /// LOGOUT

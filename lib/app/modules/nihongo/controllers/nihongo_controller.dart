@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:kotoba_app/app/data/services/api_service.dart' show ApiService;
 
 class NihongoController extends GetxController {
   final selectedIndex = 0.obs;
@@ -25,7 +27,7 @@ class NihongoController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    saveLearningActivity();
     loadHiragana();
   }
 
@@ -53,6 +55,20 @@ class NihongoController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> saveLearningActivity() async {
+    final box = GetStorage();
+    final userId = box.read('userId');
+
+    if (userId == null) return;
+
+    await ApiService.saveActivity(
+      userId: userId,
+      activityType: "learning",
+      title: "Belajar Materi Nihongo Basic",
+      detail: "Baru saja mempelajari materi Nihongo Basic",
+    );
   }
 
   Future<void> loadHiragana() async {
