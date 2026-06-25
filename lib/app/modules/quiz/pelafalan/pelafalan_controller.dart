@@ -278,7 +278,7 @@ class PelafalanController extends GetxController {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              // ... Potongan kode di dalam showResultDialog ...
+
               if (displayRomaji.isNotEmpty) ...[
                 const SizedBox(height: 15),
                 const Text(
@@ -327,14 +327,20 @@ class PelafalanController extends GetxController {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     clearResult();
+
                     if (isSuccess) {
                       final quizC = Get.find<QuizController>();
+
                       quizC.setPelafalanAccuracy(score.value);
+
                       quizC.jawab(isBenar: true);
 
+                      await quizC.refreshProgress();
+
                       Get.back();
+
                       Get.offNamed(Routes.QUIZ_RESULT);
                     } else {
                       Get.back();
@@ -345,12 +351,9 @@ class PelafalanController extends GetxController {
                         ? Colors.green
                         : Colors.red, // Warna dinamis lolos/gagal
                     foregroundColor: Colors.white,
-                    elevation:
-                        2, // Memberikan efek bayangan (shadow) halus di bawah tombol
+                    elevation: 2,
                   ),
-                  child: Text(
-                    isSuccess ? "Lihat Hasil" : "Coba Lagi",
-                  ), // Teks tombol otomatis berubah dinamis
+                  child: Text(isSuccess ? "Lihat Hasil" : "Coba Lagi"),
                 ),
               ),
             ],

@@ -8,29 +8,28 @@ class QuizController extends GetxController {
   /// =========================
   /// LOADING
   /// =========================
-
   final isLoading = false.obs;
 
   /// =========================
   /// SECTION DARI BACKEND
   /// =========================
-
   final sections = <QuizSection>[].obs;
 
   /// =========================
   /// PROGRESS USER
   /// =========================
-
   final currentSection = 1.obs;
-
   final currentQuestion = 1.obs;
-
   final currentSectionId = "".obs;
+
+  /// =========================
+  /// COMPLETED QUESTIONS
+  /// =========================
+  final completedQuestions = <int>[].obs;
 
   /// =========================
   /// STORAGE
   /// =========================
-
   final box = GetStorage();
 
   String? get userId => box.read('userId');
@@ -38,25 +37,22 @@ class QuizController extends GetxController {
   /// =========================
   /// RESULT QUIZ
   /// =========================
-
   final benar = 0.obs;
-
-  final xp = 0.obs;
-
   final currentIndex = 0.obs;
 
   final totalSoal = 5;
-
   final xpPerSoal = 20;
 
   final pelafalanAccuracy = 0.0.obs;
 
   int get maxXp => totalSoal * xpPerSoal;
 
+  /// XP berdasarkan progress backend
+  int get xp => completedQuestions.length * xpPerSoal;
+
   /// =========================
   /// INIT
   /// =========================
-
   @override
   void onInit() {
     super.onInit();
@@ -68,7 +64,6 @@ class QuizController extends GetxController {
       isLoading.value = true;
 
       await loadSections();
-
       await loadProgress();
     } catch (e) {
       print("Quiz Load Error: $e");
@@ -80,7 +75,6 @@ class QuizController extends GetxController {
   /// =========================
   /// LOAD SECTION
   /// =========================
-
   Future<void> loadSections() async {
     try {
       final response = await ApiService.getQuizSections();
@@ -98,11 +92,9 @@ class QuizController extends GetxController {
   /// =========================
   /// LOAD PROGRESS
   /// =========================
-
   Future<void> loadProgress() async {
     try {
       if (userId == null) return;
-
       if (sections.isEmpty) return;
 
       final firstSectionId = sections.first.id;
@@ -115,24 +107,33 @@ class QuizController extends GetxController {
       if (response["success"] == true) {
         final data = response["data"];
 
-        currentSectionId.value = data["sectionId"] ?? "";
+        currentSectionId.value =
+            data["sectionId"]?.toString() ?? "";
 
-        currentQuestion.value = data["currentQuestion"] ?? 1;
+        currentQuestion.value =
+            data["currentQuestion"] ?? 1;
 
-        final sectionCompleted = data["sectionCompleted"] ?? false;
+        /// AMBIL COMPLETED QUESTIONS DARI DATABASE
+        completedQuestions.value =
+            List<int>.from(
+          data["completedQuestions"] ?? [],
+        );
 
-        if (sectionCompleted && sections.length > 1) {
-          currentSection.value = 2;
-        } else {
-          currentSection.value = 1;
-        }
+        final sectionCompleted =
+            data["sectionCompleted"] ?? false;
 
-        print("========== QUIZ PROGRESS ==========");
-        print("User ID : $userId");
-        print("Section : ${currentSection.value}");
-        print("Question: ${currentQuestion.value}");
-        print("Completed: $sectionCompleted");
-        print("===================================");
+        currentSection.value =
+            (sectionCompleted && sections.length > 1)
+                ? 2
+                : 1;
+
+        print(
+          "COMPLETED QUESTIONS = $completedQuestions",
+        );
+
+        print(
+          "XP RESULT = $xp",
+        );
       }
     } catch (e) {
       print("Load Progress Error: $e");
@@ -142,12 +143,14 @@ class QuizController extends GetxController {
   /// =========================
   /// LOCK / UNLOCK
   /// =========================
-
   bool isSectionUnlocked(int sectionNumber) {
     return sectionNumber <= currentSection.value;
   }
 
-  bool isQuestionUnlocked(int sectionNumber, int questionNumber) {
+  bool isQuestionUnlocked(
+    int sectionNumber,
+    int questionNumber,
+  ) {
     if (sectionNumber < currentSection.value) {
       return true;
     }
@@ -160,15 +163,15 @@ class QuizController extends GetxController {
   }
 
   /// =========================
-  /// RESULT
+  /// RESULT QUIZ
   /// =========================
-
   void tambahBenar() {
     benar.value++;
-    xp.value += xpPerSoal;
   }
 
-  void jawab({required bool isBenar}) {
+  void jawab({
+    required bool isBenar,
+  }) {
     if (isBenar) {
       tambahBenar();
     }
@@ -183,42 +186,37 @@ class QuizController extends GetxController {
   }
 
   double get progress {
-    if (maxXp == 0) return 0;
-
-    return xp.value / maxXp;
+    return xp / maxXp;
   }
 
   double get accuracy {
-    if (totalSoal == 0) return 0;
-
     return (benar.value / totalSoal) * 100;
   }
 
   int get persen {
-    if (maxXp == 0) return 0;
-
-    return ((xp.value / maxXp) * 100).toInt();
+    return ((xp / maxXp) * 100).toInt();
   }
 
   /// =========================
   /// PELAFALAN
   /// =========================
-
   void setPelafalanAccuracy(double value) {
     pelafalanAccuracy.value = value;
   }
 
   /// =========================
+  /// REFRESH PROGRESS
+  /// =========================
+  Future<void> refreshProgress() async {
+    await loadProgress();
+  }
+
+  /// =========================
   /// RESET
   /// =========================
-
   void resetQuiz() {
     benar.value = 0;
-
     currentIndex.value = 0;
-
-    xp.value = 0;
-
     pelafalanAccuracy.value = 0;
   }
 }

@@ -31,12 +31,9 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     /// GREETING
                     Text(
-  "${controller.greeting.value}, ${controller.username.value}",
-  style: const TextStyle(
-    color: Colors.grey,
-    fontSize: 12,
-  ),
-),
+                      "${controller.greeting.value}, ${controller.username.value}",
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
 
                     const SizedBox(height: 4),
 
@@ -51,90 +48,86 @@ class HomeView extends GetView<HomeController> {
 
                     const SizedBox(height: 16),
 
-                    /// XP PROGRESS CARD (NEW UI)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// TITLE
-                          Text(
-                            "Progres XP",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
+                    Obx(
+                      () => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.06),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
-                          ),
-
-                          const SizedBox(height: 6),
-
-                          Text(
-                            "Lanjutkan progresmu!",
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                          ),
-
-                          const SizedBox(height: 14),
-
-                          /// PROGRESS BAR
-                          Stack(
-                            children: [
-                              /// BACKGROUND BAR
-                              Container(
-                                height: 14,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Progres XP",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
                               ),
+                            ),
 
-                              /// PROGRESS FILL
-                              FractionallySizedBox(
-                                widthFactor: controller.progress.value / 100,
-                                child: Container(
+                            const SizedBox(height: 6),
+
+                            Text(
+                              "Lanjutkan progresmu!",
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 12,
+                              ),
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            Stack(
+                              children: [
+                                Container(
                                   height: 14,
+                                  width: double.infinity,
                                   decoration: BoxDecoration(
-                                    color: AppColors.warning,
+                                    color: AppColors.neutral,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
 
-                          const SizedBox(height: 10),
+                                FractionallySizedBox(
+                                  widthFactor: controller.progress,
+                                  child: Container(
+                                    height: 14,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.warning,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
 
-                          /// XP TEXT
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "${controller.progress.value} XP",
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                              const Text(
-                                "100 XP",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ],
+                            const SizedBox(height: 10),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${controller.currentLevelXp} XP",
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                Text(
+                                  "${controller.maxXp} XP",
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -291,7 +284,7 @@ class HomeView extends GetView<HomeController> {
                             /// BUTTON VISUAL SENSEI (FIX)
                             InkWell(
                               onTap: () {
-                                Get.find<BottomNavController>().changeIndex(1); 
+                                Get.find<BottomNavController>().changeIndex(1);
                               },
                               borderRadius: BorderRadius.circular(20),
                               child: Container(

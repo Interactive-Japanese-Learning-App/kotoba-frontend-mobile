@@ -99,8 +99,9 @@ class Membaca2Controller extends GetxController {
       print("SUBMIT RESPONSE => $response");
 
       if (response["correct"] == true) {
-        await Get.find<QuizController>().loadData();
-
+        final quizC = Get.find<QuizController>();
+        quizC.jawab(isBenar: true);
+        await quizC.loadData();
         showSuccessDialog();
       } else {
         showWrongDialog();

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.18.9:5000/api';
+  static const String baseUrl = 'http://192.168.18.11:5000/api';
 
   // =========================
   // REGISTER USER
@@ -56,13 +56,41 @@ class ApiService {
     return jsonDecode(response.body);
   }
 
-  //DELETE USER
+  // =========================
+  // DELETE USER
+  // =========================
   static Future<Map<String, dynamic>> deleteAccount({
     required String userId,
   }) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/users/user/delete-account/$userId'),
       headers: {'Content-Type': 'application/json'},
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // GET PROFILE
+  // =========================
+  static Future<Map<String, dynamic>> getProfile(String userId) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/users/profile/$userId'),
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/users/verify-otp'),
+
+      headers: {'Content-Type': 'application/json'},
+
+      body: jsonEncode({'email': email, 'otp': otp}),
     );
 
     return jsonDecode(response.body);
@@ -87,20 +115,20 @@ class ApiService {
     return jsonDecode(response.body);
   }
 
-  static Future<Map<String, dynamic>> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/users/verify-otp'),
+  // static Future<Map<String, dynamic>> verifyOtp({
+  //   required String email,
+  //   required String otp,
+  // }) async {
+  //   final response = await http.post(
+  //     Uri.parse('$baseUrl/users/verify-otp'),
 
-      headers: {'Content-Type': 'application/json'},
+  //     headers: {'Content-Type': 'application/json'},
 
-      body: jsonEncode({'email': email, 'otp': otp}),
-    );
+  //     body: jsonEncode({'email': email, 'otp': otp}),
+  //   );
 
-    return jsonDecode(response.body);
-  }
+  //   return jsonDecode(response.body);
+  // }
 
   // =========================
   // RESEND OTP
@@ -161,8 +189,10 @@ class ApiService {
 
     return jsonDecode(response.body);
   }
-  //DETECT OBJECT API
 
+  // =========================
+  // DETECT OBJECT API
+  // =========================
   static Future<List<dynamic>> detectObject(File image) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/detect'));
 
@@ -171,15 +201,6 @@ class ApiService {
     final streamedResponse = await request.send();
 
     final response = await http.Response.fromStream(streamedResponse);
-
-    return jsonDecode(response.body);
-  }
-
-  // =========================
-  // QUIZ SECTIONS
-  // =========================
-  static Future<Map<String, dynamic>> getQuizSections() async {
-    final response = await http.get(Uri.parse('$baseUrl/quiz/sections'));
 
     return jsonDecode(response.body);
   }
@@ -205,12 +226,13 @@ class ApiService {
         'score': score,
       }),
     );
-    
 
     return jsonDecode(response.body);
   }
 
+  // =========================
   // LOGIN ACTIVITY
+  // =========================
   static Future saveLoginActivity({
     required String userId,
     required String email,
@@ -223,7 +245,9 @@ class ApiService {
     );
   }
 
+  // =========================
   // REGISTER ACTIVITY
+  // =========================
   static Future saveRegisterActivity({
     required String userId,
     required String email,
@@ -236,7 +260,9 @@ class ApiService {
     );
   }
 
+  // =========================
   // EDIT PROFILE ACTIVITY
+  // =========================
   static Future saveEditProfileActivity({
     required String userId,
     required String email,
@@ -249,7 +275,9 @@ class ApiService {
     );
   }
 
+  // =========================
   // LOGOUT ACTIVITY
+  // =========================
   static Future saveLogoutActivity({
     required String userId,
     required String email,
@@ -274,13 +302,24 @@ class ApiService {
     );
   }
 
+  // =========================
   // GET ACTIVITIES
+  // =========================
   static Future<Map<String, dynamic>> getActivities({
     required String userId,
   }) async {
     final response = await http.get(
       Uri.parse('$baseUrl/activity/activity-log/$userId'),
     );
+
+    return jsonDecode(response.body);
+  }
+
+  // =========================
+  // QUIZ SECTIONS
+  // =========================
+  static Future<Map<String, dynamic>> getQuizSections() async {
+    final response = await http.get(Uri.parse('$baseUrl/quiz/sections'));
 
     return jsonDecode(response.body);
   }

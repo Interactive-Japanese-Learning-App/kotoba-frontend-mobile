@@ -263,6 +263,10 @@ class MenulisController extends GetxController {
         strokeStatus.value = "";
 
         await submitWritingAnswer();
+
+        final quizC = Get.find<QuizController>();
+        quizC.jawab(isBenar: true);
+
         showSuccessDialog();
       }
     } else {

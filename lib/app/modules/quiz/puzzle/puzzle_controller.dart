@@ -106,6 +106,8 @@ class PuzzleController extends GetxController {
       );
 
       if (response["correct"] == true) {
+        final quizC = Get.find<QuizController>();
+        quizC.jawab(isBenar: true);
         showSuccessDialog();
       } else {
         showWrongDialog();

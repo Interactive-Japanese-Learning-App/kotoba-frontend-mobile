@@ -1,27 +1,49 @@
 import 'package:get/get.dart';
+
 import '../../../routes/app_pages.dart';
 import '../quiz/quiz_controller.dart';
+import '../../home/controllers/home_controller.dart';
 
 class ResultController extends GetxController {
   final quizC = Get.find<QuizController>();
 
-  int get xp => quizC.xp.value;
-  int get maxXp => quizC.maxXp;
-  int get persen => quizC.persen;
-  double get progress => quizC.progress;
+  /// XP dari progress backend
+  int get xp => quizC.xp;
 
-  int get benar => quizC.benar.value;
+  int get maxXp => quizC.maxXp;
+
+  RxInt get benar => quizC.benar;
+
   int get total => quizC.totalSoal;
 
-  double get accuracy => quizC.pelafalanAccuracy.value;
+  RxDouble get accuracy => quizC.pelafalanAccuracy;
 
-  void ulangQuiz() {
-    quizC.resetQuiz();
-    Get.offAllNamed(Routes.QUIZ);
+  double get progress {
+    if (maxXp == 0) return 0;
+    return xp / maxXp;
   }
 
-  void keHome() {
+  int get persen => (progress * 100).toInt();
+
+  /// Ulang quiz
+  void ulangQuiz() {
     quizC.resetQuiz();
-    Get.offAllNamed(Routes.QUIZ);
+
+    Get.offAllNamed(
+      Routes.QUIZ,
+    );
+  }
+
+  /// Kembali ke home
+  Future<void> keHome() async {
+    quizC.resetQuiz();
+
+    if (Get.isRegistered<HomeController>()) {
+      await Get.find<HomeController>().loadProfile();
+    }
+
+    Get.offAllNamed(
+      Routes.MAIN,
+    );
   }
 }

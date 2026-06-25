@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../main/controllers/bottom_nav_controller.dart';
 import 'package:get_storage/get_storage.dart';
+
+import '../../main/controllers/bottom_nav_controller.dart';
+import '../../../data/services/api_service.dart';
+import '../../../data/models/user_profile_model.dart';
 
 class HomeController extends GetxController {
   final scrollController = ScrollController();
 
-  final RxBool isScrolled = false.obs;
+  final isScrolled = false.obs;
 
-  final RxString username = ''.obs;
+  final username = ''.obs;
 
-  /// GREETING
+  /// Greeting
   final greeting = "Konnichiwa".obs;
 
-  /// XP
-  final RxInt streak = 12.obs;
-  final RxInt progress = 75.obs;
+  /// User Profile
+  final xp = 0.obs;
+  final level = 1.obs;
 
-  // STORAGE
+  /// XP maksimum
+  final int maxXp = 100;
+
+  /// Storage
   final box = GetStorage();
 
-  /// VIDEO LIST
+  /// Video list
   var videos = [
     {
       "title": "Belajar Hiragana Dasar",
@@ -39,24 +45,63 @@ class HomeController extends GetxController {
     },
   ].obs;
 
-  /// CHANGE TAB
+  /// Progress bar
+  double get progress {
+    return xp.value.clamp(0, maxXp) / maxXp;
+  }
+
+  /// XP saat ini
+  int get currentLevelXp {
+    return xp.value.clamp(0, maxXp);
+  }
+
   void changeTab(int index) {
     Get.find<BottomNavController>().changeIndex(index);
   }
 
- @override
-void onInit() {
-  super.onInit();
+  @override
+  void onInit() {
+    super.onInit();
 
-  _setGreeting();
+    _setGreeting();
 
-  username.value =
-      box.read('username') ?? '';
+    username.value = box.read('username') ?? '';
 
-  scrollController.addListener(_onScroll);
-}
+    scrollController.addListener(_onScroll);
 
-  /// GREETING BERDASARKAN JAM
+    loadProfile();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+
+    // setiap halaman home muncul, refresh profile
+    loadProfile();
+  }
+
+  Future<void> loadProfile() async {
+    try {
+      final userId = box.read('userId');
+
+      if (userId == null) return;
+
+      final result = await ApiService.getProfile(userId);
+
+      print("PROFILE RESPONSE = $result");
+
+      final user = UserProfile.fromJson(result["user"]);
+
+      xp.value = user.xp;
+      level.value = user.level;
+
+      print("XP HOME = ${xp.value}");
+      print("LEVEL HOME = ${level.value}");
+    } catch (e) {
+      debugPrint("LOAD PROFILE ERROR : $e");
+    }
+  }
+
   void _setGreeting() {
     final hour = DateTime.now().hour;
 
@@ -69,7 +114,6 @@ void onInit() {
     }
   }
 
-  /// SCROLL HEADER
   void _onScroll() {
     if (!scrollController.hasClients) return;
 
@@ -80,6 +124,7 @@ void onInit() {
   void onClose() {
     scrollController.removeListener(_onScroll);
     scrollController.dispose();
+
     super.onClose();
   }
 }
