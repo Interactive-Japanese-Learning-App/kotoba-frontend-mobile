@@ -331,6 +331,20 @@ class PelafalanController extends GetxController {
                     clearResult();
 
                     if (isSuccess) {
+                      final userId = box.read("userId");
+
+                      if (userId != null) {
+                        // ==========================
+                        // SIMPAN JAWABAN KE BACKEND
+                        // ==========================
+                        await ApiService.submitQuizAnswer(
+                          userId: userId,
+                          sectionId: sectionId,
+                          questionNo: questionNo,
+                          answer: question.value?["answer"] ?? "",
+                        );
+                      }
+
                       final quizC = Get.find<QuizController>();
 
                       quizC.setPelafalanAccuracy(score.value);

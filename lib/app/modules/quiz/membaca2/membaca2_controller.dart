@@ -100,11 +100,20 @@ class Membaca2Controller extends GetxController {
 
       if (response["correct"] == true) {
         final quizC = Get.find<QuizController>();
+
         quizC.jawab(isBenar: true);
+
         await quizC.loadData();
+
+        await ApiService.saveActivity(
+          userId: userId.toString(),
+          activityType: "quiz",
+          title: "Mengerjakan Kuis",
+          detail: "Berhasil menjawab soal nomor 2 - Membaca 2",
+          score: 20,
+        );
+
         showSuccessDialog();
-      } else {
-        showWrongDialog();
       }
     } catch (e) {
       print("Submit Answer Error: $e");

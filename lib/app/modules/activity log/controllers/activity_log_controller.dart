@@ -14,25 +14,38 @@ class ActivityLogController extends GetxController {
     super.onInit();
     loadActivities();
   }
-Future<void> loadActivities() async {
-  try {
-    isLoading.value = true;
 
-    final userId = box.read('userId');
-    print("USER ID = $userId");
-
-    final result = await ApiService.getActivities(
-      userId: userId.toString(),
-    );
-
-    print(result);
-
-    if (result['success'] == true) {
-      activities.value = result['data'];
-    }
-  } catch (e) {
-    print("ACTIVITY ERROR = $e");
-  } finally {
-    isLoading.value = false;
+  @override
+  void onReady() {
+    super.onReady();
+    loadActivities();
   }
-}}
+
+  Future<void> loadActivities() async {
+    try {
+      isLoading.value = true;
+
+      final userId = box.read('userId');
+
+      print("USER ID = $userId");
+
+      final result = await ApiService.getActivities(
+        userId: userId.toString(),
+      );
+
+      print("===== ACTIVITY RESULT =====");
+      print(result);
+
+      print("===== ACTIVITY DATA =====");
+      print(result["data"]);
+
+      if (result["success"] == true) {
+        activities.assignAll(result["data"]);
+      }
+    } catch (e) {
+      print("ACTIVITY ERROR = $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}

@@ -112,13 +112,8 @@ class MenulisController extends GetxController {
     if (isAnswered.value) return;
 
     try {
-      print("USER ID = $userId");
-      print("SECTION ID = $sectionId");
-      print("QUESTION NO = $questionNo");
-
       final targetAnswer =
           question.value?["answer"] ?? question.value?["kana"] ?? "";
-      print("ANSWER = $targetAnswer");
 
       final result = await ApiService.submitQuizAnswer(
         userId: userId ?? "",
@@ -128,7 +123,18 @@ class MenulisController extends GetxController {
       );
 
       print("SUBMIT RESULT = $result");
-      isAnswered.value = true;
+
+      if (result["success"] == true && result["correct"] == true) {
+        await ApiService.saveActivity(
+          userId: userId ?? "",
+          activityType: "quiz",
+          title: "Mengerjakan Kuis",
+          detail: "Berhasil menjawab soal nomor $questionNo - Menulis",
+          score: 20,
+        );
+
+        isAnswered.value = true;
+      }
     } catch (e) {
       print("SUBMIT ERROR = $e");
     }

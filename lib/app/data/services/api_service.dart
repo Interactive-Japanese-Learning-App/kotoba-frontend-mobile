@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.18.11:5000/api';
+  static const String baseUrl = 'http://10.208.101.127:5000/api';
 
   // =========================
   // REGISTER USER
@@ -114,21 +114,6 @@ class ApiService {
 
     return jsonDecode(response.body);
   }
-
-  // static Future<Map<String, dynamic>> verifyOtp({
-  //   required String email,
-  //   required String otp,
-  // }) async {
-  //   final response = await http.post(
-  //     Uri.parse('$baseUrl/users/verify-otp'),
-
-  //     headers: {'Content-Type': 'application/json'},
-
-  //     body: jsonEncode({'email': email, 'otp': otp}),
-  //   );
-
-  //   return jsonDecode(response.body);
-  // }
 
   // =========================
   // RESEND OTP

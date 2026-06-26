@@ -106,8 +106,23 @@ class PuzzleController extends GetxController {
       );
 
       if (response["correct"] == true) {
+        // =========================
+        // SIMPAN RIWAYAT AKTIVITAS
+        // =========================
+        await ApiService.saveActivity(
+          userId: userId,
+          activityType: "quiz",
+          title: "Mengerjakan Kuis",
+          detail: "Berhasil menjawab soal nomor $questionNo - Puzzle",
+          score: 20,
+        );
+
         final quizC = Get.find<QuizController>();
+
         quizC.jawab(isBenar: true);
+
+        await quizC.loadData();
+
         showSuccessDialog();
       } else {
         showWrongDialog();

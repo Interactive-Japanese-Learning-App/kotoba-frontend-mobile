@@ -89,9 +89,18 @@ class Membaca1Controller extends GetxController {
       print("SUBMIT RESPONSE => $response");
 
       if (response["correct"] == true) {
+        await ApiService.saveActivity(
+          userId: userId,
+          activityType: "quiz",
+          title: "Mengerjakan Kuis",
+          detail: "Berhasil menjawab soal nomor $questionNo - Membaca 1",
+          score: 20,
+        );
+
         final quizC = Get.find<QuizController>();
         quizC.jawab(isBenar: true);
         await quizC.loadData();
+
         showSuccessDialog();
       } else {
         showWrongDialog();
