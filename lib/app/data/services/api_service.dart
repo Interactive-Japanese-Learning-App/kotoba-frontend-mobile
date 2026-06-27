@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class ApiService {
-  static const String baseUrl = 'http://10.208.101.127:5000/api';
+  static const String baseUrl = 'http://192.168.18.9:5000/api';
 
   // =========================
   // REGISTER USER

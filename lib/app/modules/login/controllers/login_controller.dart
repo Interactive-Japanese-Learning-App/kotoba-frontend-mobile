@@ -56,9 +56,11 @@ class LoginController extends GetxController {
         await box.write('email', user['email']);
         await box.write('username', user['email'].split('@').first);
 
-        await ApiService.saveLoginActivity(
+        await ApiService.saveActivity(
           userId: user['_id'],
-          email: user['email'],
+          activityType: "login",
+          title: "Login Akun",
+          detail: "Pengguna login menggunakan email dan password",
         );
 
         AppSnackbar.show(title: "Berhasil", message: "Login berhasil");
@@ -84,7 +86,6 @@ class LoginController extends GetxController {
     }
   }
 
-  /// GOOGLE LOGIN
   // GOOGLE LOGIN ACTION
   Future<void> loginWithGoogle() async {
     try {
@@ -114,40 +115,59 @@ class LoginController extends GetxController {
       }
 
       // 3. Kirim ID Token tersebut ke API Backend Node.js
-      final result = await ApiService.loginWithGoogle(idToken: idToken);
+      // 3. Kirim ID Token tersebut ke API Backend Node.js
+final result = await ApiService.loginWithGoogle(idToken: idToken);
 
-      if (result['success'] == true) {
-        final token = result['token'];
-        final user = result['user'];
+if (result['success'] == true) {
+  final token = result['token'];
+  final user = result['user'];
+  final bool isNewUser = result['isNewUser'] ?? false;
 
-        // Simpan data kredensial baru ke penyimpanan lokal HP (GetStorage)
-        await box.write('token', token);
-        await box.write('userId', user['_id']);
-        await box.write('email', user['email']);
-        await box.write('username', user['email'].split('@').first);
+  // Simpan data user
+  await box.write('token', token);
+  await box.write('userId', user['_id']);
+  await box.write('email', user['email']);
+  await box.write('username', user['email'].split('@').first);
 
-        await ApiService.saveLoginActivity(
-          userId: user['_id'],
-          email: user['email'],
-        );
+  // Simpan activity
+  if (isNewUser) {
+    await ApiService.saveActivity(
+      userId: user['_id'],
+      activityType: "register",
+      title: "Registrasi Akun",
+      detail: "Pengguna mendaftar menggunakan akun Google",
+    );
+  } else {
+    await ApiService.saveActivity(
+      userId: user['_id'],
+      activityType: "login",
+      title: "Login Akun",
+      detail: "Pengguna login menggunakan akun Google",
+    );
+  }
 
-        AppSnackbar.show(title: "Berhasil", message: "Login Google Berhasil");
+  AppSnackbar.show(
+    title: "Berhasil",
+    message: isNewUser
+        ? "Registrasi Google Berhasil"
+        : "Login Google Berhasil",
+  );
 
-        // Alihkan user langsung masuk ke Dashboard Utama aplikasi
-        Get.offAllNamed(
-          Routes.MAIN,
-          arguments: {
-            'id': user['_id'],
-            'email': user['email'],
-            'username': user['email'].split('@').first,
-          },
-        );
-      } else {
-        AppSnackbar.show(
-          title: "Login Gagal",
-          message:
-              result['message'] ?? "Gagal memverifikasi akun ke sistem backend",
-        );
+  Get.offAllNamed(
+    Routes.MAIN,
+    arguments: {
+      'id': user['_id'],
+      'email': user['email'],
+      'username': user['email'].split('@').first,
+    },
+  );
+} else {
+  AppSnackbar.show(
+    title: "Login Gagal",
+    message:
+        result['message'] ?? "Gagal memverifikasi akun ke sistem backend",
+  );
+
       }
     } catch (e) {
       AppSnackbar.show(title: "Error Autentikasi", message: e.toString());

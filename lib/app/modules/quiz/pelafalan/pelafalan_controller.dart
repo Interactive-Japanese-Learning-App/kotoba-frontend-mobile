@@ -327,39 +327,38 @@ class PelafalanController extends GetxController {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    clearResult();
+                 onPressed: () async {
+  final finalScore = score.value;
 
-                    if (isSuccess) {
-                      final userId = box.read("userId");
+  if (isSuccess) {
+    final userId = box.read("userId");
 
-                      if (userId != null) {
-                        // ==========================
-                        // SIMPAN JAWABAN KE BACKEND
-                        // ==========================
-                        await ApiService.submitQuizAnswer(
-                          userId: userId,
-                          sectionId: sectionId,
-                          questionNo: questionNo,
-                          answer: question.value?["answer"] ?? "",
-                        );
-                      }
+    if (userId != null) {
+      await ApiService.submitQuizAnswer(
+        userId: userId,
+        sectionId: sectionId,
+        questionNo: questionNo,
+        answer: question.value?["answer"] ?? "",
+      );
+    }
 
-                      final quizC = Get.find<QuizController>();
+    final quizC = Get.find<QuizController>();
 
-                      quizC.setPelafalanAccuracy(score.value);
+    quizC.setPelafalanAccuracy(finalScore);
 
-                      quizC.jawab(isBenar: true);
+    quizC.jawab(isBenar: true);
 
-                      await quizC.refreshProgress();
+    await quizC.refreshProgress();
 
-                      Get.back();
+    clearResult();
 
-                      Get.offNamed(Routes.QUIZ_RESULT);
-                    } else {
-                      Get.back();
-                    }
-                  },
+    Get.back();
+    Get.offNamed(Routes.QUIZ_RESULT);
+  } else {
+    clearResult();
+    Get.back();
+  }
+},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isSuccess
                         ? Colors.green

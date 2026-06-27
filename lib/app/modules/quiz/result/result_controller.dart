@@ -24,14 +24,13 @@ class ResultController extends GetxController {
   }
 
   int get persen => (progress * 100).toInt();
+  RxDouble get pronunciationAccuracy => quizC.pelafalanAccuracy;
 
   /// Ulang quiz
   void ulangQuiz() {
     quizC.resetQuiz();
 
-    Get.offAllNamed(
-      Routes.QUIZ,
-    );
+    Get.offAllNamed(Routes.QUIZ);
   }
 
   /// Kembali ke home
@@ -42,8 +41,6 @@ class ResultController extends GetxController {
       await Get.find<HomeController>().loadProfile();
     }
 
-    Get.offAllNamed(
-      Routes.MAIN,
-    );
+    Get.offAllNamed(Routes.MAIN);
   }
 }

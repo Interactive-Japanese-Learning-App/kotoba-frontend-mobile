@@ -114,6 +114,8 @@ class Membaca2Controller extends GetxController {
         );
 
         showSuccessDialog();
+      } else {
+        showWrongDialog();
       }
     } catch (e) {
       print("Submit Answer Error: $e");

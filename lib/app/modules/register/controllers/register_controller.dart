@@ -25,9 +25,9 @@ class RegisterController extends GetxController {
   final box = GetStorage();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId: dotenv
-        .env['GOOGLE_WEB_CLIENT_ID'], 
+    serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
     scopes: ['email'],
+    forceCodeForRefreshToken: true,
   );
 
   /// TOGGLE PASSWORD
@@ -155,6 +155,12 @@ class RegisterController extends GetxController {
         await box.write('userId', user['_id']);
         await box.write('email', user['email']);
         await box.write('username', user['email'].split('@').first);
+        await ApiService.saveActivity(
+          userId: user['_id'],
+          activityType: "register",
+          title: "Registrasi Akun",
+          detail: "Pengguna mendaftar menggunakan akun Google",
+        );
 
         AppSnackbar.show(title: "Berhasil", message: "Daftar Google Berhasil");
 

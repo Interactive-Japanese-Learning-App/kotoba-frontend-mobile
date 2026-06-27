@@ -152,7 +152,7 @@ class LearnView extends GetView<LearnController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Writing Canvas",
+                "Menulis Kanvas",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -192,7 +192,7 @@ class LearnView extends GetView<LearnController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Speech Recognition",
+              "Pelafalan Suara",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
