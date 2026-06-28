@@ -24,10 +24,16 @@ class ProfileView extends GetView<ProfileController> {
                   const SizedBox(height: 30),
 
                   /// AVATAR
-                  CircleAvatar(
-                    radius: 55,
-                    backgroundColor: AppColors.neutral,
-                    child: const Icon(Icons.person, size: 60),
+                  Obx(
+                    () => CircleAvatar(
+                      radius: 55,
+                      backgroundImage: controller.photoUrl.value.isNotEmpty
+                          ? NetworkImage(controller.photoUrl.value)
+                          : null,
+                      child: controller.photoUrl.value.isEmpty
+                          ? const Icon(Icons.person, size: 60)
+                          : null,
+                    ),
                   ),
 
                   const SizedBox(height: 16),

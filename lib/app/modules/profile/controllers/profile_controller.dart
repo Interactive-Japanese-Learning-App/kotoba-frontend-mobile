@@ -15,6 +15,7 @@ class ProfileController extends GetxController {
   final RxString email = ''.obs;
 
   final RxString userId = ''.obs;
+  final RxString photoUrl = ''.obs;
 
   /// FORM CONTROLLER
   final emailController = TextEditingController();
@@ -52,16 +53,15 @@ class ProfileController extends GetxController {
 
     if (args is Map<String, dynamic>) {
       userId.value = args['id']?.toString() ?? '';
-
       email.value = args['email']?.toString() ?? '';
-
       username.value = args['username']?.toString() ?? '';
+      photoUrl.value =
+          args['photoUrl']?.toString() ?? box.read('photoUrl') ?? '';
     } else {
       userId.value = box.read('userId') ?? '';
-
       email.value = box.read('email') ?? '';
-
       username.value = box.read('username') ?? '';
+      photoUrl.value = box.read('photoUrl') ?? '';
     }
   }
 

@@ -1,4 +1,4 @@
-package com.example.kotoba_app
+package com.kotoba.app
 
 import io.flutter.embedding.android.FlutterActivity
 

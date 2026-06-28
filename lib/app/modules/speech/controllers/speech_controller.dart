@@ -52,7 +52,7 @@ class SpeechController extends GetxController {
   final Dio dio = Dio();
   final kanaKit = KanaKit();
 
-  static const String baseUrl = "http://192.168.18.11:5000/api/nihongo";
+  static const String baseUrl = "http://192.168.18.17:5000/api/nihongo";
   @override
   void onInit() {
     super.onInit();

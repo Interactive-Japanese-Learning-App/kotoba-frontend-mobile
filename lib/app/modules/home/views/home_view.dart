@@ -326,95 +326,134 @@ class HomeView extends GetView<HomeController> {
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
+                   
 
                     Obx(
-                      () => Column(
-                        children: List.generate(controller.channels.length, (
-                          index,
-                        ) {
-                          final channel = controller.channels[index];
+                      () => SizedBox(
+                        height: 145,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          clipBehavior: Clip.none,
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          itemCount: controller.channels.length,
+                          itemBuilder: (context, index) {
+                            final channel = controller.channels[index];
 
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(22),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(.06),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                /// Logo Youtube
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.shade50,
-                                    borderRadius: BorderRadius.circular(18),
+                            return Container(
+                              width: 270,
+                              margin: const EdgeInsets.only(right: 12),
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(.05),
+                                    blurRadius: 8,
+                                    spreadRadius: 1,
+                                    offset: const Offset(0, 2),
                                   ),
-                                  child: const Icon(
-                                    Icons.smart_display_rounded,
-                                    color: Colors.red,
-                                    size: 36,
+                                ],
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.shade50,
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    child: const Icon(
+                                      Icons.smart_display_rounded,
+                                      color: Colors.red,
+                                      size: 28,
+                                    ),
                                   ),
-                                ),
 
-                                const SizedBox(width: 16),
+                                  const SizedBox(width: 14),
 
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        channel.channelName,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: AppColors.primary,
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          channel.channelName,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: Colors.black87,
+                                          ),
                                         ),
-                                      ),
 
-                                      const SizedBox(height: 12),
+                                        const SizedBox(height: 4),
 
-                                      Wrap(
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        children: [
-                                          _infoChip(
-                                            Icons.people_alt_rounded,
-                                            "${controller.formatNumber(channel.subscribers)} Subscriber",
+                                        Text(
+                                          "${controller.formatNumber(channel.subscribers)} Subscriber",
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.grey[600],
                                           ),
+                                        ),
 
-                                          _infoChip(
-                                            Icons.visibility_rounded,
-                                            "${controller.formatNumber(channel.totalViews)} Views",
-                                          ),
+                                        const SizedBox(height: 8),
 
-                                          _infoChip(
-                                            Icons.video_library_rounded,
-                                            "${controller.formatNumber(channel.totalVideos)} Video",
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.visibility_rounded,
+                                              size: 14,
+                                              color: Colors.grey[700],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              controller.formatNumber(
+                                                channel.totalViews,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey[700],
+                                              ),
+                                            ),
+
+                                            const SizedBox(width: 16),
+
+                                            Icon(
+                                              Icons.video_library_rounded,
+                                              size: 14,
+                                              color: Colors.grey[700],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              controller.formatNumber(
+                                                channel.totalVideos,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey[700],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
+
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),
@@ -424,25 +463,4 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
-}
-
-Widget _infoChip(IconData icon, String text) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-    decoration: BoxDecoration(
-      color: Colors.grey.shade100,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: AppColors.primary),
-        const SizedBox(width: 5),
-        Text(
-          text,
-          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-        ),
-      ],
-    ),
-  );
 }

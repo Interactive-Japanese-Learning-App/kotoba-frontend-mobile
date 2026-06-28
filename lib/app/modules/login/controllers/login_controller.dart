@@ -131,6 +131,7 @@ class LoginController extends GetxController {
         await box.write('userId', user['_id']);
         await box.write('email', user['email']);
         await box.write('username', user['email'].split('@').first);
+        await box.write('photoUrl', user['photoUrl']);
 
         // Simpan activity
         if (isNewUser) {
@@ -162,6 +163,7 @@ class LoginController extends GetxController {
             'id': user['_id'],
             'email': user['email'],
             'username': user['email'].split('@').first,
+            'photoUrl': user['photoUrl'],
           },
         );
       } else {

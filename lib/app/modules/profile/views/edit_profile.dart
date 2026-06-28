@@ -46,30 +46,33 @@ class EditProfileView extends GetView<ProfileController> {
               Center(
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 45,
-                      backgroundColor: AppColors.neutral,
-
-                      child: const Icon(Icons.person, size: 50),
+                    Obx(
+                      () => CircleAvatar(
+                        radius: 45,
+                        backgroundColor: AppColors.neutral,
+                        backgroundImage: controller.photoUrl.value.isNotEmpty
+                            ? NetworkImage(controller.photoUrl.value)
+                            : null,
+                        child: controller.photoUrl.value.isEmpty
+                            ? const Icon(Icons.person, size: 50)
+                            : null,
+                      ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
 
-                    TextButton(
-                      onPressed: () {},
-
-                      child: Text(
-                        "Ubah Foto",
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
+                    Obx(
+                      () => Text(
+                        controller.username.value.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
 
               /// EMAIL
