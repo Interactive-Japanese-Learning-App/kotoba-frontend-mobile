@@ -72,7 +72,7 @@ class PuzzleView extends GetView<PuzzleController> {
                 const SizedBox(height: 8),
 
                 Text(
-                  "Susun huruf berikut menjadi kata bahasa Jepang yang berarti Sayur",
+                  "Susun huruf berikut menjadi kata Bahasa Jepang yang berarti Sayur!",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                 ),

@@ -161,7 +161,7 @@ class HomeView extends GetView<HomeController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                "Nihongo Basics",
+                                "Nihongo Dasar",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -425,12 +425,10 @@ class HomeView extends GetView<HomeController> {
     );
   }
 }
+
 Widget _infoChip(IconData icon, String text) {
   return Container(
-    padding: const EdgeInsets.symmetric(
-      horizontal: 10,
-      vertical: 6,
-    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(
       color: Colors.grey.shade100,
       borderRadius: BorderRadius.circular(20),
@@ -438,18 +436,11 @@ Widget _infoChip(IconData icon, String text) {
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          size: 14,
-          color: AppColors.primary,
-        ),
+        Icon(icon, size: 14, color: AppColors.primary),
         const SizedBox(width: 5),
         Text(
           text,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
         ),
       ],
     ),

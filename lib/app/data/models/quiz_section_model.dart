@@ -15,9 +15,7 @@ class QuizSection {
     required this.isActive,
   });
 
-  factory QuizSection.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory QuizSection.fromJson(Map<String, dynamic> json) {
     return QuizSection(
       id: json["_id"] ?? "",
       title: json["title"] ?? "",

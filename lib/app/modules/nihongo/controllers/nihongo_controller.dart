@@ -22,7 +22,7 @@ class NihongoController extends GetxController {
   final pekerjaan = <Map<String, dynamic>>[].obs;
   final benda = <Map<String, dynamic>>[].obs;
 
-  static const String baseUrl = "http://192.168.18.9:5000/api/nihongo";
+  static const String baseUrl = "http://192.168.18.11:5000/api/nihongo";
 
   @override
   void onInit() {
@@ -66,8 +66,8 @@ class NihongoController extends GetxController {
     await ApiService.saveActivity(
       userId: userId,
       activityType: "learning",
-      title: "Belajar Materi Nihongo Basic",
-      detail: "Baru saja mempelajari materi Nihongo Basic",
+      title: "Belajar Materi Nihongo Dasar",
+      detail: "Baru saja mempelajari materi Nihongo Dasar",
     );
   }
 

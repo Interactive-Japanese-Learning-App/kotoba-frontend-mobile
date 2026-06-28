@@ -75,7 +75,7 @@ class Membaca1Controller extends GetxController {
       final userId = box.read('userId');
 
       if (userId == null) {
-        Get.snackbar("Error", "User belum login");
+        Get.snackbar("Error", "Pengguna belum masuk");
         return;
       }
 
@@ -143,7 +143,7 @@ class Membaca1Controller extends GetxController {
                   },
                   // GANTI STYLE DI SINI
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Warna sukses (Hijau)
+                    backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
                     elevation: 2, // Memberikan efek bayangan timbul halus
                   ),
@@ -178,7 +178,7 @@ class Membaca1Controller extends GetxController {
 
               const SizedBox(height: 8),
 
-              const Text("Coba lagi ya"),
+              const Text("Coba lagi ya!"),
 
               const SizedBox(height: 20),
 
@@ -197,7 +197,7 @@ class Membaca1Controller extends GetxController {
                     foregroundColor: Colors.white,
                     elevation: 2, // Memberikan efek bayangan timbul halus
                   ),
-                  child: const Text("Coba Lagi"),
+                  child: const Text("Coba Lagi!"),
                 ),
               ),
             ],

@@ -94,7 +94,7 @@ class PuzzleController extends GetxController {
       final userId = GetStorage().read("userId");
 
       if (userId == null) {
-        Get.snackbar("Error", "User belum login");
+        Get.snackbar("Error", "Pengguna belum masuk");
         return;
       }
 
@@ -199,7 +199,7 @@ class PuzzleController extends GetxController {
 
               const SizedBox(height: 10),
 
-              const Text("Coba lagi"),
+              const Text("Coba lagi!"),
 
               const SizedBox(height: 20),
 
@@ -217,7 +217,7 @@ class PuzzleController extends GetxController {
                     foregroundColor: Colors.white,
                     elevation: 2, // Memberikan efek bayangan timbul halus
                   ),
-                  child: const Text("Coba Lagi"),
+                  child: const Text("Coba Lagi!"),
                 ),
               ),
             ],

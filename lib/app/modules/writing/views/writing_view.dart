@@ -25,7 +25,7 @@ class WritingView extends GetView<WritingController> {
         ),
 
         title: Text(
-          "Writing Canvas",
+          "Kanvas Menulis",
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,

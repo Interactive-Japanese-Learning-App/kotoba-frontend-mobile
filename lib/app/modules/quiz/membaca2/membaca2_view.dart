@@ -67,7 +67,7 @@ class Membaca2View extends GetView<Membaca2Controller> {
                   const SizedBox(height: 8),
 
                   Text(
-                    "Pilih huruf Jepang yang benar",
+                    "Pilih huruf Jepang yang benar!",
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
 

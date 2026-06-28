@@ -36,7 +36,7 @@ class LearnView extends GetView<LearnController> {
                   const SizedBox(height: 8),
 
                   Text(
-                    "Belajar dasar penulisan bahasa Jepang dengan pengucapan suara dan kuis.",
+                    "Belajar dasar penulisan Bahasa Jepang dengan pengucapan suara dan kuis.",
                     style: TextStyle(color: Colors.grey[600], height: 1.4),
                   ),
 
@@ -99,7 +99,7 @@ class LearnView extends GetView<LearnController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Nihongo Basics",
+                "Nihongo Dasar",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -152,7 +152,7 @@ class LearnView extends GetView<LearnController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Menulis Kanvas",
+                "Kanvas Menulis",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -230,7 +230,7 @@ class LearnView extends GetView<LearnController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Quiz",
+              "Kuis",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,

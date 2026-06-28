@@ -157,7 +157,8 @@ class CameraView extends GetView<CameraController> {
 
       // 1. Ambil dimensi asli preview kamera
       final previewSize = controller.cameraController.value.previewSize;
-      final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+      final bool isPortrait =
+          MediaQuery.of(context).orientation == Orientation.portrait;
 
       // Gunakan nilai default dari areaWidth/Height jika previewSize belum ada
       double pWidth = previewSize?.width ?? areaWidth;
@@ -185,20 +186,31 @@ class CameraView extends GetView<CameraController> {
           // 5. Clamping agar box tidak keluar dari area kamera
           calculatedWidth = calculatedWidth.clamp(0.0, areaWidth);
           calculatedHeight = calculatedHeight.clamp(0.0, areaHeight);
-          calculatedLeft = calculatedLeft.clamp(0.0, areaWidth - calculatedWidth);
-          calculatedTop = calculatedTop.clamp(0.0, areaHeight - calculatedHeight);
+          calculatedLeft = calculatedLeft.clamp(
+            0.0,
+            areaWidth - calculatedWidth,
+          );
+          calculatedTop = calculatedTop.clamp(
+            0.0,
+            areaHeight - calculatedHeight,
+          );
 
           // (Logika Label tetap sama)
           const double labelWidth = 130;
           const double labelHeight = 65;
-          double labelLeft = (calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2)).clamp(0.0, areaWidth - labelWidth);
-          
+          double labelLeft =
+              (calculatedLeft + (calculatedWidth / 2) - (labelWidth / 2)).clamp(
+                0.0,
+                areaWidth - labelWidth,
+              );
+
           double labelTop;
           if (calculatedWidth < 150 || calculatedHeight < 100) {
             labelTop = calculatedTop - labelHeight - 8;
             if (labelTop < 0) labelTop = calculatedTop + calculatedHeight + 8;
           } else {
-            labelTop = calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
+            labelTop =
+                calculatedTop + (calculatedHeight / 2) - (labelHeight / 2);
           }
           labelTop = labelTop.clamp(0.0, areaHeight - labelHeight);
 
@@ -227,5 +239,5 @@ class CameraView extends GetView<CameraController> {
         }).toList(),
       );
     });
-    }
+  }
 }

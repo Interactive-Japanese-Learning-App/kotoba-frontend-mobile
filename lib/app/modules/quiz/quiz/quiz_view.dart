@@ -30,7 +30,7 @@ class QuizView extends GetView<QuizController> {
           },
         ),
         title: Text(
-          "Quiz",
+          "Kuis",
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
@@ -44,7 +44,7 @@ class QuizView extends GetView<QuizController> {
         }
 
         if (controller.sections.isEmpty) {
-          return const Center(child: Text("Belum ada section"));
+          return const Center(child: Text("Belum ada bagian"));
         }
 
         return SafeArea(
@@ -94,7 +94,7 @@ class QuizView extends GetView<QuizController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "QUIZ SECTION",
+                    "BAGIAN KUIS",
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 11,
@@ -228,7 +228,6 @@ class QuizView extends GetView<QuizController> {
                                       },
                                     );
                                     break;
-
                                 }
                               }
                             : null,

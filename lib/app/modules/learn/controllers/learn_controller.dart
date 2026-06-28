@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 
 class LearnController extends GetxController {
-
   /// NAVIGASI
   void goToNihongo() {
     Get.toNamed(Routes.NIHONGO);

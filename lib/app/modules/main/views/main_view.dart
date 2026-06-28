@@ -18,7 +18,7 @@ class MainView extends GetView<BottomNavController> {
           index: controller.currentIndex.value,
           children: [
             HomeView(), // 0
-            const CameraView(), // 1 
+            const CameraView(), // 1
             const LearnView(), // 2
             const ProfileView(), // 3
           ],

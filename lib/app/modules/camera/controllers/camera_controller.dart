@@ -157,7 +157,6 @@ class CameraController extends GetxController {
     await loadModel();
     isCameraReady.value = true;
   }
-  
 
   Future<void> loadModel() async {
     await vision.loadYoloModel(
@@ -218,7 +217,6 @@ class CameraController extends GetxController {
           if (addedLabels.contains(label)) continue;
 
           final box = item["box"];
-          
 
           final data = objectData[label];
           final String jp = data != null ? data["jp"]! : "物体";
@@ -254,23 +252,20 @@ class CameraController extends GetxController {
 
         final box = GetStorage();
 
-final userId = box.read('userId');
+        final userId = box.read('userId');
 
-if (userId != null && tempObjects.isNotEmpty) {
-  await ApiService.saveActivity(
-    userId: userId,
-    activityType: "object_detection",
-    title: "Deteksi Objek",
-    detail: tempObjects
-        .map((e) => e.tr)
-        .join(", "),
-  );
-}
-        
+        if (userId != null && tempObjects.isNotEmpty) {
+          await ApiService.saveActivity(
+            userId: userId,
+            activityType: "object_detection",
+            title: "Deteksi Objek",
+            detail: tempObjects.map((e) => e.tr).join(", "),
+          );
+        }
       } else {
         AppSnackbar.show(
           title: "Pemberitahuan",
-          message: "Objek tidak dikenali. Coba lagi.",
+          message: "Objek tidak dikenali. Coba lagi!",
         );
       }
     } catch (e) {

@@ -20,7 +20,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
 
               /// TITLE
               Text(
-                "LUPA PASSWORD",
+                "LUPA KATA SANDI",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -55,9 +55,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                         ? null
                         : controller.sendOtp,
                     child: controller.isLoading.value
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                          )
+                        ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                             "Kirim OTP",
                             style: TextStyle(fontSize: 16),

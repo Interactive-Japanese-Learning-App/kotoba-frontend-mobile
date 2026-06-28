@@ -45,7 +45,7 @@ class ResultView extends GetView<ResultController> {
                 const SizedBox(height: 20),
 
                 Text(
-                  "Kamu telah menyelesaikan quiz!",
+                  "Kamu telah menyelesaikan kuis!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18,
@@ -79,11 +79,10 @@ class ResultView extends GetView<ResultController> {
                         children: [
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Quiz Selesai",
+                                  "Kuis Selesai",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -92,7 +91,7 @@ class ResultView extends GetView<ResultController> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  "Kamu dapat XP dan progress sekarang.",
+                                  "Kamu dapat XP dan progres sekarang.",
                                   style: TextStyle(
                                     color: Colors.grey[600],
                                     fontSize: 12,
@@ -108,10 +107,8 @@ class ResultView extends GetView<ResultController> {
                               horizontal: 12,
                             ),
                             decoration: BoxDecoration(
-                              color:
-                                  AppColors.primary.withOpacity(0.1),
-                              borderRadius:
-                                  BorderRadius.circular(20),
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -140,8 +137,7 @@ class ResultView extends GetView<ResultController> {
 
                       /// XP
                       Row(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             "${controller.xp}",
@@ -172,8 +168,7 @@ class ResultView extends GetView<ResultController> {
                             width: double.infinity,
                             decoration: BoxDecoration(
                               color: AppColors.neutral,
-                              borderRadius:
-                                  BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                           ),
                           FractionallySizedBox(
@@ -182,8 +177,7 @@ class ResultView extends GetView<ResultController> {
                               height: 14,
                               decoration: BoxDecoration(
                                 color: AppColors.warning,
-                                borderRadius:
-                                    BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                             ),
                           ),
@@ -193,8 +187,7 @@ class ResultView extends GetView<ResultController> {
                       const SizedBox(height: 10),
 
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "${controller.persen}%",
@@ -223,10 +216,8 @@ class ResultView extends GetView<ResultController> {
                             child: Container(
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: AppColors.primary
-                                    .withOpacity(0.08),
-                                borderRadius:
-                                    BorderRadius.circular(20),
+                                color: AppColors.primary.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                               child: Column(
                                 children: [
@@ -240,8 +231,7 @@ class ResultView extends GetView<ResultController> {
                                     () => Text(
                                       "${controller.benar.value}/${controller.total}",
                                       style: const TextStyle(
-                                        fontWeight:
-                                            FontWeight.bold,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
@@ -250,8 +240,7 @@ class ResultView extends GetView<ResultController> {
 
                                   const Text(
                                     "Soal",
-                                    style:
-                                        TextStyle(fontSize: 12),
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                 ],
                               ),
@@ -264,10 +253,8 @@ class ResultView extends GetView<ResultController> {
                             child: Container(
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: AppColors.warning
-                                    .withOpacity(0.12),
-                                borderRadius:
-                                    BorderRadius.circular(20),
+                                color: AppColors.warning.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                               child: Column(
                                 children: [
@@ -281,8 +268,7 @@ class ResultView extends GetView<ResultController> {
                                     () => Text(
                                       "${controller.accuracy.value.toStringAsFixed(0)}%",
                                       style: const TextStyle(
-                                        fontWeight:
-                                            FontWeight.bold,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
@@ -291,8 +277,7 @@ class ResultView extends GetView<ResultController> {
 
                                   const Text(
                                     "Akurasi Suara",
-                                    style:
-                                        TextStyle(fontSize: 12),
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                 ],
                               ),
@@ -315,13 +300,11 @@ class ResultView extends GetView<ResultController> {
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      minimumSize:
-                          const Size.fromHeight(56),
+                      minimumSize: const Size.fromHeight(56),
                     ),
-                    child: const Text("Kembali ke Home"),
+                    child: const Text("Kembali ke Beranda"),
                   ),
                 ),
 
@@ -333,14 +316,12 @@ class ResultView extends GetView<ResultController> {
                     onPressed: controller.ulangQuiz,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
-                      minimumSize:
-                          const Size.fromHeight(56),
+                      minimumSize: const Size.fromHeight(56),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: const Text("Ulangi Quiz"),
+                    child: const Text("Ulangi Kuis"),
                   ),
                 ),
               ],

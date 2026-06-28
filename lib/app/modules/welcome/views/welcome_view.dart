@@ -17,7 +17,6 @@ class WelcomeView extends GetView<WelcomeController> {
 
           child: Column(
             children: [
-
               /// ATAS
               Expanded(
                 flex: 3,
@@ -35,10 +34,7 @@ class WelcomeView extends GetView<WelcomeController> {
 
                     const SizedBox(height: 30),
 
-                    Image.asset(
-                      "assets/images/kotoba-logo.png",
-                      height: 160,
-                    ),
+                    Image.asset("assets/images/kotoba-logo.png", height: 160),
                   ],
                 ),
               ),
@@ -49,7 +45,6 @@ class WelcomeView extends GetView<WelcomeController> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     Text(
                       "Selamat Datang!",
                       style: TextStyle(
@@ -64,9 +59,7 @@ class WelcomeView extends GetView<WelcomeController> {
                     Text(
                       "Aplikasi Pembelajaran Bahasa Jepang Interaktif",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(color: Colors.grey),
                     ),
 
                     const SizedBox(height: 30),

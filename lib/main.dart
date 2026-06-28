@@ -11,28 +11,18 @@ void main() async {
   await GetStorage.init();
 
   await dotenv.load(fileName: ".env");
-  
+
   final box = GetStorage();
 
   final token = box.read('token');
 
-  runApp(
-    MyApp(
-      initialRoute:
-          token != null
-              ? Routes.MAIN
-              : AppPages.INITIAL,
-    ),
-  );
+  runApp(MyApp(initialRoute: token != null ? Routes.MAIN : AppPages.INITIAL));
 }
 
 class MyApp extends StatelessWidget {
   final String initialRoute;
 
-  const MyApp({
-    super.key,
-    required this.initialRoute,
-  });
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {

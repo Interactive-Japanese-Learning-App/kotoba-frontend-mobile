@@ -150,7 +150,7 @@ class MenulisView extends GetView<MenulisController> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _button("Hapus", Icons.delete, controller.clearCanvas),
-                  _button("Undo", Icons.undo, controller.undo),
+                  _button("Urungkan", Icons.undo, controller.undo),
                 ],
               ),
 

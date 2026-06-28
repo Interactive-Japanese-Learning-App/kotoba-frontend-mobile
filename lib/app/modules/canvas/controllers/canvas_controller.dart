@@ -340,7 +340,7 @@ class CanvasController extends GetxController {
             userId: userId,
             activityType: "kana_writing",
             title: "Latihan Menulis",
-            detail: "${type.value} • ${kana.value} (${label.value})"
+            detail: "${type.value} • ${kana.value} (${label.value})",
           );
         }
       }

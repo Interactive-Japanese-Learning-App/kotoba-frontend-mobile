@@ -247,7 +247,7 @@ class PelafalanController extends GetxController {
 
     String displayRomaji = convertedRomajiResult.value.trim();
     if (displayRomaji.isEmpty ||
-        displayRomaji == "Pelafalan kurang tepat" ||
+        displayRomaji == "Pelafalan kurang tepat!" ||
         (isSuccess && displayRomaji != fallbackRomaji.toLowerCase().trim())) {
       displayRomaji = fallbackRomaji.toLowerCase().trim();
     }
@@ -327,38 +327,38 @@ class PelafalanController extends GetxController {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                 onPressed: () async {
-  final finalScore = score.value;
+                  onPressed: () async {
+                    final finalScore = score.value;
 
-  if (isSuccess) {
-    final userId = box.read("userId");
+                    if (isSuccess) {
+                      final userId = box.read("userId");
 
-    if (userId != null) {
-      await ApiService.submitQuizAnswer(
-        userId: userId,
-        sectionId: sectionId,
-        questionNo: questionNo,
-        answer: question.value?["answer"] ?? "",
-      );
-    }
+                      if (userId != null) {
+                        await ApiService.submitQuizAnswer(
+                          userId: userId,
+                          sectionId: sectionId,
+                          questionNo: questionNo,
+                          answer: question.value?["answer"] ?? "",
+                        );
+                      }
 
-    final quizC = Get.find<QuizController>();
+                      final quizC = Get.find<QuizController>();
 
-    quizC.setPelafalanAccuracy(finalScore);
+                      quizC.setPelafalanAccuracy(finalScore);
 
-    quizC.jawab(isBenar: true);
+                      quizC.jawab(isBenar: true);
 
-    await quizC.refreshProgress();
+                      await quizC.refreshProgress();
 
-    clearResult();
+                      clearResult();
 
-    Get.back();
-    Get.offNamed(Routes.QUIZ_RESULT);
-  } else {
-    clearResult();
-    Get.back();
-  }
-},
+                      Get.back();
+                      Get.offNamed(Routes.QUIZ_RESULT);
+                    } else {
+                      clearResult();
+                      Get.back();
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isSuccess
                         ? Colors.green

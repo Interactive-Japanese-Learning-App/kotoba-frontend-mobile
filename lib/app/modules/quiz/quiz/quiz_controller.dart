@@ -107,33 +107,24 @@ class QuizController extends GetxController {
       if (response["success"] == true) {
         final data = response["data"];
 
-        currentSectionId.value =
-            data["sectionId"]?.toString() ?? "";
+        currentSectionId.value = data["sectionId"]?.toString() ?? "";
 
-        currentQuestion.value =
-            data["currentQuestion"] ?? 1;
+        currentQuestion.value = data["currentQuestion"] ?? 1;
 
         /// AMBIL COMPLETED QUESTIONS DARI DATABASE
-        completedQuestions.value =
-            List<int>.from(
+        completedQuestions.value = List<int>.from(
           data["completedQuestions"] ?? [],
         );
 
-        final sectionCompleted =
-            data["sectionCompleted"] ?? false;
+        final sectionCompleted = data["sectionCompleted"] ?? false;
 
-        currentSection.value =
-            (sectionCompleted && sections.length > 1)
-                ? 2
-                : 1;
+        currentSection.value = (sectionCompleted && sections.length > 1)
+            ? 2
+            : 1;
 
-        print(
-          "COMPLETED QUESTIONS = $completedQuestions",
-        );
+        print("COMPLETED QUESTIONS = $completedQuestions");
 
-        print(
-          "XP RESULT = $xp",
-        );
+        print("XP RESULT = $xp");
       }
     } catch (e) {
       print("Load Progress Error: $e");
@@ -147,10 +138,7 @@ class QuizController extends GetxController {
     return sectionNumber <= currentSection.value;
   }
 
-  bool isQuestionUnlocked(
-    int sectionNumber,
-    int questionNumber,
-  ) {
+  bool isQuestionUnlocked(int sectionNumber, int questionNumber) {
     if (sectionNumber < currentSection.value) {
       return true;
     }
@@ -169,9 +157,7 @@ class QuizController extends GetxController {
     benar.value++;
   }
 
-  void jawab({
-    required bool isBenar,
-  }) {
+  void jawab({required bool isBenar}) {
     if (isBenar) {
       tambahBenar();
     }

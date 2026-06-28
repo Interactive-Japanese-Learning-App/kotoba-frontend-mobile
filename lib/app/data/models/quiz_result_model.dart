@@ -9,9 +9,7 @@ class QuizResultModel {
     required this.level,
   });
 
-  factory QuizResultModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory QuizResultModel.fromJson(Map<String, dynamic> json) {
     return QuizResultModel(
       xpGained: json["xpGained"] ?? 0,
       totalXp: json["totalXp"] ?? 0,

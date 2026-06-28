@@ -198,7 +198,7 @@ class Membaca2Controller extends GetxController {
 
               const SizedBox(height: 10),
 
-              const Text("Coba lagi ya"),
+              const Text("Coba lagi ya!"),
 
               const SizedBox(height: 20),
 
@@ -216,7 +216,7 @@ class Membaca2Controller extends GetxController {
                     foregroundColor: Colors.white,
                     elevation: 2, // Efek bayangan halus
                   ),
-                  child: const Text("Coba Lagi"),
+                  child: const Text("Coba Lagi!"),
                 ),
               ),
             ],

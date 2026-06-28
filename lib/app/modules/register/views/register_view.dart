@@ -21,7 +21,8 @@ class RegisterView extends GetView<RegisterController> {
               Image.asset(
                 "assets/images/kotoba-logo.png",
                 height: 120,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.image, size: 120),
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.image, size: 120),
               ),
 
               const SizedBox(height: 20),
@@ -47,61 +48,70 @@ class RegisterView extends GetView<RegisterController> {
               const SizedBox(height: 15),
 
               /// PASSWORD
-              Obx(() => TextField(
-                    controller: controller.passC,
-                    obscureText: controller.isHiddenPass.value,
-                    decoration: _inputDecoration("Kata Sandi").copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isHiddenPass.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: AppColors.primary,
-                        ),
-                        onPressed: controller.togglePass,
+              Obx(
+                () => TextField(
+                  controller: controller.passC,
+                  obscureText: controller.isHiddenPass.value,
+                  decoration: _inputDecoration("Kata Sandi").copyWith(
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isHiddenPass.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: AppColors.primary,
                       ),
+                      onPressed: controller.togglePass,
                     ),
-                  )),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 15),
 
               /// CONFIRM PASSWORD
-              Obx(() => TextField(
-                    controller: controller.confirmC,
-                    obscureText: controller.isHiddenConfirm.value,
-                    decoration: _inputDecoration("Konfirmasi Kata Sandi").copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isHiddenConfirm.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: AppColors.primary,
+              Obx(
+                () => TextField(
+                  controller: controller.confirmC,
+                  obscureText: controller.isHiddenConfirm.value,
+                  decoration: _inputDecoration("Konfirmasi Kata Sandi")
+                      .copyWith(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isHiddenConfirm.value
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: AppColors.primary,
+                          ),
+                          onPressed: controller.toggleConfirm,
                         ),
-                        onPressed: controller.toggleConfirm,
                       ),
-                    ),
-                  )),
+                ),
+              ),
 
               const SizedBox(height: 25),
 
               /// BUTTON DAFTAR (REACTIVE)
-              Obx(() => SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      onPressed: controller.isLoading.value ? null : controller.register,
-                      child: controller.isLoading.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("Daftar", style: TextStyle(fontSize: 16)),
                     ),
-                  )),
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : controller.register,
+                    child: controller.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Daftar", style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 20),
 
@@ -113,24 +123,26 @@ class RegisterView extends GetView<RegisterController> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 10),
-                  Obx(() => InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        // Jika sedang loading, fungsi klik dimatikan
-                        onTap: controller.isLoading.value
-                            ? null
-                            : () => controller.registerWithGoogle(),
-                        child: Opacity(
-                          opacity: controller.isLoading.value ? 0.5 : 1.0,
-                          child: SizedBox(
-                            height: 40,
-                            child: Image.asset(
-                              "assets/images/logo-google.png",
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.g_mobiledata, size: 40),
-                            ),
+                  Obx(
+                    () => InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      // Jika sedang loading, fungsi klik dimatikan
+                      onTap: controller.isLoading.value
+                          ? null
+                          : () => controller.registerWithGoogle(),
+                      child: Opacity(
+                        opacity: controller.isLoading.value ? 0.5 : 1.0,
+                        child: SizedBox(
+                          height: 40,
+                          child: Image.asset(
+                            "assets/images/logo-google.png",
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.g_mobiledata, size: 40),
                           ),
                         ),
-                      )),
+                      ),
+                    ),
+                  ),
                 ],
               ),
 

@@ -29,9 +29,7 @@ class ActivityLogController extends GetxController {
 
       print("USER ID = $userId");
 
-      final result = await ApiService.getActivities(
-        userId: userId.toString(),
-      );
+      final result = await ApiService.getActivities(userId: userId.toString());
 
       print("===== ACTIVITY RESULT =====");
       print(result);

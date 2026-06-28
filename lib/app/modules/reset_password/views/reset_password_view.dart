@@ -20,7 +20,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
 
               /// TITLE
               Text(
-                "PASSWORD BARU",
+                "KATA SANDI BARU",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -57,19 +57,18 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                   controller: controller.confirmC,
                   obscureText: controller.isHiddenConfirm.value,
 
-
-                  decoration:
-                      _inputDecoration("Konfirmasi Kata Sandi Baru").copyWith(
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.isHiddenConfirm.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: AppColors.primary,
+                  decoration: _inputDecoration("Konfirmasi Kata Sandi Baru")
+                      .copyWith(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isHiddenConfirm.value
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: AppColors.primary,
+                          ),
+                          onPressed: () => controller.isHiddenConfirm.toggle(),
+                        ),
                       ),
-                      onPressed: () => controller.isHiddenConfirm.toggle(),
-                    ),
-                  ),
                 ),
               ),
 
@@ -92,13 +91,8 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                         ? null
                         : controller.resetPassword,
                     child: controller.isLoading.value
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                          )
-                        : const Text(
-                            "Simpan",
-                            style: TextStyle(fontSize: 16),
-                          ),
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Simpan", style: TextStyle(fontSize: 16)),
                   ),
                 ),
               ),
@@ -124,4 +118,3 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
     );
   }
 }
-

@@ -66,25 +66,25 @@ class HomeController extends GetxController {
     // setiap halaman home muncul, refresh profile
     loadProfile();
   }
+
   String formatNumber(num value) {
-  return NumberFormat.decimalPattern('id').format(value);
-}
-Future<void> loadYoutube() async {
-  try {
-    final result = await ApiService.getYoutubeData();
-
-    final List list = result["data"]["topChannels"];
-
-    channels.assignAll(
-      list
-          .take(5)
-          .map((e) => YoutubeChannel.fromJson(e))
-          .toList(),
-    );
-  } catch (e) {
-    print(e);
+    return NumberFormat.decimalPattern('id').format(value);
   }
-}
+
+  Future<void> loadYoutube() async {
+    try {
+      final result = await ApiService.getYoutubeData();
+
+      final List list = result["data"]["topChannels"];
+
+      channels.assignAll(
+        list.take(5).map((e) => YoutubeChannel.fromJson(e)).toList(),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> loadProfile() async {
     try {
       final userId = box.read('userId');

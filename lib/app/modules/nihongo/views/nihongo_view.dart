@@ -21,7 +21,7 @@ class NihongoView extends GetView<NihongoController> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Nihongo Basics",
+          "Nihongo Dasar",
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,

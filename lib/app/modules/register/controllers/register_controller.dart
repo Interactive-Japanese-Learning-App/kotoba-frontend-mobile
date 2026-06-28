@@ -48,7 +48,7 @@ class RegisterController extends GetxController {
 
     /// VALIDASI
     if (email.isEmpty || pass.isEmpty || confirm.isEmpty) {
-      AppSnackbar.show(title: "Error", message: "Semua field wajib diisi");
+      AppSnackbar.show(title: "Error", message: "Semua kolom wajib diisi");
 
       return;
     }
@@ -60,7 +60,10 @@ class RegisterController extends GetxController {
     }
 
     if (pass.length < 8) {
-      AppSnackbar.show(title: "Error", message: "Password minimal 8 karakter");
+      AppSnackbar.show(
+        title: "Error",
+        message: "Kata sandi minimal 8 karakter",
+      );
 
       return;
     }
@@ -74,7 +77,8 @@ class RegisterController extends GetxController {
     if (!hasUppercase || !hasLowercase || !hasNumber) {
       AppSnackbar.show(
         title: "Error",
-        message: "Password harus memiliki huruf besar, huruf kecil, dan angka",
+        message:
+            "Kata sandi harus memiliki huruf besar, huruf kecil, dan angka",
       );
 
       return;
@@ -102,7 +106,7 @@ class RegisterController extends GetxController {
       } else {
         AppSnackbar.show(
           title: "Error",
-          message: result['message'] ?? "Register gagal",
+          message: result['message'] ?? "Registrasi gagal",
         );
       }
     } catch (e) {

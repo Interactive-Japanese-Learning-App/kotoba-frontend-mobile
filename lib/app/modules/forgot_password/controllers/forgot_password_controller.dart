@@ -6,62 +6,33 @@ import '../../../widgets/app_snackbar.dart';
 import '../../../routes/app_pages.dart';
 
 class ForgotPasswordController extends GetxController {
-
   final emailC = TextEditingController();
 
   final isLoading = false.obs;
 
   Future<void> sendOtp() async {
-
     final email = emailC.text.trim();
 
     if (email.isEmpty) {
-
-      AppSnackbar.show(
-        title: "Error",
-        message: "Email wajib diisi",
-      );
+      AppSnackbar.show(title: "Error", message: "Email wajib diisi");
 
       return;
     }
 
     try {
-
       isLoading.value = true;
 
-      final result =
-          await ApiService.forgotPassword(
-        email: email,
-      );
+      final result = await ApiService.forgotPassword(email: email);
 
       if (result['success']) {
+        AppSnackbar.show(title: "Berhasil", message: result['message']);
 
-        AppSnackbar.show(
-          title: "Berhasil",
-          message: result['message'],
-        );
-
-        Get.toNamed(
-          Routes.OTP,
-          arguments: {
-            "email": email,
-            "isReset": true,
-          },
-        );
-
+        Get.toNamed(Routes.OTP, arguments: {"email": email, "isReset": true});
       } else {
-
-        AppSnackbar.show(
-          title: "Error",
-          message: result['message'],
-        );
-
+        AppSnackbar.show(title: "Error", message: result['message']);
       }
-
     } finally {
-
       isLoading.value = false;
-
     }
   }
 

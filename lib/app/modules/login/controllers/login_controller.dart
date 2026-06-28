@@ -38,7 +38,10 @@ class LoginController extends GetxController {
     final pass = passC.text.trim();
 
     if (email.isEmpty || pass.isEmpty) {
-      AppSnackbar.show(title: "Error", message: "Email & Password wajib diisi");
+      AppSnackbar.show(
+        title: "Error",
+        message: "Email & Kata Sandi wajib diisi",
+      );
 
       return;
     }
@@ -58,12 +61,12 @@ class LoginController extends GetxController {
 
         await ApiService.saveActivity(
           userId: user['_id'],
-          activityType: "login",
-          title: "Login Akun",
-          detail: "Pengguna login menggunakan email dan password",
+          activityType: "Masuk",
+          title: "Masuk Akun",
+          detail: "Pengguna masuk menggunakan email dan kata sandi",
         );
 
-        AppSnackbar.show(title: "Berhasil", message: "Login berhasil");
+        AppSnackbar.show(title: "Berhasil", message: "Berhasil Masuk");
 
         Get.offAllNamed(
           Routes.MAIN,
@@ -75,8 +78,8 @@ class LoginController extends GetxController {
         );
       } else {
         AppSnackbar.show(
-          title: "Login Gagal",
-          message: result['message'] ?? "Login gagal",
+          title: "Gagal Masuk",
+          message: result['message'] ?? "Gagal Masuk",
         );
       }
     } catch (e) {
@@ -116,58 +119,57 @@ class LoginController extends GetxController {
 
       // 3. Kirim ID Token tersebut ke API Backend Node.js
       // 3. Kirim ID Token tersebut ke API Backend Node.js
-final result = await ApiService.loginWithGoogle(idToken: idToken);
+      final result = await ApiService.loginWithGoogle(idToken: idToken);
 
-if (result['success'] == true) {
-  final token = result['token'];
-  final user = result['user'];
-  final bool isNewUser = result['isNewUser'] ?? false;
+      if (result['success'] == true) {
+        final token = result['token'];
+        final user = result['user'];
+        final bool isNewUser = result['isNewUser'] ?? false;
 
-  // Simpan data user
-  await box.write('token', token);
-  await box.write('userId', user['_id']);
-  await box.write('email', user['email']);
-  await box.write('username', user['email'].split('@').first);
+        // Simpan data user
+        await box.write('token', token);
+        await box.write('userId', user['_id']);
+        await box.write('email', user['email']);
+        await box.write('username', user['email'].split('@').first);
 
-  // Simpan activity
-  if (isNewUser) {
-    await ApiService.saveActivity(
-      userId: user['_id'],
-      activityType: "register",
-      title: "Registrasi Akun",
-      detail: "Pengguna mendaftar menggunakan akun Google",
-    );
-  } else {
-    await ApiService.saveActivity(
-      userId: user['_id'],
-      activityType: "login",
-      title: "Login Akun",
-      detail: "Pengguna login menggunakan akun Google",
-    );
-  }
+        // Simpan activity
+        if (isNewUser) {
+          await ApiService.saveActivity(
+            userId: user['_id'],
+            activityType: "register",
+            title: "Registrasi Akun",
+            detail: "Pengguna mendaftar menggunakan akun Google",
+          );
+        } else {
+          await ApiService.saveActivity(
+            userId: user['_id'],
+            activityType: "Masuk",
+            title: "Masuk Akun",
+            detail: "Pengguna masuk menggunakan akun Google",
+          );
+        }
 
-  AppSnackbar.show(
-    title: "Berhasil",
-    message: isNewUser
-        ? "Registrasi Google Berhasil"
-        : "Login Google Berhasil",
-  );
+        AppSnackbar.show(
+          title: "Berhasil",
+          message: isNewUser
+              ? "Registrasi Google Berhasil"
+              : "Masuk dengan Google Berhasil",
+        );
 
-  Get.offAllNamed(
-    Routes.MAIN,
-    arguments: {
-      'id': user['_id'],
-      'email': user['email'],
-      'username': user['email'].split('@').first,
-    },
-  );
-} else {
-  AppSnackbar.show(
-    title: "Login Gagal",
-    message:
-        result['message'] ?? "Gagal memverifikasi akun ke sistem backend",
-  );
-
+        Get.offAllNamed(
+          Routes.MAIN,
+          arguments: {
+            'id': user['_id'],
+            'email': user['email'],
+            'username': user['email'].split('@').first,
+          },
+        );
+      } else {
+        AppSnackbar.show(
+          title: "Gagal Masuk",
+          message:
+              result['message'] ?? "Gagal memverifikasi akun ke sistem backend",
+        );
       }
     } catch (e) {
       AppSnackbar.show(title: "Error Autentikasi", message: e.toString());

@@ -22,7 +22,6 @@ class OtpController extends GetxController {
   late String email;
   bool isReset = false;
 
-
   @override
   void onInit() {
     super.onInit();
@@ -70,10 +69,7 @@ class OtpController extends GetxController {
 
   Future<void> verifyOtp() async {
     if (otpC.text.length != 6) {
-      AppSnackbar.show(
-        title: "Error",
-        message: "OTP harus 6 digit",
-      );
+      AppSnackbar.show(title: "Error", message: "OTP harus 6 digit");
       return;
     }
 
@@ -83,29 +79,20 @@ class OtpController extends GetxController {
       final otp = otpC.text.trim();
 
       final result = isReset
-          ? await ApiService.verifyResetOtp(
-              email: email,
-              otp: otp,
-            )
-          : await ApiService.verifyOtp(
-              email: email,
-              otp: otp,
-            );
+          ? await ApiService.verifyResetOtp(email: email, otp: otp)
+          : await ApiService.verifyOtp(email: email, otp: otp);
 
       if (result['success'] == true) {
         if (isReset) {
           AppSnackbar.show(
             title: "Berhasil",
-            message: "OTP valid. Silakan buat password baru.",
+            message: "OTP valid. Silakan buat kata sandi baru.",
           );
 
           isLoading.value = false;
           Get.toNamed(
             Routes.RESET_PASSWORD,
-            arguments: {
-              'email': email,
-              'otp': otp,
-            },
+            arguments: {'email': email, 'otp': otp},
           );
           return;
         }
@@ -120,10 +107,7 @@ class OtpController extends GetxController {
         return;
       }
 
-      AppSnackbar.show(
-        title: "Error",
-        message: result['message'],
-      );
+      AppSnackbar.show(title: "Error", message: result['message']);
 
       isLoading.value = false;
     } catch (e) {
@@ -141,7 +125,10 @@ class OtpController extends GetxController {
       final result = await ApiService.resendOtp(email: email);
 
       if (result['success'] == true) {
-        AppSnackbar.show(title: 'Berhasil', message: 'OTP berhasil dikirim ulang');
+        AppSnackbar.show(
+          title: 'Berhasil',
+          message: 'OTP berhasil dikirim ulang',
+        );
         startCountdown();
         otpC.clear();
       } else {
@@ -157,7 +144,4 @@ class OtpController extends GetxController {
       AppSnackbar.show(title: 'Error', message: e.toString());
     }
   }
-
-
 }
-

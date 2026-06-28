@@ -192,120 +192,97 @@ class ProfileController extends GetxController {
     if (oldPasswordController.text.isEmpty ||
         newPasswordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      showSnackbar("Error", "Semua field password harus diisi");
+      showSnackbar("Error", "Semua field kata sandi harus diisi");
 
       return false;
     }
 
     if (newPasswordController.text.length < 8) {
-      showSnackbar("Error", "Password minimal 8 karakter");
+      showSnackbar("Error", "Kata sandi minimal 8 karakter");
 
       return false;
     }
 
     if (newPasswordController.text != confirmPasswordController.text) {
-      showSnackbar("Error", "Konfirmasi password tidak cocok");
+      showSnackbar("Error", "Konfirmasi kata sandi tidak cocok");
 
       return false;
     }
 
     return true;
   }
+
   void confirmDeleteAccount() {
-  Get.defaultDialog(
-    title: "Hapus Akun",
+    Get.defaultDialog(
+      title: "Hapus Akun",
 
-    backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
 
-    radius: 20,
+      radius: 20,
 
-    titleStyle: const TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    ),
+      titleStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
 
-    middleText:
-        "Yakin ingin menghapus akun?",
+      middleText: "Yakin ingin menghapus akun?",
 
-    middleTextStyle: const TextStyle(
-      color: Colors.grey,
-      fontSize: 14,
-    ),
+      middleTextStyle: const TextStyle(color: Colors.grey, fontSize: 14),
 
-    confirm: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.danger,
+      confirm: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.danger,
 
-        foregroundColor: Colors.white,
+          foregroundColor: Colors.white,
 
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
+
+        onPressed: () async {
+          Get.back();
+
+          await deleteAccount();
+        },
+
+        child: const Text("Ya"),
       ),
 
-      onPressed: () async {
-        Get.back();
+      cancel: TextButton(
+        onPressed: () => Get.back(),
 
-        await deleteAccount();
-      },
-
-      child: const Text("Ya"),
-    ),
-
-    cancel: TextButton(
-      onPressed: () => Get.back(),
-
-      child: Text(
-        "Tidak",
-        style: TextStyle(
-          color: AppColors.danger,
-        ),
+        child: Text("Tidak", style: TextStyle(color: AppColors.danger)),
       ),
-    ),
-  );
-}
-//DELETE AKUN
-Future<void> deleteAccount() async {
-  try {
-    isLoading.value = true;
-
-    final userId = box.read('userId');
-    final email = box.read('email');
-
-    // SIMPAN ACTIVITY
-    await ApiService.saveDeleteAccountActivity(
-      userId: userId,
-      email: email,
     );
-
-    final result = await ApiService.deleteAccount(
-      userId: userId,
-    );
-
-    if (result['success'] == true) {
-      await box.erase();
-
-      AppSnackbar.show(
-        title: "Berhasil",
-        message: "Akun berhasil dihapus",
-      );
-
-      Get.offAllNamed(Routes.LOGIN);
-    } else {
-      AppSnackbar.show(
-        title: "Error",
-        message: result['message'],
-      );
-    }
-  } catch (e) {
-    AppSnackbar.show(
-      title: "Error",
-      message: e.toString(),
-    );
-  } finally {
-    isLoading.value = false;
   }
-}
+
+  //DELETE AKUN
+  Future<void> deleteAccount() async {
+    try {
+      isLoading.value = true;
+
+      final userId = box.read('userId');
+      final email = box.read('email');
+
+      // SIMPAN ACTIVITY
+      await ApiService.saveDeleteAccountActivity(userId: userId, email: email);
+
+      final result = await ApiService.deleteAccount(userId: userId);
+
+      if (result['success'] == true) {
+        await box.erase();
+
+        AppSnackbar.show(title: "Berhasil", message: "Akun berhasil dihapus");
+
+        Get.offAllNamed(Routes.LOGIN);
+      } else {
+        AppSnackbar.show(title: "Error", message: result['message']);
+      }
+    } catch (e) {
+      AppSnackbar.show(title: "Error", message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // LOGOUT
   void logout() {
     Get.defaultDialog(
@@ -344,7 +321,7 @@ Future<void> deleteAccount() async {
 
           Get.back();
 
-          showSnackbar("Keluar", "Berhasil logout");
+          showSnackbar("Keluar", "Berhasil keluar");
 
           Future.delayed(const Duration(milliseconds: 700), () {
             Get.offAllNamed(Routes.LOGIN);
@@ -360,18 +337,4 @@ Future<void> deleteAccount() async {
       ),
     );
   }
-
-  // DISPOSE
-  // @override
-  // void onClose() {
-  //   emailController.dispose();
-
-  //   oldPasswordController.dispose();
-
-  //   newPasswordController.dispose();
-
-  //   confirmPasswordController.dispose();
-
-  //   super.onClose();
-  // }
 }

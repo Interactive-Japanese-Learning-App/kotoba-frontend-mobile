@@ -21,7 +21,7 @@ class SpeechView extends GetView<SpeechController> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Speech Recognition",
+          "Pelafalan Suara",
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,

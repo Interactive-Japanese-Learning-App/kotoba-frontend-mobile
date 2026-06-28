@@ -85,8 +85,8 @@ class LoginView extends GetView<LoginController> {
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                    onTap: () {
-Get.toNamed(Routes.FORGOT_PASSWORD);
+                  onTap: () {
+                    Get.toNamed(Routes.FORGOT_PASSWORD);
                   },
                   child: Text(
                     "Lupa Password?",
