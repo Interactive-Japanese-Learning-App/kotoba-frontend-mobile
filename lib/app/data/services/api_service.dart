@@ -363,6 +363,12 @@ class ApiService {
     return jsonDecode(response.body);
   }
 
+  static Future<Map<String, dynamic>> getYoutubeData() async {
+    final response = await http.get(Uri.parse('$baseUrl/youtube'));
+
+    return jsonDecode(response.body);
+  }
+
   // =========================
   // ROADMAP
   // =========================

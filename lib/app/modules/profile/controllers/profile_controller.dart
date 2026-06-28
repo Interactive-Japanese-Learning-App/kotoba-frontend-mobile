@@ -362,16 +362,16 @@ Future<void> deleteAccount() async {
   }
 
   // DISPOSE
-  @override
-  void onClose() {
-    emailController.dispose();
+  // @override
+  // void onClose() {
+  //   emailController.dispose();
 
-    oldPasswordController.dispose();
+  //   oldPasswordController.dispose();
 
-    newPasswordController.dispose();
+  //   newPasswordController.dispose();
 
-    confirmPasswordController.dispose();
+  //   confirmPasswordController.dispose();
 
-    super.onClose();
-  }
+  //   super.onClose();
+  // }
 }

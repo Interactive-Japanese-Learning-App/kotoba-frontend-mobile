@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kotoba_app/app/data/models/youtube_model.dart';
 
 import '../../main/controllers/bottom_nav_controller.dart';
 import '../../../data/services/api_service.dart';
 import '../../../data/models/user_profile_model.dart';
+import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
   final scrollController = ScrollController();
@@ -26,24 +28,8 @@ class HomeController extends GetxController {
   /// Storage
   final box = GetStorage();
 
-  /// Video list
-  var videos = [
-    {
-      "title": "Belajar Hiragana Dasar",
-      "channel": "Kotoba Sensei",
-      "thumbnail": "assets/images/bg-city.jpg",
-    },
-    {
-      "title": "Katakana Mudah",
-      "channel": "Nihongo Channel",
-      "thumbnail": "assets/images/bg-city.jpg",
-    },
-    {
-      "title": "Percakapan Jepang",
-      "channel": "Anime Talk",
-      "thumbnail": "assets/images/bg-city.jpg",
-    },
-  ].obs;
+  /// Channel list
+  final channels = <YoutubeChannel>[].obs;
 
   /// Progress bar
   double get progress {
@@ -70,6 +56,7 @@ class HomeController extends GetxController {
     scrollController.addListener(_onScroll);
 
     loadProfile();
+    loadYoutube();
   }
 
   @override
@@ -79,7 +66,25 @@ class HomeController extends GetxController {
     // setiap halaman home muncul, refresh profile
     loadProfile();
   }
+  String formatNumber(num value) {
+  return NumberFormat.decimalPattern('id').format(value);
+}
+Future<void> loadYoutube() async {
+  try {
+    final result = await ApiService.getYoutubeData();
 
+    final List list = result["data"]["topChannels"];
+
+    channels.assignAll(
+      list
+          .take(5)
+          .map((e) => YoutubeChannel.fromJson(e))
+          .toList(),
+    );
+  } catch (e) {
+    print(e);
+  }
+}
   Future<void> loadProfile() async {
     try {
       final userId = box.read('userId');
