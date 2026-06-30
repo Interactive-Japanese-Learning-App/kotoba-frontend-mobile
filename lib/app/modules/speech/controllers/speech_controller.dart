@@ -52,21 +52,20 @@ class SpeechController extends GetxController {
   final Dio dio = Dio();
   final kanaKit = KanaKit();
 
-  static const String baseUrl = "http://192.168.18.17:5000/api/nihongo";
+  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
   @override
   void onInit() {
     super.onInit();
 
-    loadData("numbers", numbers);
-    loadData("months", months);
-    loadData("dates", dates);
-    loadData("family", family);
-    loadData("animals", animals);
-    loadData("foods", foods);
-    loadData("drinks", drinks);
-    loadData("jobs", jobs);
-    loadData("object_vocab", objects);
-
+    loadData("nihongo/numbers", numbers);
+    loadData("nihongo/months", months);
+    loadData("nihongo/dates", dates);
+    loadData("nihongo/family", family);
+    loadData("nihongo/animals", animals);
+    loadData("nihongo/foods", foods);
+    loadData("nihongo/drinks", drinks);
+    loadData("nihongo/jobs", jobs);
+    loadData("nihongo/object_vocab", objects);
     initSpeech();
   }
 

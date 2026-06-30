@@ -22,7 +22,7 @@ class NihongoController extends GetxController {
   final pekerjaan = <Map<String, dynamic>>[].obs;
   final benda = <Map<String, dynamic>>[].obs;
 
-  static const String baseUrl = "http://192.168.18.17:5000/api/nihongo";
+  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
 
   @override
   void onInit() {
@@ -72,47 +72,47 @@ class NihongoController extends GetxController {
   }
 
   Future<void> loadHiragana() async {
-    await loadData("hiragana", hiragana);
+    await loadData("nihongo/hiragana", hiragana);
   }
 
   Future<void> loadKatakana() async {
-    await loadData("katakana", katakana);
+    await loadData("nihongo/katakana", katakana);
   }
 
   Future<void> loadNumbers() async {
-    await loadData("numbers", angka);
+    await loadData("nihongo/numbers", angka);
   }
 
   Future<void> loadMonths() async {
-    await loadData("months", bulan);
+    await loadData("nihongo/months", bulan);
   }
 
   Future<void> loadDates() async {
-    await loadData("dates", tanggal);
+    await loadData("nihongo/dates", tanggal);
   }
 
   Future<void> loadFamily() async {
-    await loadData("family", keluarga);
+    await loadData("nihongo/family", keluarga);
   }
 
   Future<void> loadAnimals() async {
-    await loadData("animals", hewan);
+    await loadData("nihongo/animals", hewan);
   }
 
   Future<void> loadFoods() async {
-    await loadData("foods", makanan);
+    await loadData("nihongo/foods", makanan);
   }
 
   Future<void> loadDrinks() async {
-    await loadData("drinks", minuman);
+    await loadData("nihongo/drinks", minuman);
   }
 
   Future<void> loadJobs() async {
-    await loadData("jobs", pekerjaan);
+    await loadData("nihongo/jobs", pekerjaan);
   }
 
   Future<void> loadObjects() async {
-    await loadData("object_vocab", benda);
+    await loadData("nihongo/object_vocab", benda);
   }
 
   List<Map<String, dynamic>> _filter(List<Map<String, dynamic>> data) {

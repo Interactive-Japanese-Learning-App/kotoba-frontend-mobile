@@ -49,20 +49,10 @@ class ProfileController extends GetxController {
 
   // LOAD ARGUMENTS
   void _loadArguments() {
-    final args = Get.arguments;
-
-    if (args is Map<String, dynamic>) {
-      userId.value = args['id']?.toString() ?? '';
-      email.value = args['email']?.toString() ?? '';
-      username.value = args['username']?.toString() ?? '';
-      photoUrl.value =
-          args['photoUrl']?.toString() ?? box.read('photoUrl') ?? '';
-    } else {
-      userId.value = box.read('userId') ?? '';
-      email.value = box.read('email') ?? '';
-      username.value = box.read('username') ?? '';
-      photoUrl.value = box.read('photoUrl') ?? '';
-    }
+    userId.value = box.read('userId') ?? '';
+    email.value = box.read('email') ?? '';
+    username.value = box.read('username') ?? '';
+    photoUrl.value = box.read('photoUrl') ?? '';
   }
 
   // SYNC EMAIL
@@ -171,8 +161,13 @@ class ProfileController extends GetxController {
         );
 
         email.value = emailController.text.trim();
-
         username.value = emailController.text.trim().split('@').first;
+
+        await box.write('email', email.value);
+        await box.write('username', username.value);
+
+        _loadArguments();
+        update();
 
         Get.back();
 

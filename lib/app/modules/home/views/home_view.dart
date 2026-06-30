@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:kotoba_app/app/routes/app_pages.dart';
 import '../../../data/theme/app_colors.dart';
 import '../../../widgets/app_header.dart';
@@ -322,12 +323,11 @@ class HomeView extends GetView<HomeController> {
                     const SizedBox(height: 6),
 
                     const Text(
-                      "Rekomendasi channel YouTube terbaik untuk belajar bahasa Jepang",
+                      "Rekomendasi channel YouTube terpopuler untuk belajar bahasa Jepang",
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
 
                     const SizedBox(height: 12),
-                   
 
                     Obx(
                       () => SizedBox(
@@ -340,112 +340,132 @@ class HomeView extends GetView<HomeController> {
                           itemBuilder: (context, index) {
                             final channel = controller.channels[index];
 
-                            return Container(
-                              width: 270,
-                              margin: const EdgeInsets.only(right: 12),
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(.05),
-                                    blurRadius: 8,
-                                    spreadRadius: 1,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade50,
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () async {
+                                final url = Uri.parse(channel.channelUrl);
+
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                              child: Container(
+                                width: 270,
+                                margin: const EdgeInsets.only(right: 12),
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(.05),
+                                      blurRadius: 8,
+                                      spreadRadius: 1,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
                                       borderRadius: BorderRadius.circular(14),
-                                    ),
-                                    child: const Icon(
-                                      Icons.smart_display_rounded,
-                                      color: Colors.red,
-                                      size: 28,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 14),
-
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          channel.channelName,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-
-                                        const SizedBox(height: 4),
-
-                                        Text(
-                                          "${controller.formatNumber(channel.subscribers)} Subscriber",
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-
-                                        const SizedBox(height: 8),
-
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.visibility_rounded,
-                                              size: 14,
-                                              color: Colors.grey[700],
+                                      child: Image.network(
+                                        channel.thumbnail,
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) {
+                                          return Container(
+                                            width: 48,
+                                            height: 48,
+                                            color: Colors.red.shade50,
+                                            child: const Icon(
+                                              Icons.smart_display_rounded,
+                                              color: Colors.red,
                                             ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              controller.formatNumber(
-                                                channel.totalViews,
-                                              ),
-                                              style: TextStyle(
-                                                fontSize: 11,
+                                          );
+                                        },
+                                      ),
+                                    ),
+
+                                    const SizedBox(width: 14),
+
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            channel.channelName,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 4),
+
+                                          Text(
+                                            "${controller.formatNumber(channel.subscribers)} Subscriber",
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.grey[600],
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 8),
+
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.visibility_rounded,
+                                                size: 14,
                                                 color: Colors.grey[700],
                                               ),
-                                            ),
-
-                                            const SizedBox(width: 16),
-
-                                            Icon(
-                                              Icons.video_library_rounded,
-                                              size: 14,
-                                              color: Colors.grey[700],
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              controller.formatNumber(
-                                                channel.totalVideos,
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                controller.formatNumber(
+                                                  channel.totalViews,
+                                                ),
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey[700],
+                                                ),
                                               ),
-                                              style: TextStyle(
-                                                fontSize: 11,
+
+                                              const SizedBox(width: 16),
+
+                                              Icon(
+                                                Icons.video_library_rounded,
+                                                size: 14,
                                                 color: Colors.grey[700],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                controller.formatNumber(
+                                                  channel.totalVideos,
+                                                ),
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey[700],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                           },
