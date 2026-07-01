@@ -53,7 +53,7 @@ class SpeechController extends GetxController {
   final Dio dio = Dio();
   final kanaKit = KanaKit();
 
-  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
+  static const String baseUrl = 'http://192.168.18.9:5000/api';
   @override
   void onInit() {
     super.onInit();

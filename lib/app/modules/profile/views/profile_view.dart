@@ -24,22 +24,31 @@ class ProfileView extends GetView<ProfileController> {
                   const SizedBox(height: 30),
 
                   /// AVATAR
-                  Obx(
-                    () => CircleAvatar(
-  radius: 55,
-  backgroundColor: AppColors.neutral,
-  backgroundImage: controller.photoUrl.value.isNotEmpty
-      ? NetworkImage(controller.photoUrl.value)
-      : null,
-  child: controller.photoUrl.value.isEmpty
-      ? const Icon(
-          Icons.account_circle,
-          size: 80,
-          color: Colors.grey,
-        )
-      : null,
-),
-                  ),
+                  Obx(() {
+                    final hasPhoto = controller.photoUrl.value.isNotEmpty;
+
+                    final initial = controller.username.value.isNotEmpty
+                        ? controller.username.value[0].toUpperCase()
+                        : "?";
+
+                    return CircleAvatar(
+                      radius: 55,
+                      backgroundColor: AppColors.primary,
+                      backgroundImage: hasPhoto
+                          ? NetworkImage(controller.photoUrl.value)
+                          : null,
+                      child: hasPhoto
+                          ? null
+                          : Text(
+                              initial,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 36,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    );
+                  }),
 
                   const SizedBox(height: 16),
 

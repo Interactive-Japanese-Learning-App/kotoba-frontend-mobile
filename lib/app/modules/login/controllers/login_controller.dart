@@ -58,10 +58,11 @@ class LoginController extends GetxController {
         await box.write('userId', user['_id']);
         await box.write('email', user['email']);
         await box.write('username', user['email'].split('@').first);
+        await box.write('photoUrl', user['photoUrl'] ?? '');
 
         await ApiService.saveActivity(
           userId: user['_id'],
-          activityType: "Masuk",
+          activityType: "login",
           title: "Masuk Akun",
           detail: "Pengguna masuk menggunakan email dan kata sandi",
         );
@@ -74,6 +75,7 @@ class LoginController extends GetxController {
             'id': user['_id'],
             'email': user['email'],
             'username': user['email'].split('@').first,
+            'photoUrl': user['photoUrl'] ?? '',
           },
         );
       } else {
@@ -144,7 +146,7 @@ class LoginController extends GetxController {
         } else {
           await ApiService.saveActivity(
             userId: user['_id'],
-            activityType: "Masuk",
+            activityType: "login",
             title: "Masuk Akun",
             detail: "Pengguna masuk menggunakan akun Google",
           );
@@ -153,7 +155,7 @@ class LoginController extends GetxController {
         AppSnackbar.show(
           title: "Berhasil",
           message: isNewUser
-              ? "Registrasi Google Berhasil"
+              ? "Mendaftar Google Berhasil"
               : "Masuk dengan Google Berhasil",
         );
 

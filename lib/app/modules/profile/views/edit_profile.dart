@@ -46,22 +46,31 @@ class EditProfileView extends GetView<ProfileController> {
               Center(
                 child: Column(
                   children: [
-                    Obx(
-                      () => CircleAvatar(
-                        radius: 55,
-                        backgroundColor: AppColors.neutral,
-                        backgroundImage: controller.photoUrl.value.isNotEmpty
+                    Obx(() {
+                      final hasPhoto = controller.photoUrl.value.isNotEmpty;
+
+                      final initial = controller.username.value.isNotEmpty
+                          ? controller.username.value[0].toUpperCase()
+                          : "?";
+
+                      return CircleAvatar(
+                        radius: 45,
+                        backgroundColor: AppColors.primary,
+                        backgroundImage: hasPhoto
                             ? NetworkImage(controller.photoUrl.value)
                             : null,
-                        child: controller.photoUrl.value.isEmpty
-                            ? const Icon(
-                                Icons.account_circle,
-                                size: 80,
-                                color: Colors.grey,
-                              )
-                            : null,
-                      ),
-                    ),
+                        child: hasPhoto
+                            ? null
+                            : Text(
+                                initial,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      );
+                    }),
 
                     const SizedBox(height: 12),
 

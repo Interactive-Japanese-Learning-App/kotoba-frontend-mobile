@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class ApiService {
-  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
+  static const String baseUrl = 'http://192.168.18.9:5000/api';
 
   // =========================
   // REGISTER USER
