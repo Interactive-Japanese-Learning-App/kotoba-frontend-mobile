@@ -8,7 +8,7 @@ class NihongoController extends GetxController {
   final searchQuery = ''.obs;
   final isLoading = false.obs;
 
-  final Dio dio = Dio();
+  late final Dio dio;
 
   final hiragana = <Map<String, dynamic>>[].obs;
   final katakana = <Map<String, dynamic>>[].obs;
@@ -22,11 +22,21 @@ class NihongoController extends GetxController {
   final pekerjaan = <Map<String, dynamic>>[].obs;
   final benda = <Map<String, dynamic>>[].obs;
 
-  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
+  static const String baseUrl = "https://kotoba-backend-api.vercel.app/api";
 
   @override
   void onInit() {
     super.onInit();
+
+    dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {"Content-Type": "application/json"},
+      ),
+    );
+
     saveLearningActivity();
     loadHiragana();
   }
@@ -38,20 +48,30 @@ class NihongoController extends GetxController {
     try {
       isLoading.value = true;
 
-      print("REQUEST => $baseUrl/$endpoint");
+      print("========== NIHONGO ==========");
+      print("GET : $endpoint");
 
-      final response = await dio.get("$baseUrl/$endpoint");
+      final response = await dio.get(endpoint);
 
-      print("STATUS => ${response.statusCode}");
-      print("DATA => ${response.data}");
+      print("STATUS : ${response.statusCode}");
+      print("BODY : ${response.data}");
 
-      final List data = response.data["data"];
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        final List<dynamic> data = response.data["data"] ?? [];
 
-      target.assignAll(data.map((e) => Map<String, dynamic>.from(e)));
+        target.assignAll(
+          data.map((e) => Map<String, dynamic>.from(e)).toList(),
+        );
 
-      print("TOTAL => ${target.length}");
+        print("TOTAL DATA : ${target.length}");
+      } else {
+        target.clear();
+      }
+    } on DioException catch (e) {
+      print("DIO ERROR : ${e.message}");
+      print("RESPONSE : ${e.response?.data}");
     } catch (e) {
-      print("ERROR NIHONGO => $e");
+      print("ERROR : $e");
     } finally {
       isLoading.value = false;
     }
@@ -71,63 +91,37 @@ class NihongoController extends GetxController {
     );
   }
 
-  Future<void> loadHiragana() async {
-    await loadData("nihongo/hiragana", hiragana);
-  }
+  Future<void> loadHiragana() => loadData("/nihongo/hiragana", hiragana);
 
-  Future<void> loadKatakana() async {
-    await loadData("nihongo/katakana", katakana);
-  }
+  Future<void> loadKatakana() => loadData("/nihongo/katakana", katakana);
 
-  Future<void> loadNumbers() async {
-    await loadData("nihongo/numbers", angka);
-  }
+  Future<void> loadNumbers() => loadData("/nihongo/numbers", angka);
 
-  Future<void> loadMonths() async {
-    await loadData("nihongo/months", bulan);
-  }
+  Future<void> loadMonths() => loadData("/nihongo/months", bulan);
 
-  Future<void> loadDates() async {
-    await loadData("nihongo/dates", tanggal);
-  }
+  Future<void> loadDates() => loadData("/nihongo/dates", tanggal);
 
-  Future<void> loadFamily() async {
-    await loadData("nihongo/family", keluarga);
-  }
+  Future<void> loadFamily() => loadData("/nihongo/family", keluarga);
 
-  Future<void> loadAnimals() async {
-    await loadData("nihongo/animals", hewan);
-  }
+  Future<void> loadAnimals() => loadData("/nihongo/animals", hewan);
 
-  Future<void> loadFoods() async {
-    await loadData("nihongo/foods", makanan);
-  }
+  Future<void> loadFoods() => loadData("/nihongo/foods", makanan);
 
-  Future<void> loadDrinks() async {
-    await loadData("nihongo/drinks", minuman);
-  }
+  Future<void> loadDrinks() => loadData("/nihongo/drinks", minuman);
 
-  Future<void> loadJobs() async {
-    await loadData("nihongo/jobs", pekerjaan);
-  }
+  Future<void> loadJobs() => loadData("/nihongo/jobs", pekerjaan);
 
-  Future<void> loadObjects() async {
-    await loadData("nihongo/object_vocab", benda);
-  }
+  Future<void> loadObjects() => loadData("/nihongo/object_vocab", benda);
 
   List<Map<String, dynamic>> _filter(List<Map<String, dynamic>> data) {
-    if (searchQuery.value.isEmpty) {
-      return data;
-    }
+    if (searchQuery.value.isEmpty) return data;
+
+    final query = searchQuery.value.toLowerCase();
 
     return data.where((item) {
       final character = item["character"]?.toString().toLowerCase() ?? "";
-
       final romaji = item["romaji"]?.toString().toLowerCase() ?? "";
-
       final meaning = item["meaning"]?.toString().toLowerCase() ?? "";
-
-      final query = searchQuery.value.toLowerCase();
 
       return character.contains(query) ||
           romaji.contains(query) ||
@@ -136,25 +130,15 @@ class NihongoController extends GetxController {
   }
 
   List<Map<String, dynamic>> get filteredHiragana => _filter(hiragana);
-
   List<Map<String, dynamic>> get filteredKatakana => _filter(katakana);
-
   List<Map<String, dynamic>> get filteredAngka => _filter(angka);
-
   List<Map<String, dynamic>> get filteredBulan => _filter(bulan);
-
   List<Map<String, dynamic>> get filteredTanggal => _filter(tanggal);
-
   List<Map<String, dynamic>> get filteredKeluarga => _filter(keluarga);
-
   List<Map<String, dynamic>> get filteredHewan => _filter(hewan);
-
   List<Map<String, dynamic>> get filteredMakanan => _filter(makanan);
-
   List<Map<String, dynamic>> get filteredMinuman => _filter(minuman);
-
   List<Map<String, dynamic>> get filteredPekerjaan => _filter(pekerjaan);
-
   List<Map<String, dynamic>> get filteredBenda => _filter(benda);
 
   void updateSearch(String value) {
@@ -169,69 +153,37 @@ class NihongoController extends GetxController {
 
     switch (index) {
       case 0:
-        if (hiragana.isEmpty) {
-          await loadHiragana();
-        }
+        await loadHiragana();
         break;
-
       case 1:
-        if (katakana.isEmpty) {
-          await loadKatakana();
-        }
+        await loadKatakana();
         break;
-
       case 2:
-        if (angka.isEmpty) {
-          await loadNumbers();
-        }
+        await loadNumbers();
         break;
-
       case 3:
-        if (bulan.isEmpty) {
-          await loadMonths();
-        }
+        await loadMonths();
         break;
-
       case 4:
-        if (tanggal.isEmpty) {
-          await loadDates();
-        }
+        await loadDates();
         break;
-
       case 5:
-        if (keluarga.isEmpty) {
-          await loadFamily();
-        }
+        await loadFamily();
         break;
-
       case 6:
-        if (hewan.isEmpty) {
-          await loadAnimals();
-        }
+        await loadAnimals();
         break;
-
       case 7:
-        if (makanan.isEmpty) {
-          await loadFoods();
-        }
+        await loadFoods();
         break;
-
       case 8:
-        if (minuman.isEmpty) {
-          await loadDrinks();
-        }
+        await loadDrinks();
         break;
-
       case 9:
-        if (pekerjaan.isEmpty) {
-          await loadJobs();
-        }
+        await loadJobs();
         break;
-
       case 10:
-        if (benda.isEmpty) {
-          await loadObjects();
-        }
+        await loadObjects();
         break;
     }
   }
