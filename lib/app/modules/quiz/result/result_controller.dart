@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-
+import 'package:flutter/material.dart';
 import '../../../routes/app_pages.dart';
 import '../quiz/quiz_controller.dart';
 import '../../home/controllers/home_controller.dart';
@@ -12,12 +12,20 @@ class ResultController extends GetxController {
 
   int get maxXp => quizC.maxXp;
 
-  RxInt get benar => quizC.benar;
+  int get benar => quizC.completedQuestions.length;
 
   int get total => quizC.totalSoal;
 
   RxDouble get accuracy => quizC.pelafalanAccuracy;
+@override
+void onReady() {
+  super.onReady();
 
+  precacheImage(
+    const AssetImage('assets/images/quiz-finish.jpg'),
+    Get.context!,
+  );
+}
   double get progress {
     if (maxXp == 0) return 0;
     return xp / maxXp;

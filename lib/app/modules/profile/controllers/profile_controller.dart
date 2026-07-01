@@ -126,7 +126,20 @@ class ProfileController extends GetxController {
 
     if (!GetUtils.isEmail(emailController.text.trim())) {
       showSnackbar("Error", "Format email tidak valid");
+      return;
+    }
 
+    final newEmail = emailController.text.trim();
+
+    final emailChanged = newEmail != email.value;
+
+    final passwordChanged =
+        oldPasswordController.text.isNotEmpty ||
+        newPasswordController.text.isNotEmpty ||
+        confirmPasswordController.text.isNotEmpty;
+
+    if (!emailChanged && !passwordChanged) {
+      showSnackbar("Info", "Tidak ada perubahan data");
       return;
     }
 
@@ -313,6 +326,7 @@ class ProfileController extends GetxController {
           await box.remove('userId');
           await box.remove('email');
           await box.remove('username');
+          await box.remove('photoUrl');
 
           Get.back();
 

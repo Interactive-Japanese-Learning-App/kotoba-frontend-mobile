@@ -34,72 +34,74 @@ class SpeechView extends GetView<SpeechController> {
       body: SafeArea(
         top: false,
         bottom: true,
-        child: Obx(() {
-          final data = controller.currentData;
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
 
-          return Column(
-            children: [
-              const SizedBox(height: 10),
-
-              /// TAB
-              SizedBox(
-                height: 45,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      _buildTab("Angka", 0),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Bulan", 1),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Tanggal", 2),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Keluarga", 3),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Hewan", 4),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Makanan", 5),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Minuman", 6),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Pekerjaan", 7),
-                      const SizedBox(width: 12),
-
-                      _buildTab("Benda", 8),
-                    ],
-                  ),
+            /// TAB
+            SizedBox(
+              height: 45,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    _buildTab("Angka", 0),
+                    const SizedBox(width: 12),
+                    _buildTab("Bulan", 1),
+                    const SizedBox(width: 12),
+                    _buildTab("Tanggal", 2),
+                    const SizedBox(width: 12),
+                    _buildTab("Keluarga", 3),
+                    const SizedBox(width: 12),
+                    _buildTab("Hewan", 4),
+                    const SizedBox(width: 12),
+                    _buildTab("Makanan", 5),
+                    const SizedBox(width: 12),
+                    _buildTab("Minuman", 6),
+                    const SizedBox(width: 12),
+                    _buildTab("Pekerjaan", 7),
+                    const SizedBox(width: 12),
+                    _buildTab("Benda", 8),
+                  ],
                 ),
               ),
+            ),
 
-              const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-              /// GRID
-              Expanded(
-                child: GridView.builder(
+            /// GRID
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final data = controller.currentData;
+
+                if (data.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "Data tidak ditemukan",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  );
+                }
+
+                return GridView.builder(
                   padding: const EdgeInsets.all(20),
                   itemCount: data.length,
-
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 15,
                     mainAxisSpacing: 15,
                     childAspectRatio: 1,
                   ),
-
                   itemBuilder: (context, index) {
                     final SpeechItem item = data[index];
 
                     return InkWell(
                       borderRadius: BorderRadius.circular(25),
-
                       onTap: () {
                         controller.clearResult();
 
@@ -123,7 +125,6 @@ class SpeechView extends GetView<SpeechController> {
                           },
                         );
                       },
-
                       child: Container(
                         decoration: BoxDecoration(
                           color: AppColors.white,
@@ -136,10 +137,8 @@ class SpeechView extends GetView<SpeechController> {
                             ),
                           ],
                         ),
-
                         child: Stack(
                           children: [
-                            /// LABEL
                             Positioned(
                               top: 10,
                               left: 10,
@@ -167,7 +166,6 @@ class SpeechView extends GetView<SpeechController> {
                               ),
                             ),
 
-                            /// CHARACTER
                             Center(
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
@@ -183,7 +181,6 @@ class SpeechView extends GetView<SpeechController> {
                               ),
                             ),
 
-                            /// MEANING
                             Positioned(
                               bottom: 18,
                               left: 0,
@@ -211,11 +208,11 @@ class SpeechView extends GetView<SpeechController> {
                       ),
                     );
                   },
-                ),
-              ),
-            ],
-          );
-        }),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -75,11 +75,11 @@ class HomeController extends GetxController {
     try {
       final result = await ApiService.getYoutubeData();
 
-      print(result); // <-- tambahkan
-
       final List list = result["data"]["topChannels"];
 
-      channels.assignAll(list.map((e) => YoutubeChannel.fromJson(e)).toList());
+      final top5 = list.take(5).toList();
+
+      channels.assignAll(top5.map((e) => YoutubeChannel.fromJson(e)).toList());
     } catch (e) {
       print(e);
     }

@@ -48,13 +48,17 @@ class EditProfileView extends GetView<ProfileController> {
                   children: [
                     Obx(
                       () => CircleAvatar(
-                        radius: 45,
+                        radius: 55,
                         backgroundColor: AppColors.neutral,
                         backgroundImage: controller.photoUrl.value.isNotEmpty
                             ? NetworkImage(controller.photoUrl.value)
                             : null,
                         child: controller.photoUrl.value.isEmpty
-                            ? const Icon(Icons.person, size: 50)
+                            ? const Icon(
+                                Icons.account_circle,
+                                size: 80,
+                                color: Colors.grey,
+                              )
                             : null,
                       ),
                     ),

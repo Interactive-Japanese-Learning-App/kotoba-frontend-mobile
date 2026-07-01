@@ -51,17 +51,20 @@ class QuizView extends GetView<QuizController> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(
-              children: List.generate(controller.sections.length, (index) {
-                final section = controller.sections[index];
+              children: List.generate(
+                controller.sections.length > 1 ? 1 : controller.sections.length,
+                (index) {
+                  final section = controller.sections[index];
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 60),
-                  child: _quizSection(
-                    section: section,
-                    sectionNumber: index + 1,
-                  ),
-                );
-              }),
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 60),
+                    child: _quizSection(
+                      section: section,
+                      sectionNumber: index + 1,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );

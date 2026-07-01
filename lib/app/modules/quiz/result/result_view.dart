@@ -229,7 +229,7 @@ class ResultView extends GetView<ResultController> {
 
                                   Obx(
                                     () => Text(
-                                      "${controller.benar.value}/${controller.total}",
+                                      "${controller.benar}/${controller.total}",
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),

@@ -29,6 +29,7 @@ class SpeechItem {
 }
 
 class SpeechController extends GetxController {
+  final isLoading = false.obs;
   final selectedIndex = 0.obs;
 
   final isListening = false.obs;
@@ -56,17 +57,26 @@ class SpeechController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    loadData("nihongo/numbers", numbers);
-    loadData("nihongo/months", months);
-    loadData("nihongo/dates", dates);
-    loadData("nihongo/family", family);
-    loadData("nihongo/animals", animals);
-    loadData("nihongo/foods", foods);
-    loadData("nihongo/drinks", drinks);
-    loadData("nihongo/jobs", jobs);
-    loadData("nihongo/object_vocab", objects);
+    loadAllData();
     initSpeech();
+  }
+
+  Future<void> loadAllData() async {
+    isLoading.value = true;
+
+    await Future.wait([
+      loadData("nihongo/numbers", numbers),
+      loadData("nihongo/months", months),
+      loadData("nihongo/dates", dates),
+      loadData("nihongo/family", family),
+      loadData("nihongo/animals", animals),
+      loadData("nihongo/foods", foods),
+      loadData("nihongo/drinks", drinks),
+      loadData("nihongo/jobs", jobs),
+      loadData("nihongo/object_vocab", objects),
+    ]);
+
+    isLoading.value = false;
   }
 
   Future<void> initSpeech() async {
@@ -240,19 +250,22 @@ class SpeechController extends GetxController {
 
     return result;
   }
+Future<void> loadData(
+  String endpoint,
+  RxList<SpeechItem> target,
+) async {
+  try {
+    final response = await dio.get("$baseUrl/$endpoint");
 
-  Future<void> loadData(String endpoint, RxList<SpeechItem> target) async {
-    try {
-      final response = await dio.get("$baseUrl/$endpoint");
+    final List data = response.data["data"];
 
-      final List data = response.data["data"];
-
-      target.assignAll(data.map((e) => SpeechItem.fromJson(e)).toList());
-    } catch (e) {
-      print(e);
-    }
+    target.assignAll(
+      data.map((e) => SpeechItem.fromJson(e)).toList(),
+    );
+  } catch (e) {
+    print("ERROR $endpoint => $e");
   }
-
+}
   List<SpeechItem> get currentData {
     switch (selectedIndex.value) {
       case 0:
