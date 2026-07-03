@@ -27,7 +27,6 @@ class RegisterController extends GetxController {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
     scopes: ['email'],
-    forceCodeForRefreshToken: true,
   );
 
   /// TOGGLE PASSWORD

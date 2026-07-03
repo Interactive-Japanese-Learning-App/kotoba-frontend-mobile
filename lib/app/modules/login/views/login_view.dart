@@ -89,7 +89,7 @@ class LoginView extends GetView<LoginController> {
                     Get.toNamed(Routes.FORGOT_PASSWORD);
                   },
                   child: Text(
-                    "Lupa Password?",
+                    "Lupa Kata Sandi?",
                     style: TextStyle(
                       color: AppColors.danger,
                       fontWeight: FontWeight.w600,

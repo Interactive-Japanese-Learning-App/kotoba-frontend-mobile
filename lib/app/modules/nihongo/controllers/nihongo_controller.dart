@@ -22,7 +22,7 @@ class NihongoController extends GetxController {
   final pekerjaan = <Map<String, dynamic>>[].obs;
   final benda = <Map<String, dynamic>>[].obs;
 
-  static const String baseUrl = "http://192.168.18.9:5000/api";
+  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
 
   @override
   void onInit() {

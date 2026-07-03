@@ -53,7 +53,7 @@ class SpeechController extends GetxController {
   final Dio dio = Dio();
   final kanaKit = KanaKit();
 
-  static const String baseUrl = 'http://192.168.18.9:5000/api';
+  static const String baseUrl = 'https://kotoba-backend-api.vercel.app/api';
   @override
   void onInit() {
     super.onInit();
@@ -250,22 +250,19 @@ class SpeechController extends GetxController {
 
     return result;
   }
-Future<void> loadData(
-  String endpoint,
-  RxList<SpeechItem> target,
-) async {
-  try {
-    final response = await dio.get("$baseUrl/$endpoint");
 
-    final List data = response.data["data"];
+  Future<void> loadData(String endpoint, RxList<SpeechItem> target) async {
+    try {
+      final response = await dio.get("$baseUrl/$endpoint");
 
-    target.assignAll(
-      data.map((e) => SpeechItem.fromJson(e)).toList(),
-    );
-  } catch (e) {
-    print("ERROR $endpoint => $e");
+      final List data = response.data["data"];
+
+      target.assignAll(data.map((e) => SpeechItem.fromJson(e)).toList());
+    } catch (e) {
+      print("ERROR $endpoint => $e");
+    }
   }
-}
+
   List<SpeechItem> get currentData {
     switch (selectedIndex.value) {
       case 0:
