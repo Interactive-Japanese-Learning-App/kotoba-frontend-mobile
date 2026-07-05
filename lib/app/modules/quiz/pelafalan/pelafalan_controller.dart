@@ -334,12 +334,23 @@ class PelafalanController extends GetxController {
                       final userId = box.read("userId");
 
                       if (userId != null) {
-                        await ApiService.submitQuizAnswer(
+                        final response = await ApiService.submitQuizAnswer(
                           userId: userId,
                           sectionId: sectionId,
                           questionNo: questionNo,
                           answer: question.value?["answer"] ?? "",
                         );
+
+                        if (response["correct"] == true) {
+                          await ApiService.saveActivity(
+                            userId: userId,
+                            activityType: "quiz",
+                            title: "Mengerjakan Kuis",
+                            detail:
+                                "Berhasil menjawab soal nomor $questionNo - Pelafalan",
+                            score: 20,
+                          );
+                        }
                       }
 
                       final quizC = Get.find<QuizController>();
